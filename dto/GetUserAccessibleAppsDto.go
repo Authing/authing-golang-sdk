@@ -1,7 +1,5 @@
 package dto
 
-
-type GetUserAccessibleAppsDto struct{
-    UserId string `json:"user_id,omitempty"`
+type GetUserAccessibleAppsDto struct {
+	UserId string `json:"userId,omitempty"`
 }
-

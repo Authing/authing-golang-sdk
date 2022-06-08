@@ -1,9 +1,7 @@
 package dto
 
-
-type GetCustomDataDto struct{
-    TargetType string `json:"target_type,omitempty"`
-    TargetIdentifier string `json:"target_identifier,omitempty"`
-    Namespace string `json:"namespace,omitempty"`
+type GetCustomDataDto struct {
+	TargetType       string `json:"targetType,omitempty"`
+	TargetIdentifier string `json:"targetIdentifier,omitempty"`
+	Namespace        string `json:"namespace,omitempty"`
 }
-

@@ -1,7 +1,5 @@
 package dto
 
-
-type GetUserDepartmentsDto struct{
-    UserId string `json:"user_id,omitempty"`
+type GetUserDepartmentsDto struct {
+	UserId string `json:"userId,omitempty"`
 }
-

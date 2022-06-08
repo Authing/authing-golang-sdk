@@ -1,8 +1,6 @@
 package dto
 
-
-type SearchDepartmentsReqDto struct{
-    Search  string `json:"search"`
-    OrganizationCode  string `json:"organizationCode"`
+type SearchDepartmentsReqDto struct {
+	Keywords         string `json:"keywords"`
+	OrganizationCode string `json:"organizationCode"`
 }
-

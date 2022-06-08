@@ -1,8 +1,6 @@
 package dto
 
-
-type GetUserRolesDto struct{
-    UserId string `json:"user_id,omitempty"`
-    Namespace string `json:"namespace,omitempty"`
+type GetUserRolesDto struct {
+	UserId    string `json:"userId,omitempty"`
+	Namespace string `json:"namespace,omitempty"`
 }
-

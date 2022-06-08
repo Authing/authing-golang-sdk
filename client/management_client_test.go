@@ -41,8 +41,13 @@ func TestClient_GetNamespace(t *testing.T) {
 
 func TestClient_HasAnyRole(t *testing.T) {
 	request := dto.HasAnyRoleReqDto{
-		Roles:  nil,
-		UserId: "userId_3868",
+		Roles: []dto.HasRoleRolesDto{
+			{
+				Namespace: "default",
+				Code:      "admin",
+			},
+		},
+		UserId: "611a149db64310ca4764ab15",
 	}
 	response := client.HasAnyRole(&request)
 	fmt.Println(response)
@@ -103,14 +108,10 @@ func TestClient_GetManagementToken(t *testing.T) {
 
 func TestClient_GetUser(t *testing.T) {
 	request := dto.GetUserDto{
-		UserId:            "userId_6520",
+		UserId:            "611a149db64310ca4764ab15",
 		WithCustomData:    false,
 		WithIdentities:    false,
 		WithDepartmentIds: false,
-		Phone:             "phone_1889",
-		Email:             "email_1688",
-		Username:          "username_6931",
-		ExternalId:        "externalId_4495",
 	}
 	response := client.GetUser(&request)
 	fmt.Println(response)
@@ -144,7 +145,7 @@ func TestClient_GetUserBatch(t *testing.T) {
 
 func TestClient_GetUserIdentities(t *testing.T) {
 	request := dto.GetUserIdentitiesDto{
-		UserId: "userId_7225",
+		UserId: "611a149db64310ca4764ab15",
 	}
 	response := client.GetUserIdentities(&request)
 	fmt.Println(response)
@@ -153,9 +154,8 @@ func TestClient_GetUserIdentities(t *testing.T) {
 
 func TestClient_CreateOrganization(t *testing.T) {
 	request := dto.CreateOrganizationReqDto{
-		OrganizationName: "organizationName_2027",
-		OrganizationCode: "organizationCode_2270",
-		OpenDepartmentId: "openDepartmentId_1674",
+		OrganizationName: "蒸汽记忆",
+		OrganizationCode: "steamory",
 	}
 	response := client.CreateOrganization(&request)
 	fmt.Println(response)
@@ -177,7 +177,7 @@ func TestClient_UpdateExtIdpConn(t *testing.T) {
 
 func TestClient_DeleteOrganization(t *testing.T) {
 	request := dto.DeleteOrganizationReqDto{
-		OrganizationCode: "organizationCode_7953",
+		OrganizationCode: "steamory2",
 	}
 	response := client.DeleteOrganization(&request)
 	fmt.Println(response)
@@ -198,10 +198,9 @@ func TestClient_ChangeConnState(t *testing.T) {
 
 func TestClient_UpdateOrganization(t *testing.T) {
 	request := dto.UpdateOrganizationReqDto{
-		OrganizationCode:    "organizationCode_3319",
-		OpenDepartmentId:    "openDepartmentId_8572",
-		OrganizationNewCode: "organizationNewCode_530",
-		OrganizationName:    "organizationName_4419",
+		OrganizationName:    "蒸汽记忆",
+		OrganizationCode:    "steamory",
+		OrganizationNewCode: "steamory2",
 	}
 	response := client.UpdateOrganization(&request)
 	fmt.Println(response)
@@ -219,9 +218,14 @@ func TestClient_SetCustomFields(t *testing.T) {
 
 func TestClient_AssignRole(t *testing.T) {
 	request := dto.AssignRoleDto{
-		Targets:   nil,
-		Code:      "code_1735",
-		Namespace: "namespace_7758",
+		Targets: []dto.TargetDto{
+			{
+				TargetType:       "USER",
+				TargetIdentifier: "6291f220ec919ec7237fcd9f",
+			},
+		},
+		Code:      "admin",
+		Namespace: "default",
 	}
 	response := client.AssignRole(&request)
 	fmt.Println(response)
@@ -230,16 +234,27 @@ func TestClient_AssignRole(t *testing.T) {
 
 func TestClient_CreateGroupBatch(t *testing.T) {
 	request := dto.CreateGroupBatchReqDto{
-		List: nil,
+		List: []dto.CreateGroupReqDto{
+			{
+				Description: "描述",
+				Name:        "北京用户",
+				Code:        "user_bj",
+			},
+			{
+				Description: "描述",
+				Name:        "上海用户",
+				Code:        "user_sh",
+			},
+		},
 	}
-	response := client.CreateGroupBatch(&request)
+	response := client.CreateGroupsBatch(&request)
 	fmt.Println(response)
 
 }
 
 func TestClient_GetUserMfaInfo(t *testing.T) {
 	request := dto.GetUserMfaInfoDto{
-		UserId: "userId_2063",
+		UserId: "611a149db64310ca4764ab15",
 	}
 	response := client.GetUserMfaInfo(&request)
 	fmt.Println(response)
@@ -248,8 +263,8 @@ func TestClient_GetUserMfaInfo(t *testing.T) {
 
 func TestClient_GetRole(t *testing.T) {
 	request := dto.GetRoleDto{
-		Code:      "code_3595",
-		Namespace: "namespace_68",
+		Code:      "code_70",
+		Namespace: "default",
 	}
 	response := client.GetRole(&request)
 	fmt.Println(response)
@@ -258,32 +273,11 @@ func TestClient_GetRole(t *testing.T) {
 
 func TestClient_UpdateUser(t *testing.T) {
 	request := dto.UpdateUserReqDto{
-		UserId:           "userId_8460",
-		PhoneCountryCode: "phoneCountryCode_8091",
-		Name:             "name_8726",
-		Nickname:         "nickname_6206",
-		Photo:            "photo_7414",
-		ExternalId:       "externalId_3102",
-		Status:           "",
-
-		EmailVerified: false,
-		PhoneVerified: false,
-		Birthdate:     "birthdate_4429",
-		Country:       "country_7148",
-		Province:      "province_2823",
-		City:          "city_5141",
-		Address:       "address_1292",
-		StreetAddress: "streetAddress_1482",
-		PostalCode:    "postalCode_2354",
-		Gender:        "",
-
-		Username:            "username_1579",
-		PasswordEncryptType: "",
-
-		Email:      "email_358",
-		Phone:      "phone_5766",
-		Password:   "password_6386",
-		CustomData: nil,
+		UserId:     "6291f0b39d52f02fea96f862",
+		Name:       "name_8726",
+		Nickname:   "nickname_6206",
+		Photo:      "photo_7414",
+		ExternalId: "externalId_3102",
 	}
 	response := client.UpdateUser(&request)
 	fmt.Println(response)
@@ -292,23 +286,33 @@ func TestClient_UpdateUser(t *testing.T) {
 
 func TestClient_AddGroupMembers(t *testing.T) {
 	request := dto.AddGroupMembersReqDto{
-		UserIds: nil,
-		Code:    "code_9093",
+		UserIds: []string{"611a149db64310ca4764ab15"},
+		Code:    "74wr2RzVV0",
 	}
 	response := client.AddGroupMembers(&request)
 	fmt.Println(response)
 
 }
 
-func TestClient_RevokeRoleBatch(t *testing.T) {
+/*func TestClient_RevokeRoleBatch(t *testing.T) {
 	request := dto.RevokeRoleBatchDto{
-		Targets: nil,
-		Roles:   nil,
+		Targets: []dto.TargetDto{
+			{
+				TargetType:       "USER",
+				TargetIdentifier: "6291f220ec919ec7237fcd9f",
+			},
+		},
+		Roles: []dto.RoleCodeDto{
+			{
+				Code:      "admin",
+				Namespace: "default",
+			},
+		},
 	}
 	response := client.RevokeRoleBatch(&request)
 	fmt.Println(response)
 
-}
+}*/
 
 func TestClient_DeleteDepartment(t *testing.T) {
 	request := dto.DeleteDepartmentReqDto{
@@ -334,7 +338,7 @@ func TestClient_GetResourcesBatch(t *testing.T) {
 func TestClient_CreateRole(t *testing.T) {
 	request := dto.CreateRoleDto{
 		Code:        "code_70",
-		Namespace:   "namespace_5167",
+		Namespace:   "default",
 		Description: "description_3228",
 	}
 	response := client.CreateRole(&request)
@@ -375,8 +379,8 @@ func TestClient_GetExtIdp(t *testing.T) {
 
 func TestClient_ListArchivedUsers(t *testing.T) {
 	request := dto.ListArchivedUsersDto{
-		Page:  0,
-		Limit: 0,
+		Page:  1,
+		Limit: 10,
 	}
 	response := client.ListArchivedUsers(&request)
 	fmt.Println(response)
@@ -385,8 +389,8 @@ func TestClient_ListArchivedUsers(t *testing.T) {
 
 func TestClient_DeleteRolesBatch(t *testing.T) {
 	request := dto.DeleteRoleDto{
-		CodeList:  nil,
-		Namespace: "namespace_5144",
+		CodeList:  []string{"code_71", "code_2"},
+		Namespace: "default",
 	}
 	response := client.DeleteRolesBatch(&request)
 	fmt.Println(response)
@@ -395,12 +399,11 @@ func TestClient_DeleteRolesBatch(t *testing.T) {
 
 func TestClient_CreateUser(t *testing.T) {
 	request := dto.CreateUserReqDto{
-		Status: "",
-
-		Email:               "email_5835",
+		Status:              "",
+		Email:               "email_5835@wm.com",
 		PasswordEncryptType: "",
 
-		Phone:            "phone_4953",
+		Phone:            "18310641125",
 		PhoneCountryCode: "phoneCountryCode_6088",
 		Username:         "username_3276",
 		Name:             "name_3190",
@@ -436,7 +439,7 @@ func TestClient_CreateUser(t *testing.T) {
 
 func TestClient_SearchDepartments(t *testing.T) {
 	request := dto.SearchDepartmentsReqDto{
-		Search:           "search_5854",
+		Keywords:         "search_5854",
 		OrganizationCode: "organizationCode_1752",
 	}
 	response := client.SearchDepartments(&request)
@@ -446,7 +449,7 @@ func TestClient_SearchDepartments(t *testing.T) {
 
 func TestClient_GetUserGroups(t *testing.T) {
 	request := dto.GetUserGroupsDto{
-		UserId: "userId_789",
+		UserId: "611a149db64310ca4764ab15",
 	}
 	response := client.GetUserGroups(&request)
 	fmt.Println(response)
@@ -455,10 +458,10 @@ func TestClient_GetUserGroups(t *testing.T) {
 
 func TestClient_IsUserExists(t *testing.T) {
 	request := dto.IsUserExistsReqDto{
-		Username:   "username_9604",
-		Email:      "email_2780",
-		Phone:      "phone_7044",
-		ExternalId: "externalId_6293",
+		Username:   "",
+		Email:      "zy@wm.com",
+		Phone:      "",
+		ExternalId: "",
 	}
 	response := client.IsUserExists(&request)
 	fmt.Println(response)
@@ -467,8 +470,8 @@ func TestClient_IsUserExists(t *testing.T) {
 
 func TestClient_KickUsers(t *testing.T) {
 	request := dto.KickUsersDto{
-		AppIds: nil,
-		UserId: "userId_5104",
+		AppIds: []string{"61cbf5e0c7ce9e8282b85475", "61235292f1bbe2440809802d"},
+		UserId: "611a149db64310ca4764ab15",
 	}
 	response := client.KickUsers(&request)
 	fmt.Println(response)
@@ -476,8 +479,16 @@ func TestClient_KickUsers(t *testing.T) {
 }
 
 func TestClient_CreateUserBatch(t *testing.T) {
+
 	request := dto.CreateUserBatchReqDto{
-		List:    nil,
+		List: []dto.CreateUserInfoDto{
+			{
+				Email:      "emai-112@wm.com",
+				Phone:      "18310641126",
+				Username:   "Username",
+				ExternalId: "ExternalId",
+			},
+		},
 		Options: dto.CreateUserOptionsDto{},
 	}
 	response := client.CreateUserBatch(&request)
@@ -487,8 +498,8 @@ func TestClient_CreateUserBatch(t *testing.T) {
 
 func TestClient_RemoveGroupMembers(t *testing.T) {
 	request := dto.RemoveGroupMembersReqDto{
-		UserIds: nil,
-		Code:    "code_9703",
+		UserIds: []string{"611a149db64310ca4764ab15"},
+		Code:    "74wr2RzVV0",
 	}
 	response := client.RemoveGroupMembers(&request)
 	fmt.Println(response)
@@ -497,13 +508,13 @@ func TestClient_RemoveGroupMembers(t *testing.T) {
 
 func TestClient_ListRoleMembers(t *testing.T) {
 	request := dto.ListRoleMembersDto{
-		Code:              "code_2861",
-		Page:              0,
-		Limit:             0,
+		Code:              "admin",
+		Page:              1,
+		Limit:             10,
 		WithCustomData:    false,
 		WithIdentities:    false,
 		WithDepartmentIds: false,
-		Namespace:         "namespace_872",
+		Namespace:         "default",
 	}
 	response := client.ListRoleMembers(&request)
 	fmt.Println(response)
@@ -526,15 +537,25 @@ func TestClient_CreateExtIdpConn(t *testing.T) {
 
 }
 
-func TestClient_AssignRoleBatch(t *testing.T) {
+/*func TestClient_AssignRoleBatch(t *testing.T) {
 	request := dto.AssignRoleBatchDto{
-		Targets: nil,
-		Roles:   nil,
+		Targets: []dto.TargetDto{
+			{
+				TargetType:       "USER",
+				TargetIdentifier: "6291f220ec919ec7237fcd9f",
+			},
+		},
+		Roles: []dto.RoleCodeDto{
+			{
+				Code:      "admin",
+				Namespace: "default",
+			},
+		},
 	}
 	response := client.AssignRoleBatch(&request)
 	fmt.Println(response)
 
-}
+}*/
 
 func TestClient_DeleteExtIdpConn(t *testing.T) {
 	request := dto.DeleteExtIdpConnDto{
@@ -547,7 +568,7 @@ func TestClient_DeleteExtIdpConn(t *testing.T) {
 
 func TestClient_GetGroup(t *testing.T) {
 	request := dto.GetGroupDto{
-		Code: "code_9948",
+		Code: "pm",
 	}
 	response := client.GetGroup(&request)
 	fmt.Println(response)
@@ -594,9 +615,9 @@ func TestClient_UpdateResource(t *testing.T) {
 
 func TestClient_ListRoles(t *testing.T) {
 	request := dto.ListRolesDto{
-		Namespace: "namespace_8667",
-		Page:      0,
-		Limit:     0,
+		Namespace: "default",
+		Page:      1,
+		Limit:     10,
 	}
 	response := client.ListRoles(&request)
 	fmt.Println(response)
@@ -605,7 +626,18 @@ func TestClient_ListRoles(t *testing.T) {
 
 func TestClient_CreateRolesBatch(t *testing.T) {
 	request := dto.CreateRolesBatch{
-		List: nil,
+		List: []dto.RoleListItem{
+			{
+				Code:        "code_1",
+				Description: "description_1",
+				Namespace:   "default",
+			},
+			{
+				Code:        "code_2",
+				Description: "description_2",
+				Namespace:   "default",
+			},
+		},
 	}
 	response := client.CreateRolesBatch(&request)
 	fmt.Println(response)
@@ -644,9 +676,8 @@ func TestClient_DeleteResource(t *testing.T) {
 
 func TestClient_GetDepartment(t *testing.T) {
 	request := dto.GetDepartmentDto{
-		OrganizationCode: "organizationCode_7418",
-		DepartmentId:     "departmentId_3675",
-		DepartmentIdType: "departmentIdType_8967",
+		OrganizationCode: "steamory",
+		DepartmentId:     "6267ba6f09caf94dbe2ad291",
 	}
 	response := client.GetDepartment(&request)
 	fmt.Println(response)
@@ -655,9 +686,14 @@ func TestClient_GetDepartment(t *testing.T) {
 
 func TestClient_RevokeRole(t *testing.T) {
 	request := dto.RevokeRoleDto{
-		Targets:   nil,
-		Code:      "code_1746",
-		Namespace: "namespace_9387",
+		Targets: []dto.TargetDto{
+			{
+				TargetType:       "USER",
+				TargetIdentifier: "6291f220ec919ec7237fcd9f",
+			},
+		},
+		Code:      "admin",
+		Namespace: "default",
 	}
 	response := client.RevokeRole(&request)
 	fmt.Println(response)
@@ -666,8 +702,8 @@ func TestClient_RevokeRole(t *testing.T) {
 
 func TestClient_GetUserRoles(t *testing.T) {
 	request := dto.GetUserRolesDto{
-		UserId:    "userId_8750",
-		Namespace: "namespace_5251",
+		UserId:    "611a149db64310ca4764ab15",
+		Namespace: "default",
 	}
 	response := client.GetUserRoles(&request)
 	fmt.Println(response)
@@ -686,9 +722,15 @@ func TestClient_CreateGroup(t *testing.T) {
 }
 
 func TestClient_SetUserDepartment(t *testing.T) {
+	var departments []dto.SetUserDepartmentDto
+	departments = append(departments, dto.SetUserDepartmentDto{
+		DepartmentId:     "60eea7b8f96188800df2e0bd",
+		IsLeader:         false,
+		IsMainDepartment: false,
+	})
 	request := dto.SetUserDepartmentsDto{
-		Departments: nil,
-		UserId:      "userId_8380",
+		Departments: departments,
+		UserId:      "611a149db64310ca4764ab15",
 	}
 	response := client.SetUserDepartment(&request)
 	fmt.Println(response)
@@ -697,8 +739,8 @@ func TestClient_SetUserDepartment(t *testing.T) {
 
 func TestClient_ListOrganizations(t *testing.T) {
 	request := dto.ListOrganizationsDto{
-		Page:  0,
-		Limit: 0,
+		Page:  1,
+		Limit: 10,
 	}
 	response := client.ListOrganizations(&request)
 	fmt.Println(response)
@@ -731,30 +773,30 @@ func TestClient_UpdateNamespace(t *testing.T) {
 
 func TestClient_DeleteUserBatch(t *testing.T) {
 	request := dto.DeleteUsersBatchDto{
-		UserIds: nil,
+		UserIds: []string{"61075957e56172777e9f06e9", "610758491a92ce8b3a5ec41c"},
 	}
-	response := client.DeleteUserBatch(&request)
+	response := client.DeleteUsersBatch(&request)
 	fmt.Println(response)
 
 }
 
 func TestClient_GetGroupList(t *testing.T) {
 	request := dto.ListGroupsDto{
-		Page:  0,
-		Limit: 0,
+		Page:  1,
+		Limit: 10,
 	}
-	response := client.GetGroupList(&request)
+	response := client.ListGroups(&request)
 	fmt.Println(response)
 
 }
 
 func TestClient_ListGroupMembers(t *testing.T) {
 	request := dto.ListGroupMembersDto{
-		Code:              "code_9936",
-		Page:              0,
-		Limit:             0,
+		Code:              "pm",
+		Page:              1,
+		Limit:             10,
 		WithCustomData:    false,
-		WithIdentities:    false,
+		WithIdentities:    true,
 		WithDepartmentIds: false,
 	}
 	response := client.ListGroupMembers(&request)
@@ -773,13 +815,11 @@ func TestClient_ListExtIdp(t *testing.T) {
 
 func TestClient_UpdateDepartment(t *testing.T) {
 	request := dto.UpdateDepartmentReqDto{
-		OrganizationCode:   "organizationCode_9222",
-		ParentDepartmentId: "parentDepartmentId_9680",
-		DepartmentId:       "departmentId_4275",
-		Code:               "code_930",
-		LeaderUserId:       "leaderUserId_1549",
-		Name:               "name_9439",
-		DepartmentIdType:   "",
+		OrganizationCode:   "steamory",
+		DepartmentId:       "6267c25597f8fd5757943b65",
+		ParentDepartmentId: "",
+		Code:               "development2",
+		Name:               "研发部2",
 	}
 	response := client.UpdateDepartment(&request)
 	fmt.Println(response)
@@ -788,7 +828,7 @@ func TestClient_UpdateDepartment(t *testing.T) {
 
 func TestClient_GetUserDepartments(t *testing.T) {
 	request := dto.GetUserDepartmentsDto{
-		UserId: "userId_407",
+		UserId: "611a149db64310ca4764ab15",
 	}
 	response := client.GetUserDepartments(&request)
 	fmt.Println(response)
@@ -807,13 +847,11 @@ func TestClient_UpdateExtIdp(t *testing.T) {
 
 func TestClient_CreateDepartment(t *testing.T) {
 	request := dto.CreateDepartmentReqDto{
-		OrganizationCode:   "organizationCode_1237",
-		Name:               "name_9915",
-		ParentDepartmentId: "parentDepartmentId_4526",
-		OpenDepartmentId:   "openDepartmentId_5397",
-		Code:               "code_8456",
-		LeaderUserId:       "leaderUserId_870",
-		DepartmentIdType:   "",
+		OrganizationCode: "steamory",
+		Name:             "开发部2",
+		Code:             "development2",
+		LeaderUserId:     "611a149db64310ca4764ab15",
+		OpenDepartmentId: "dpt_development2",
 	}
 	response := client.CreateDepartment(&request)
 	fmt.Println(response)
@@ -822,10 +860,10 @@ func TestClient_CreateDepartment(t *testing.T) {
 
 func TestClient_UpdateGroup(t *testing.T) {
 	request := dto.UpdateGroupReqDto{
-		Description: "description_2466",
-		Name:        "name_9748",
-		Code:        "code_2809",
-		NewCode:     "newCode_1722",
+		Description: "description_715",
+		Name:        "广州用户",
+		Code:        "code_6657",
+		NewCode:     "user_gz",
 	}
 	response := client.UpdateGroup(&request)
 	fmt.Println(response)
@@ -834,19 +872,19 @@ func TestClient_UpdateGroup(t *testing.T) {
 
 func TestClient_DeleteGroups(t *testing.T) {
 	request := dto.DeleteGroupsReqDto{
-		CodeList: nil,
+		CodeList: []string{"v0l17C93S1", "5O24e7OW5b"},
 	}
-	response := client.DeleteGroups(&request)
+	response := client.DeleteGroupsBatch(&request)
 	fmt.Println(response)
 
 }
 
 func TestClient_UpdateRole(t *testing.T) {
 	request := dto.UpdateRoleDto{
-		NewCode:     "newCode_8752",
-		Code:        "code_3047",
-		Namespace:   "namespace_2695",
-		Description: "description_376",
+		NewCode:     "code_71",
+		Code:        "code_70",
+		Namespace:   "default",
+		Description: "description_377",
 	}
 	response := client.UpdateRole(&request)
 	fmt.Println(response)
@@ -855,13 +893,7 @@ func TestClient_UpdateRole(t *testing.T) {
 
 func TestClient_GetUserLoginHistory(t *testing.T) {
 	request := dto.GetUserLoginHistoryDto{
-		UserId:   "userId_7246",
-		AppId:    "appId_6638",
-		ClientIp: "clientIp_3050",
-		Start:    0,
-		End:      0,
-		Page:     0,
-		Limit:    0,
+		UserId: "611a149db64310ca4764ab15",
 	}
 	response := client.GetUserLoginHistory(&request)
 	fmt.Println(response)
@@ -870,7 +902,7 @@ func TestClient_GetUserLoginHistory(t *testing.T) {
 
 func TestClient_GetUserLoggedInApps(t *testing.T) {
 	request := dto.GetUserLoggedinAppsDto{
-		UserId: "userId_1810",
+		UserId: "611a149db64310ca4764ab15",
 	}
 	response := client.GetUserLoggedInApps(&request)
 	fmt.Println(response)
@@ -879,7 +911,7 @@ func TestClient_GetUserLoggedInApps(t *testing.T) {
 
 func TestClient_GetUserAuthorizedApps(t *testing.T) {
 	request := dto.GetUserAuthorizedAppsDto{
-		UserId: "userId_9193",
+		UserId: "611a149db64310ca4764ab15",
 	}
 	response := client.GetUserAuthorizedApps(&request)
 	fmt.Println(response)
@@ -888,9 +920,9 @@ func TestClient_GetUserAuthorizedApps(t *testing.T) {
 
 func TestClient_GetGroupAuthorizedResources(t *testing.T) {
 	request := dto.GetGroupAuthorizedResourcesDto{
-		Code:         "code_5382",
-		Namespace:    "namespace_107",
-		ResourceType: "resourceType_5496",
+		Code:         "pm",
+		Namespace:    "default",
+		ResourceType: "API",
 	}
 	response := client.GetGroupAuthorizedResources(&request)
 	fmt.Println(response)
@@ -899,7 +931,7 @@ func TestClient_GetGroupAuthorizedResources(t *testing.T) {
 
 func TestClient_GetUserAccessibleApps(t *testing.T) {
 	request := dto.GetUserAccessibleAppsDto{
-		UserId: "userId_7524",
+		UserId: "611a149db64310ca4764ab15",
 	}
 	response := client.GetUserAccessibleApps(&request)
 	fmt.Println(response)
@@ -908,9 +940,7 @@ func TestClient_GetUserAccessibleApps(t *testing.T) {
 
 func TestClient_GetUserAuthorizedResources(t *testing.T) {
 	request := dto.GetUserAuthorizedResourcesDto{
-		UserId:       "userId_1642",
-		Namespace:    "namespace_8685",
-		ResourceType: "resourceType_7457",
+		UserId: "611a149db64310ca4764ab15",
 	}
 	response := client.GetUserAuthorizedResources(&request)
 	fmt.Println(response)
@@ -919,9 +949,9 @@ func TestClient_GetUserAuthorizedResources(t *testing.T) {
 
 func TestClient_GetPrincipalAuthenticationInfo(t *testing.T) {
 	request := dto.GetUserPrincipalAuthenticationInfoDto{
-		UserId: "userId_7829",
+		UserId: "611a149db64310ca4764ab15",
 	}
-	response := client.GetPrincipalAuthenticationInfo(&request)
+	response := client.GetUserPrincipalAuthenticationInfo(&request)
 	fmt.Println(response)
 
 }
@@ -939,9 +969,9 @@ func TestClient_ListChildrenDepartments(t *testing.T) {
 
 func TestClient_GetRoleAuthorizedResources(t *testing.T) {
 	request := dto.GetRoleAuthorizedResourcesDto{
-		Code:         "code_20",
-		Namespace:    "namespace_7340",
-		ResourceType: "resourceType_124",
+		Code:         "admin",
+		Namespace:    "default",
+		ResourceType: "API",
 	}
 	response := client.GetRoleAuthorizedResources(&request)
 	fmt.Println(response)
@@ -990,10 +1020,10 @@ func TestClient_RemoveDepartmentMembers(t *testing.T) {
 
 func TestClient_ListRoleDepartments(t *testing.T) {
 	request := dto.ListRoleDepartmentsDto{
-		Code:      "code_4901",
-		Namespace: "namespace_5508",
-		Page:      0,
-		Limit:     0,
+		Code:      "admin",
+		Namespace: "default",
+		Page:      1,
+		Limit:     10,
 	}
 	response := client.ListRoleDepartments(&request)
 	fmt.Println(response)
@@ -1051,11 +1081,11 @@ func TestClient_CreateNamespacesBatch(t *testing.T) {
 
 }
 
-func TestClient_ResetPrincipalAuthenticationInfo(t *testing.T) {
+func TestClient_ResetUserPrincipalAuthenticationInfo(t *testing.T) {
 	request := dto.ResetUserPrincipalAuthenticationInfoDto{
-		UserId: "userId_7698",
+		UserId: "611a149db64310ca4764ab15",
 	}
-	response := client.ResetPrincipalAuthenticationInfo(&request)
+	response := client.ResetUserPrincipalAuthenticationInfo(&request)
 	fmt.Println(response)
 
 }

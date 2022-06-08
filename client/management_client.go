@@ -154,7 +154,7 @@ func (c *Client) GetUserRoles(reqDto *dto.GetUserRolesDto) *dto.RolePaginatedRes
  * @param userId 用户 ID
  * @returns PrincipalAuthenticationInfoPaginatedRespDto
  */
-func (c *Client) GetPrincipalAuthenticationInfo(reqDto *dto.GetUserPrincipalAuthenticationInfoDto) *dto.PrincipalAuthenticationInfoPaginatedRespDto {
+func (c *Client) GetUserPrincipalAuthenticationInfo(reqDto *dto.GetUserPrincipalAuthenticationInfoDto) *dto.PrincipalAuthenticationInfoPaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-user-principal-authentication-info", fasthttp.MethodGet, reqDto)
 	var response dto.PrincipalAuthenticationInfoPaginatedRespDto
 	if err != nil {
@@ -175,7 +175,7 @@ func (c *Client) GetPrincipalAuthenticationInfo(reqDto *dto.GetUserPrincipalAuth
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *Client) ResetPrincipalAuthenticationInfo(reqDto *dto.ResetUserPrincipalAuthenticationInfoDto) *dto.IsSuccessRespDto {
+func (c *Client) ResetUserPrincipalAuthenticationInfo(reqDto *dto.ResetUserPrincipalAuthenticationInfoDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/reset-user-principal-authentication-info", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -259,7 +259,7 @@ func (c *Client) GetUserGroups(reqDto *dto.GetUserGroupsDto) *dto.GroupPaginated
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *Client) DeleteUserBatch(reqDto *dto.DeleteUsersBatchDto) *dto.IsSuccessRespDto {
+func (c *Client) DeleteUsersBatch(reqDto *dto.DeleteUsersBatchDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/delete-users-batch", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -584,7 +584,7 @@ func (c *Client) GetGroup(reqDto *dto.GetGroupDto) *dto.GroupSingleRespDto {
  * @param limit 每页数目，最大不能超过 50，默认为 10
  * @returns GroupPaginatedRespDto
  */
-func (c *Client) GetGroupList(reqDto *dto.ListGroupsDto) *dto.GroupPaginatedRespDto {
+func (c *Client) ListGroups(reqDto *dto.ListGroupsDto) *dto.GroupPaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/list-groups", fasthttp.MethodGet, reqDto)
 	var response dto.GroupPaginatedRespDto
 	if err != nil {
@@ -626,7 +626,7 @@ func (c *Client) CreateGroup(reqDto *dto.CreateGroupReqDto) *dto.GroupSingleResp
  * @param requestBody
  * @returns GroupListRespDto
  */
-func (c *Client) CreateGroupBatch(reqDto *dto.CreateGroupBatchReqDto) *dto.GroupListRespDto {
+func (c *Client) CreateGroupsBatch(reqDto *dto.CreateGroupBatchReqDto) *dto.GroupListRespDto {
 	b, err := c.SendHttpRequest("/api/v3/create-groups-batch", fasthttp.MethodPost, reqDto)
 	var response dto.GroupListRespDto
 	if err != nil {
@@ -668,7 +668,7 @@ func (c *Client) UpdateGroup(reqDto *dto.UpdateGroupReqDto) *dto.GroupSingleResp
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *Client) DeleteGroups(reqDto *dto.DeleteGroupsReqDto) *dto.IsSuccessRespDto {
+func (c *Client) DeleteGroupsBatch(reqDto *dto.DeleteGroupsReqDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/delete-groups-batch", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -818,27 +818,6 @@ func (c *Client) AssignRole(reqDto *dto.AssignRoleDto) *dto.IsSuccessRespDto {
 }
 
 /*
- * @summary 批量分配角色
- * @description 批量分配角色，被分配者可以是用户，可以是部门
- * @param requestBody
- * @returns IsSuccessRespDto
- */
-func (c *Client) AssignRoleBatch(reqDto *dto.AssignRoleBatchDto) *dto.IsSuccessRespDto {
-	b, err := c.SendHttpRequest("/api/v3/assign-role-batch", fasthttp.MethodPost, reqDto)
-	var response dto.IsSuccessRespDto
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	err = json.Unmarshal(b, &response)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	return &response
-}
-
-/*
  * @summary 移除分配的角色
  * @description 移除分配的角色，被分配者可以是用户，可以是部门
  * @param requestBody
@@ -846,27 +825,6 @@ func (c *Client) AssignRoleBatch(reqDto *dto.AssignRoleBatchDto) *dto.IsSuccessR
  */
 func (c *Client) RevokeRole(reqDto *dto.RevokeRoleDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/revoke-role", fasthttp.MethodPost, reqDto)
-	var response dto.IsSuccessRespDto
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	err = json.Unmarshal(b, &response)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	return &response
-}
-
-/*
- * @summary 批量移除分配的角色
- * @description 批量移除分配的角色，被分配者可以是用户，可以是部门
- * @param requestBody
- * @returns IsSuccessRespDto
- */
-func (c *Client) RevokeRoleBatch(reqDto *dto.RevokeRoleBatchDto) *dto.IsSuccessRespDto {
-	b, err := c.SendHttpRequest("/api/v3/revoke-role-batch", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
 		fmt.Println(err)
@@ -1277,11 +1235,12 @@ func (c *Client) ListChildrenDepartments(reqDto *dto.ListChildrenDepartmentsDto)
 }
 
 /*
- * @summary 获取部门直属成员列表
- * @description 获取部门直属成员列表
+ * @summary 获取部门成员列表
+ * @description 获取部门成员列表
  * @param organizationCode 组织 code
  * @param departmentId 部门 id，根部门传 `root`
  * @param departmentIdType 此次调用中使用的部门 ID 的类型
+ * @param includeChildrenDepartments 是否包含子部门的成员
  * @param page 当前页数，从 1 开始
  * @param limit 每页数目，最大不能超过 50，默认为 10
  * @param withCustomData 是否获取自定义数据
@@ -1650,7 +1609,7 @@ func (c *Client) SetCustomData(reqDto *dto.SetCustomDataReqDto) *dto.IsSuccessRe
  * @description 获取用户、分组、角色、组织机构的自定义字段值
  * @param targetType 主体类型，目前支持用户、角色、分组和部门
  * @param targetIdentifier 目标对象唯一标志符
- * @param namespace 所属权限分组的 code，当 target_type 为角色的时候需要填写，否则可以忽略。
+ * @param namespace 所属权限分组的 code，当 targetType 为角色的时候需要填写，否则可以忽略。
  * @returns GetCustomDataRespDto
  */
 func (c *Client) GetCustomData(reqDto *dto.GetCustomDataDto) *dto.GetCustomDataRespDto {

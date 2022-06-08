@@ -1,7 +1,5 @@
 package dto
 
-
-type GetCustomFieldsDto struct{
-    TargetType string `json:"target_type,omitempty"`
+type GetCustomFieldsDto struct {
+	TargetType string `json:"targetType,omitempty"`
 }
-

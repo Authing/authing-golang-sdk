@@ -1,10 +1,8 @@
 package dto
 
-
-type GetUserBatchDto struct{
-    UserIds string `json:"user_ids,omitempty"`
-    WithCustomData bool `json:"with_custom_data,omitempty"`
-    WithIdentities bool `json:"with_identities,omitempty"`
-    WithDepartmentIds bool `json:"with_department_ids,omitempty"`
+type GetUserBatchDto struct {
+	UserIds           string `json:"userIds,omitempty"`
+	WithCustomData    bool   `json:"withCustomData,omitempty"`
+	WithIdentities    bool   `json:"withIdentities,omitempty"`
+	WithDepartmentIds bool   `json:"withDepartmentIds,omitempty"`
 }
-

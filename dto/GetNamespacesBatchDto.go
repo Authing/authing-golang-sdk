@@ -1,7 +1,5 @@
 package dto
 
-
-type GetNamespacesBatchDto struct{
-    CodeList string `json:"code_list,omitempty"`
+type GetNamespacesBatchDto struct {
+	CodeList string `json:"codeList,omitempty"`
 }
-
