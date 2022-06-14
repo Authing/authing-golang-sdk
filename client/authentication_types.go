@@ -1,5 +1,7 @@
 package client
 
+import "time"
+
 type AuthenticationClientOptions struct {
 	/** 应用 ID */
 	AppId string
@@ -40,20 +42,17 @@ type AuthenticationClientOptions struct {
 	CookieKey string
 }
 type AuthUrlResult struct {
-	url   string
-	state string
-	nonce string
+	Url   string
+	State string
+	Nonce string
 }
 
 type AuthURLParams struct {
-	redirect_uri  string
-	response_type string
-	response_mode string
-	client_id     string
-	state         string
-	nonce         string
-	scope         string
-	prompt        string
+	RedirectUri string
+	State       string
+	Nonce       string
+	Scope       string
+	Forced      bool
 }
 
 type OIDCTokenResponse struct {
@@ -72,11 +71,8 @@ type NativeTokenParams struct { //TODO 允许扩展
 }
 
 type CodeToTokenParams struct {
-	grant_type    string //'authorization_code'
-	client_id     string
-	client_secret string
-	code          string
-	redirect_uri  string
+	Code        string
+	RedirectUri string
 }
 
 type RefreshTokenParams struct {
@@ -87,12 +83,13 @@ type RefreshTokenParams struct {
 }
 
 type LoginState struct {
-	accessToken       string
-	idToken           string
-	refreshToken      string //可选
-	expireAt          uint64
-	parsedIDToken     IDToken
-	parsedAccessToken AccessToken
+	AccessToken       string `json:"access_token"`
+	IdToken           string `json:"id_token"`
+	RefreshToken      string `json:"refresh_token"` //可选
+	expiresIn         uint64 `json:"expires_in"`
+	ExpireAt          time.Time
+	ParsedIDToken     *IDToken
+	ParsedAccessToken *AccessToken
 }
 
 type LoginTransaction struct {
@@ -102,40 +99,40 @@ type LoginTransaction struct {
 }
 
 type UserInfo struct { // TODO 允许扩展
-	sub                string
-	name               string
-	nickname           string
-	given_name         string
-	family_name        string
-	birthdate          string
-	gender             string //'M' | 'F' | 'U'
-	picture            string
-	updated_at         string
-	zoneinfo           string
-	preferred_username string
-	locale             string
+	Sub               string
+	Name              string
+	Nickname          string
+	GivenName         string
+	FamilyName        string
+	Birthdate         string
+	Gender            string //'M' | 'F' | 'U'
+	Picture           string
+	UpdatedAt         string
+	Zoneinfo          string
+	PreferredUsername string
+	Locale            string
 }
 
 type IDToken struct {
 	UserInfo //扩展自UserInfo
-	sub      string
-	aud      string
-	exp      uint64
-	iat      uint64
-	iss      string
-	nonce    string
-	at_hash  string
-	s_hash   string
+	Sub      string
+	Aud      string
+	Exp      uint64
+	Iat      uint64
+	Iss      string
+	Nonce    string
+	AtHash   string
+	SHash    string
 }
 
 type AccessToken struct {
-	jti   string
-	sub   string
-	iat   uint64
-	exp   uint64
-	scope uint64
-	iss   string
-	aud   string
+	Jti   string
+	Sub   string
+	Iat   uint64
+	Exp   uint64
+	Scope uint64
+	Iss   string
+	Aud   string
 }
 
 //   type IDToken struct {// TODO 允许扩展
