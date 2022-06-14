@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-var client *Client
+var client *ManagementClient
 
 func init() {
 	options := ManagementClientOptions{
@@ -14,7 +14,7 @@ func init() {
 		AccessKeySecret: "158c7679333bc196b524d78d745813e5",
 	}
 	var err error
-	client, err = NewClient(&options)
+	client, err = NewManagementClient(&options)
 	if err != nil {
 		panic(err)
 	}

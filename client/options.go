@@ -7,15 +7,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/valyala/fasthttp"
 	"net/http"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/valyala/fasthttp"
 )
 
-type Client struct {
+type ManagementClient struct {
 	HttpClient *http.Client
 	options    *ManagementClientOptions
 	userPoolId string
@@ -32,11 +33,11 @@ type ManagementClientOptions struct {
 	Headers         fasthttp.RequestHeader
 }
 
-func NewClient(options *ManagementClientOptions) (*Client, error) {
+func NewManagementClient(options *ManagementClientOptions) (*ManagementClient, error) {
 	if options.Host == "" {
 		options.Host = constant.ApiServiceUrl
 	}
-	c := &Client{
+	c := &ManagementClient{
 		options: options,
 	}
 	if c.HttpClient == nil {
@@ -60,7 +61,7 @@ type JwtClaims struct {
 	Username string
 }
 
-func GetAccessToken(client *Client) (string, error) {
+func GetAccessToken(client *ManagementClient) (string, error) {
 	// 从缓存获取token
 	cacheToken, b := cache.GetCache(constant.TokenCacheKeyPrefix + client.options.AccessKeyId)
 	if b && cacheToken != nil {
@@ -88,7 +89,7 @@ func GetAccessToken(client *Client) (string, error) {
 	return resp.Data.AccessToken, nil
 }
 
-func QueryAccessToken(client *Client) (*dto.GetManagementTokenRespDto, error) {
+func QueryAccessToken(client *ManagementClient) (*dto.GetManagementTokenRespDto, error) {
 	variables := map[string]interface{}{
 		"accessKeyId":     client.options.AccessKeyId,
 		"accessKeySecret": client.options.AccessKeySecret,
@@ -105,7 +106,7 @@ func QueryAccessToken(client *Client) (*dto.GetManagementTokenRespDto, error) {
 	return &r, nil
 }
 
-func (c *Client) SendHttpRequest(url string, method string, reqDto interface{}) ([]byte, error) {
+func (c *ManagementClient) SendHttpRequest(url string, method string, reqDto interface{}) ([]byte, error) {
 	var buf bytes.Buffer
 	err := json.NewEncoder(&buf).Encode(reqDto)
 	if err != nil {
