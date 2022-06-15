@@ -22,7 +22,7 @@ go get -u github.com/Authing/authing-golang-sdk
 package main
 
 import (
-    "authing-golang-sdk/management"
+    "github.com/Authing/authing-golang-sdk/management"
 )
 
 options := management.ClientOptions{
@@ -56,8 +56,8 @@ if err != nil {
 package main
 
 import (
-	"authing-golang-sdk/management"
-	"authing-golang-sdk/dto"
+	"github.com/Authing/authing-golang-sdk/management"
+	"github.com/Authing/authing-golang-sdk/dto"
 	"fmt"
 )
 
@@ -82,8 +82,8 @@ func main() {
 package main
 
 import (
-	"authing-golang-sdk/management"
-	"authing-golang-sdk/dto"
+	"github.com/Authing/authing-golang-sdk/management"
+	"github.com/Authing/authing-golang-sdk/dto"
 	"fmt"
 )
 
@@ -120,8 +120,8 @@ func main() {
 package main
 
 import (
-	"authing-golang-sdk/management"
-	"authing-golang-sdk/dto"
+	"github.com/Authing/authing-golang-sdk/management"
+	"github.com/Authing/authing-golang-sdk/dto"
 	"fmt"
 )
 
@@ -153,8 +153,8 @@ func main() {
 package main
 
 import (
-	"authing-golang-sdk/management"
-	"authing-golang-sdk/dto"
+	"github.com/Authing/authing-golang-sdk/management"
+	"github.com/Authing/authing-golang-sdk/dto"
 	"fmt"
 )
 

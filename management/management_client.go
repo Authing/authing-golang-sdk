@@ -1,9 +1,9 @@
 package management
 
 import (
-	"authing-golang-sdk/dto"
 	"encoding/json"
 	"fmt"
+	"github.com/Authing/authing-golang-sdk/dto"
 	"github.com/valyala/fasthttp"
 )
 

@@ -1,12 +1,12 @@
 package management
 
 import (
-	"authing-golang-sdk/constant"
-	"authing-golang-sdk/dto"
-	"authing-golang-sdk/util/cache"
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/Authing/authing-golang-sdk/constant"
+	"github.com/Authing/authing-golang-sdk/dto"
+	"github.com/Authing/authing-golang-sdk/util/cache"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/valyala/fasthttp"
 	"net/http"

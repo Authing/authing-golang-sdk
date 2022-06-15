@@ -1,8 +1,8 @@
 package management
 
 import (
-	"authing-golang-sdk/dto"
 	"fmt"
+	"github.com/Authing/authing-golang-sdk/dto"
 	"testing"
 )
 
