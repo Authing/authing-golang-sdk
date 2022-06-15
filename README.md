@@ -29,7 +29,7 @@ options := management.ClientOptions{
     AccessKeyId:     "AUTHING_USERPOOL_ID",
     AccessKeySecret: "AUTHING_USERPOOL_SECRET",
 }
-client, err := client.NewClient(&options)
+client, err := management.NewClient(&options)
 if err != nil {
     // The exception needs to be handled by the developer.
 }
