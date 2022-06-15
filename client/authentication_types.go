@@ -1,6 +1,10 @@
 package client
 
-import "time"
+import (
+	"time"
+
+	"github.com/dgrijalva/jwt-go"
+)
 
 type AuthenticationClientOptions struct {
 	/** 应用 ID */
@@ -86,10 +90,10 @@ type LoginState struct {
 	AccessToken       string `json:"access_token"`
 	IdToken           string `json:"id_token"`
 	RefreshToken      string `json:"refresh_token"` //可选
-	expiresIn         uint64 `json:"expires_in"`
+	ExpiresIn         uint64 `json:"expires_in"`
 	ExpireAt          time.Time
-	ParsedIDToken     *IDToken
-	ParsedAccessToken *AccessToken
+	ParsedIDToken     *IDTokenClaims
+	ParsedAccessToken *AccessTokenClaims
 }
 
 type LoginTransaction struct {
@@ -97,42 +101,59 @@ type LoginTransaction struct {
 	nonce       string
 	redirectUri string
 }
-
+type UserInfoCommon struct {
+	Name              string `json:"name,omitempty"`
+	Nickname          string `json:"nickname,omitempty"`
+	GivenName         string `json:"given_name,omitempty"`
+	FamilyName        string `json:"family_name,omitempty"`
+	Birthdate         string `json:"birthdate,omitempty"`
+	Gender            string `json:"gender,omitempty"`//'M' | 'F' | 'U'
+	Picture           string `json:"picture,omitempty"`
+	UpdatedAt         string `json:"updated_at,omitempty"`
+	Zoneinfo          string `json:"zoneinfo,omitempty"`
+	PreferredUsername string `json:"preferred_username,omitempty"`
+	Locale            string `json:"locale,omitempty"`
+}
 type UserInfo struct { // TODO 允许扩展
-	Sub               string
-	Name              string
-	Nickname          string
-	GivenName         string
-	FamilyName        string
-	Birthdate         string
-	Gender            string //'M' | 'F' | 'U'
-	Picture           string
-	UpdatedAt         string
-	Zoneinfo          string
-	PreferredUsername string
-	Locale            string
+	Sub               string `json:"sub,omitempty"`
+	UserInfoCommon
 }
 
+type TokenCommon struct {
+	Sub      string `json:"sub,omitempty"`
+	Aud      string `json:"aud,omitempty"`
+	Exp      uint64 `json:"exp,omitempty"`
+	Iat      uint64 `json:"iat,omitempty"`
+	Iss      string `json:"iss,omitempty"`
+	Jti      string `json:"jti,omitempty"`
+}
+type IDTokenExtended struct {
+	Nonce    string `json:"nonce,omitempty"`
+	AtHash   string `json:"at_hash,omitempty"`
+	SHash    string `json:"s_hash,omitempty"`
+}
 type IDToken struct {
-	UserInfo //扩展自UserInfo
-	Sub      string
-	Aud      string
-	Exp      uint64
-	Iat      uint64
-	Iss      string
-	Nonce    string
-	AtHash   string
-	SHash    string
+	UserInfoCommon //扩展自UserInfo
+	TokenCommon
+	IDTokenExtended
 }
 
+type IDTokenClaims struct {
+	UserInfoCommon
+	IDTokenExtended
+	jwt.StandardClaims
+}
+type AccessTokenExtended struct {
+	Scope string `json:"scope,omitempty"`
+}
 type AccessToken struct {
-	Jti   string
-	Sub   string
-	Iat   uint64
-	Exp   uint64
-	Scope uint64
-	Iss   string
-	Aud   string
+	TokenCommon
+	AccessTokenExtended
+}
+
+type AccessTokenClaims struct {
+	jwt.StandardClaims
+	AccessTokenExtended
 }
 
 //   type IDToken struct {// TODO 允许扩展

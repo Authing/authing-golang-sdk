@@ -4,24 +4,29 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"net/http"
+
+	// "net/http"
 	"strings"
 	"time"
 
 	"authing-go-sdk/constant"
 	"authing-go-sdk/util"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/valyala/fasthttp"
+	"github.com/MicahParks/compatibility-keyfunc"
 )
 const RandStringLen = 16
+const ALG_HS256 = "HS256"
+const JWK_PATH = "/oidc/.well-known/jwks.json"
 type AuthenticationClient struct {
 	appId string
 	appSecret string
 	domain string
 	redirectUri string;
 	logoutRedirectUri string;
-	scope string;
-	// cookieKey string;
+	scope string
+	jwks *keyfunc.JWKS
 }
 
 func NewAuthenticationClient(options *AuthenticationClientOptions) (*AuthenticationClient, error) {
@@ -47,6 +52,13 @@ func NewAuthenticationClient(options *AuthenticationClientOptions) (*Authenticat
 	if options.Scope == "" {
 		client.scope = constant.DefaultScope;
 	}
+
+	jwksURL := client.getUrl(JWK_PATH)
+	jwks, err := keyfunc.Get(jwksURL, keyfunc.Options{})
+	if err != nil {
+		return nil, err
+	}
+	client.jwks = jwks
 
 	return client, nil;
 }
@@ -79,6 +91,9 @@ func (client *AuthenticationClient) BuildAuthUrl(params *AuthURLParams) (AuthUrl
 		"response_type": "code",
 		"scope": scope,
 		"nonce": nonce,
+	}
+	if state != "" {
+		dataMap["state"] = state
 	}
 	if (params.Forced) {
 		dataMap["prompt"] = "login"
@@ -122,27 +137,71 @@ func (client *AuthenticationClient) GetLoginStateByAuthCode(params *CodeToTokenP
 	if (res.StatusCode >= 400) {
 		return nil, fmt.Errorf("根据code获取token失败[%d]:%s", res.StatusCode, res.Body)
 	}
-	dataStr := string(res.Header.Peek("Date"))
-	serverTime, _ := http.ParseTime(dataStr) 
+	// dataStr := string(res.Header.Peek("Date"))
+	// serverTime, _ := http.ParseTime(dataStr) 
 	fmt.Println(string(res.Body))
-	return client.buildLoginState(res.Body, serverTime)
+	return client.buildLoginState(res.Body)
 }
 
-func (client *AuthenticationClient) ParsedIDToken(token string) (*IDToken, error){
+func (client *AuthenticationClient) getKeyCommon(token *jwt.Token) (interface{}, error) {
+	alg, ok := token.Header["alg"].(string)
+	if !ok {
+		return nil, fmt.Errorf("算法字段非法 %v", token.Header["alg"])
+	}
+	if alg == ALG_HS256 {
+		return []byte(client.appSecret), nil
+	}
+	return client.jwks.KeyfuncLegacy(token)
+}
+
+func (client *AuthenticationClient) getKey4IdToken(token *jwt.Token) (interface{}, error) {
+	claims := token.Claims.(*IDTokenClaims)
+	claims.IssuedAt = 0
+	
+	return client.getKeyCommon(token)
+}
+
+func (client *AuthenticationClient) getKey4AccessToken(token *jwt.Token) (interface{}, error) {
+	claims := token.Claims.(*AccessTokenClaims)
+	claims.IssuedAt = 0
+	
+	return client.getKeyCommon(token)
+}
+
+func (client *AuthenticationClient) ParsedIDToken(tokenStr string) (*IDTokenClaims, error){
+	tokenJwt, err := jwt.ParseWithClaims(tokenStr, &IDTokenClaims{}, client.getKey4IdToken)
+	if err != nil {
+		return nil, err
+	}
+	claims, ok := tokenJwt.Claims.(*IDTokenClaims)
+	if ok && tokenJwt.Valid {
+		return claims, nil
+	}
+	// TODO return error
+	return nil, nil	
+}
+
+func (client *AuthenticationClient) ParsedAccessToken(tokenStr string) (*AccessTokenClaims, error){
+	token, err := jwt.ParseWithClaims(tokenStr, &AccessTokenClaims{},  client.getKey4AccessToken)
+	if err != nil {
+		return nil, err
+	}
+	claims, ok := token.Claims.(*AccessTokenClaims)
+	if ok && token.Valid {
+		return claims, nil
+	}
+	// TODO return error
 	return nil, nil
 }
 
-func (client *AuthenticationClient) ParsedAccessToken(token string) (*AccessToken, error){
-	return nil, nil
-}
-
-func (client *AuthenticationClient) buildLoginState(bytes []byte, date time.Time ) (*LoginState, error) {
+func (client *AuthenticationClient) buildLoginState(bytes []byte ) (*LoginState, error) {
 	var loginState LoginState
 	err := json.Unmarshal(bytes, &loginState)
 	if err != nil {
 		return nil, err
 	}
-	var second time.Duration = time.Duration(loginState.expiresIn) * time.Second
+	var second time.Duration = time.Duration(loginState.ExpiresIn) * time.Second
+	var date time.Time = time.Now()
 	loginState.ExpireAt = date.Add(second)
 	loginState.ParsedIDToken, err = client.ParsedIDToken(loginState.IdToken)
 	if err != nil {
