@@ -1,4 +1,4 @@
-# authing-go-sdk
+# authing-golang-sdk
 
 [Authing](https://authing.cn) 身份云 `Go` 语言客户端，包含 [Authing Open API](https://api.authing.cn/openapi/) 所有 Management API 的请求方法。
 
@@ -22,7 +22,7 @@ go get -u github.com/Authing/authing-golang-sdk
 package main
 
 import (
-    "authing-go-sdk/management"
+    "authing-golang-sdk/management"
 )
 
 options := management.ClientOptions{
@@ -56,8 +56,8 @@ if err != nil {
 package main
 
 import (
-	"authing-go-sdk/management"
-	"authing-go-sdk/dto"
+	"authing-golang-sdk/management"
+	"authing-golang-sdk/dto"
 	"fmt"
 )
 
@@ -82,8 +82,8 @@ func main() {
 package main
 
 import (
-	"authing-go-sdk/management"
-	"authing-go-sdk/dto"
+	"authing-golang-sdk/management"
+	"authing-golang-sdk/dto"
 	"fmt"
 )
 
@@ -120,8 +120,8 @@ func main() {
 package main
 
 import (
-	"authing-go-sdk/management"
-	"authing-go-sdk/dto"
+	"authing-golang-sdk/management"
+	"authing-golang-sdk/dto"
 	"fmt"
 )
 
@@ -153,8 +153,8 @@ func main() {
 package main
 
 import (
-	"authing-go-sdk/management"
-	"authing-go-sdk/dto"
+	"authing-golang-sdk/management"
+	"authing-golang-sdk/dto"
 	"fmt"
 )
 
