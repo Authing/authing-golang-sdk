@@ -1,4 +1,4 @@
-package client
+package management
 
 import (
 	"authing-go-sdk/constant"
@@ -17,11 +17,11 @@ import (
 
 type Client struct {
 	HttpClient *http.Client
-	options    *ManagementClientOptions
+	options    *ClientOptions
 	userPoolId string
 }
 
-type ManagementClientOptions struct {
+type ClientOptions struct {
 	AccessKeyId     string
 	AccessKeySecret string
 	TenantId        string
@@ -32,7 +32,7 @@ type ManagementClientOptions struct {
 	Headers         fasthttp.RequestHeader
 }
 
-func NewClient(options *ManagementClientOptions) (*Client, error) {
+func NewClient(options *ClientOptions) (*Client, error) {
 	if options.Host == "" {
 		options.Host = constant.ApiServiceUrl
 	}

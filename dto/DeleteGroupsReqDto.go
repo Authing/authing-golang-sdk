@@ -1,7 +1,5 @@
 package dto
 
-
-type DeleteGroupsReqDto struct{
-    CodeList  []string `json:"codeList"`
+type DeleteGroupsReqDto struct {
+	CodeList []string `json:"codeList"`
 }
-

@@ -1,4 +1,4 @@
-package client
+package management
 
 import (
 	"authing-go-sdk/dto"
@@ -534,6 +534,27 @@ func (c *Client) GetUserLoggedInApps(reqDto *dto.GetUserLoggedinAppsDto) *dto.Us
 }
 
 /*
+ * @summary 获取用户曾经登录过的身份源
+ * @description 获取用户曾经登录过的身份源
+ * @param userId 用户 ID
+ * @returns UserLoggedInIdentitiesRespDto
+ */
+func (c *Client) GetUserLoggedInIdentities(reqDto *dto.GetUserLoggedInIdentitiesDto) *dto.UserLoggedInIdentitiesRespDto {
+	b, err := c.SendHttpRequest("/api/v3/get-user-logged-in-identities", fasthttp.MethodGet, reqDto)
+	var response dto.UserLoggedInIdentitiesRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
  * @summary 获取用户被授权的所有资源
  * @description 获取用户被授权的所有资源，用户被授权的资源是用户自身被授予、通过分组继承、通过角色继承、通过组织机构继承的集合
  * @param userId 用户 ID
@@ -1024,6 +1045,7 @@ func (c *Client) UpdateRole(reqDto *dto.UpdateRoleDto) *dto.IsSuccessRespDto {
  * @description 获取顶层组织机构列表
  * @param page 当前页数，从 1 开始
  * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @param fetchAll 拉取所有
  * @returns OrganizationPaginatedRespDto
  */
 func (c *Client) ListOrganizations(reqDto *dto.ListOrganizationsDto) *dto.OrganizationPaginatedRespDto {
@@ -1246,11 +1268,11 @@ func (c *Client) ListChildrenDepartments(reqDto *dto.ListChildrenDepartmentsDto)
  * @param withCustomData 是否获取自定义数据
  * @param withIdentities 是否获取 identities
  * @param withDepartmentIds 是否获取部门 ID 列表
- * @returns UserListRespDto
+ * @returns UserPaginatedRespDto
  */
-func (c *Client) ListDepartmentMembers(reqDto *dto.ListDepartmentMembersDto) *dto.UserListRespDto {
+func (c *Client) ListDepartmentMembers(reqDto *dto.ListDepartmentMembersDto) *dto.UserPaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/list-department-members", fasthttp.MethodGet, reqDto)
-	var response dto.UserListRespDto
+	var response dto.UserPaginatedRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -1975,11 +1997,12 @@ func (c *Client) AuthorizeResources(reqDto *dto.AuthorizeResourcesDto) *dto.IsSu
  * @param targetIdentifier 目标对象唯一标志符
  * @param namespace 所属权限分组的 code
  * @param resourceType 资源类型，如数据、API、按钮、菜单
- * @returns IsSuccessRespDto
+ * @param withDenied 是否获取被拒绝的资源
+ * @returns AuthorizedResourcePaginatedRespDto
  */
-func (c *Client) GetTargetAuthorizedResources(reqDto *dto.GetAuthorizedResourcesDto) *dto.IsSuccessRespDto {
+func (c *Client) GetAuthorizedResources(reqDto *dto.GetAuthorizedResourcesDto) *dto.AuthorizedResourcePaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-authorized-resources", fasthttp.MethodGet, reqDto)
-	var response dto.IsSuccessRespDto
+	var response dto.AuthorizedResourcePaginatedRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil

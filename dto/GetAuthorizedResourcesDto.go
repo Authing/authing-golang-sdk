@@ -5,4 +5,5 @@ type GetAuthorizedResourcesDto struct {
 	TargetIdentifier string `json:"targetIdentifier,omitempty"`
 	Namespace        string `json:"namespace,omitempty"`
 	ResourceType     string `json:"resourceType,omitempty"`
+	WithDenied       bool   `json:"withDenied,omitempty"`
 }

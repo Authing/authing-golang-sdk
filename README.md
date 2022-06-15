@@ -11,7 +11,7 @@
 
 
 ```shell
-go get -u github.com/Authing/authing-go-sdk
+go get -u github.com/Authing/authing-golang-sdk
 ```
 
 ## 初始化
@@ -19,11 +19,13 @@ go get -u github.com/Authing/authing-go-sdk
 初始化 `ManagementClient` 需要使用 `accessKeyId` 和 `accessKeySecret` 参数:
 
 ```go
+package main
+
 import (
-    "authing-go-sdk/client"
+    "authing-go-sdk/management"
 )
 
-options := client.ManagementClientOptions{
+options := management.ManagementClientOptions{
     AccessKeyId:     "AUTHING_USERPOOL_ID",
     AccessKeySecret: "AUTHING_USERPOOL_SECRET",
 }
@@ -54,17 +56,17 @@ if err != nil {
 package main
 
 import (
-	"authing-go-sdk/client"
+	"authing-go-sdk/management"
 	"authing-go-sdk/dto"
 	"fmt"
 )
 
 func main() {
-	options := client.ManagementClientOptions{
+	options := management.ManagementClientOptions{
 		AccessKeyId:     "AUTHING_USERPOOL_ID",
 		AccessKeySecret: "AUTHING_USERPOOL_SECRET",
 	}
-	client, err := client.NewClient(&options)
+	client, err := management.NewClient(&options)
 	request := dto.ListUsersDto{
 		Page:  1,
 		Limit: 10,
@@ -80,17 +82,17 @@ func main() {
 package main
 
 import (
-	"authing-go-sdk/client"
+	"authing-go-sdk/management"
 	"authing-go-sdk/dto"
 	"fmt"
 )
 
 func main() {
-	options := client.ManagementClientOptions{
+	options := management.ClientOptions{
 		AccessKeyId:     "AUTHING_USERPOOL_ID",
 		AccessKeySecret: "AUTHING_USERPOOL_SECRET",
 	}
-	client, err := client.NewClient(&options)
+	client, err := management.NewClient(&options)
 	request := dto.CreateRoleDto{
 		Code:        "code",
 		Namespace:   "namespace",
@@ -118,17 +120,17 @@ func main() {
 package main
 
 import (
-	"authing-go-sdk/client"
+	"authing-go-sdk/management"
 	"authing-go-sdk/dto"
 	"fmt"
 )
 
 func main() {
-	options := client.ManagementClientOptions{
+	options := management.ClientOptions{
 		AccessKeyId:     "AUTHING_USERPOOL_ID",
 		AccessKeySecret: "AUTHING_USERPOOL_SECRET",
 	}
-	client, err := client.NewClient(&options)
+	client, err := management.NewClient(&options)
 	request := dto.CreateRoleDto{
 		Code:        "code",
 		Namespace:   "namespace",
@@ -151,18 +153,18 @@ func main() {
 package main
 
 import (
-	"authing-go-sdk/client"
+	"authing-go-sdk/management"
 	"authing-go-sdk/dto"
 	"fmt"
 )
 
 func main() {
-	options := client.ManagementClientOptions{
+	options := management.ClientOptions{
 		AccessKeyId:     "AUTHING_USERPOOL_ID",
 		AccessKeySecret: "AUTHING_USERPOOL_SECRET",
 		Host:            "YOUR_HOST", // 您的 Authing 私有化实例 HOST 地址，格式例如 https://core.authing.cn
 	}
-	client, err := client.NewClient(&options)
+	client, err := management.NewClient(&options)
 	if err != nil {
 		// The exception needs to be handled by the developer.
 	}
