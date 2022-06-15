@@ -1,9 +1,9 @@
 package management
 
 import (
-	"authing-go-sdk/constant"
-	"authing-go-sdk/dto"
-	"authing-go-sdk/util/cache"
+	"authing-golang-sdk/constant"
+	"authing-golang-sdk/dto"
+	"authing-golang-sdk/util/cache"
 	"bytes"
 	"encoding/json"
 	"fmt"
