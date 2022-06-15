@@ -9,7 +9,7 @@ import (
 var client *Client
 
 func init() {
-	options := ManagementClientOptions{
+	options := ClientOptions{
 		AccessKeyId:     "60e043f8cd91b87d712b6365",
 		AccessKeySecret: "158c7679333bc196b524d78d745813e5",
 	}

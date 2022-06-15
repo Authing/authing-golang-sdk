@@ -25,7 +25,7 @@ import (
     "authing-go-sdk/management"
 )
 
-options := management.ManagementClientOptions{
+options := management.ClientOptions{
     AccessKeyId:     "AUTHING_USERPOOL_ID",
     AccessKeySecret: "AUTHING_USERPOOL_SECRET",
 }
