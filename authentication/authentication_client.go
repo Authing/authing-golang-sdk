@@ -1,4 +1,4 @@
-package client
+package authentication
 
 import (
 	"encoding/json"
@@ -21,7 +21,7 @@ const RandStringLen = 16
 const ALG_HS256 = "HS256"
 const JWK_PATH = "/oidc/.well-known/jwks.json"
 
-type AuthenticationClient struct {
+type Client struct {
 	appId             string
 	appSecret         string
 	domain            string
@@ -32,11 +32,11 @@ type AuthenticationClient struct {
 }
 
 var commonHeaders = map[string]string{
-	"x-authing-request-from": "",
+	"x-authing-request-from": constant.SdkName,
 	"x-authing-sdk-version":  constant.SdkVersion,
 }
 
-func NewAuthenticationClient(options *AuthenticationClientOptions) (*AuthenticationClient, error) {
+func NewClient(options *AuthenticationClientOptions) (*Client, error) {
 	if options.AppId == "" {
 		return nil, errors.New("AppId不能为空")
 	}
@@ -49,7 +49,7 @@ func NewAuthenticationClient(options *AuthenticationClientOptions) (*Authenticat
 	if options.RedirectUri == "" {
 		return nil, errors.New("RedirectUri不能为空")
 	}
-	client := &AuthenticationClient{
+	client := &Client{
 		appId:             options.AppId,
 		appSecret:         options.AppSecret,
 		domain:            options.Domain,
@@ -70,11 +70,11 @@ func NewAuthenticationClient(options *AuthenticationClientOptions) (*Authenticat
 	return client, nil
 }
 
-func (client *AuthenticationClient) getUrl(path string) string {
+func (client *Client) getUrl(path string) string {
 	return "https://" + client.domain + path
 }
 
-func (client *AuthenticationClient) BuildAuthUrl(params *AuthURLParams) (AuthUrlResult, error) {
+func (client *Client) BuildAuthUrl(params *AuthURLParams) (AuthUrlResult, error) {
 	if params == nil {
 		params = &AuthURLParams{}
 	}
@@ -121,7 +121,7 @@ func (client *AuthenticationClient) BuildAuthUrl(params *AuthURLParams) (AuthUrl
 	}, nil
 }
 
-func (client *AuthenticationClient) GetLoginStateByAuthCode(params *CodeToTokenParams) (*LoginState, error) {
+func (client *Client) GetLoginStateByAuthCode(params *CodeToTokenParams) (*LoginState, error) {
 	if params == nil {
 		params = &CodeToTokenParams{}
 	}
@@ -157,7 +157,7 @@ func (client *AuthenticationClient) GetLoginStateByAuthCode(params *CodeToTokenP
 	return client.buildLoginState(res.Body)
 }
 
-func (client *AuthenticationClient) getKeyCommon(token *jwt.Token) (interface{}, error) {
+func (client *Client) getKeyCommon(token *jwt.Token) (interface{}, error) {
 	alg, ok := token.Header["alg"].(string)
 	if !ok {
 		return nil, fmt.Errorf("算法字段非法 %v", token.Header["alg"])
@@ -168,21 +168,21 @@ func (client *AuthenticationClient) getKeyCommon(token *jwt.Token) (interface{},
 	return client.jwks.KeyfuncLegacy(token)
 }
 
-func (client *AuthenticationClient) getKey4IdToken(token *jwt.Token) (interface{}, error) {
+func (client *Client) getKey4IdToken(token *jwt.Token) (interface{}, error) {
 	claims := token.Claims.(*IDTokenClaims)
 	claims.IssuedAt = 0
 
 	return client.getKeyCommon(token)
 }
 
-func (client *AuthenticationClient) getKey4AccessToken(token *jwt.Token) (interface{}, error) {
+func (client *Client) getKey4AccessToken(token *jwt.Token) (interface{}, error) {
 	claims := token.Claims.(*AccessTokenClaims)
 	claims.IssuedAt = 0
 
 	return client.getKeyCommon(token)
 }
 
-func (client *AuthenticationClient) ParsedIDToken(tokenStr string) (*IDTokenClaims, error) {
+func (client *Client) ParsedIDToken(tokenStr string) (*IDTokenClaims, error) {
 	tokenJwt, err := jwt.ParseWithClaims(tokenStr, &IDTokenClaims{}, client.getKey4IdToken)
 	if err != nil {
 		return nil, fmt.Errorf("解析id token失败: %w", err)
@@ -195,7 +195,7 @@ func (client *AuthenticationClient) ParsedIDToken(tokenStr string) (*IDTokenClai
 	return nil, errors.New("id token非法")
 }
 
-func (client *AuthenticationClient) ParsedAccessToken(tokenStr string) (*AccessTokenClaims, error) {
+func (client *Client) ParsedAccessToken(tokenStr string) (*AccessTokenClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenStr, &AccessTokenClaims{}, client.getKey4AccessToken)
 	if err != nil {
 		return nil, fmt.Errorf("解析 access token失败: %w", err)
@@ -208,7 +208,7 @@ func (client *AuthenticationClient) ParsedAccessToken(tokenStr string) (*AccessT
 	return nil, errors.New("access token非法")
 }
 
-func (client *AuthenticationClient) buildLoginState(bytes []byte) (*LoginState, error) {
+func (client *Client) buildLoginState(bytes []byte) (*LoginState, error) {
 	var loginState LoginState
 	err := json.Unmarshal(bytes, &loginState)
 	if err != nil {
@@ -227,7 +227,7 @@ func (client *AuthenticationClient) buildLoginState(bytes []byte) (*LoginState, 
 	}
 	return &loginState, nil
 }
-func (client *AuthenticationClient) getReqHeaders(customHeaders map[string]string) map[string]string {
+func (client *Client) getReqHeaders(customHeaders map[string]string) map[string]string {
 	newHeaders := make(map[string]string)
 	for key, value := range commonHeaders {
 		newHeaders[key] = value
@@ -238,7 +238,7 @@ func (client *AuthenticationClient) getReqHeaders(customHeaders map[string]strin
 
 	return newHeaders
 }
-func (client *AuthenticationClient) GetUserInfo(accessToken string) (*UserInfo, error) {
+func (client *Client) GetUserInfo(accessToken string) (*UserInfo, error) {
 	res, err := util.SendRequest(&util.RequestOption{
 		Method: fasthttp.MethodPost,
 		Url:    client.getUrl("/oidc/me"),
@@ -260,7 +260,7 @@ func (client *AuthenticationClient) GetUserInfo(accessToken string) (*UserInfo, 
 	return &userInfo, nil
 }
 
-func (client *AuthenticationClient) RefreshLoginState(refreshToken string) (*LoginState, error) {
+func (client *Client) RefreshLoginState(refreshToken string) (*LoginState, error) {
 	res, err := util.SendRequest(&util.RequestOption{
 		Method:  fasthttp.MethodPost,
 		Url:     client.getUrl("/oidc/token"),
@@ -281,7 +281,7 @@ func (client *AuthenticationClient) RefreshLoginState(refreshToken string) (*Log
 	return client.buildLoginState(res.Body)
 }
 
-func (client *AuthenticationClient) BuildLogoutUrl(params *LogoutURLParams) (string, error) {
+func (client *Client) BuildLogoutUrl(params *LogoutURLParams) (string, error) {
 	if params == nil {
 		params = &LogoutURLParams{}
 	}

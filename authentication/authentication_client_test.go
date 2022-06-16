@@ -1,4 +1,4 @@
-package client
+package authentication
 
 import (
 	"fmt"
@@ -13,13 +13,14 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-var clientAuth *AuthenticationClient
+var clientAuth *Client
 var options = AuthenticationClientOptions{
 	AppId:       "62a8570a85859e2390ef388f",
 	AppSecret:   "ffe0ecad57823426e065a8c6d6bcd0b8",
 	Domain:      "localtest.test2.authing-inc.co",
 	RedirectUri: "http://localhost:7001/callback",
 }
+
 const idToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiO" +
 	"iI2MjkwNzU3ODliNDI0M2E1MGY2YzA0NTYiLCJiaXJ0aGRhdGUiOm51bGwsImZhbWls" +
 	"eV9uYW1lIjpudWxsLCJnZW5kZXIiOiJVIiwiZ2l2ZW5fbmFtZSI6bnVsbCwibG9jYWx" +
@@ -36,7 +37,7 @@ const idToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiO" +
 func init() {
 
 	var err error
-	clientAuth, err = NewAuthenticationClient(&options)
+	clientAuth, err = NewClient(&options)
 	if err != nil {
 		panic(err)
 	}
@@ -147,7 +148,6 @@ func TestAccessToken(t *testing.T) {
 }
 
 func TestIDToken(t *testing.T) {
-	
 
 	charim, err := clientAuth.ParsedIDToken(idToken)
 	if err != nil {
