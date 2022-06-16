@@ -2,8 +2,9 @@ package management
 
 import (
 	"fmt"
-	"github.com/Authing/authing-golang-sdk/dto"
 	"testing"
+
+	"github.com/Authing/authing-golang-sdk/dto"
 )
 
 var client *Client

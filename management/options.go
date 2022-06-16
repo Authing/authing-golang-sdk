@@ -4,15 +4,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"strings"
+	"sync"
+	"time"
+
 	"github.com/Authing/authing-golang-sdk/constant"
 	"github.com/Authing/authing-golang-sdk/dto"
 	"github.com/Authing/authing-golang-sdk/util/cache"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/valyala/fasthttp"
-	"net/http"
-	"strings"
-	"sync"
-	"time"
 )
 
 type Client struct {

@@ -6,4 +6,6 @@ const (
 	TokenCacheKeyPrefix = "accessKeyId_token_"
 
 	SdkVersion = "1.0.0"
+
+	DefaultScope = "openid profile"
 )

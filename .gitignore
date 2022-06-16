@@ -1,0 +1,5 @@
+coverage
+*.exe
+.vscode
+.idea
+-p/
