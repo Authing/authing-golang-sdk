@@ -182,7 +182,7 @@ type AccessTokenClaims struct {
 //   }
 
 type LogoutURLParams struct {
-	post_logout_redirect_uri string // 可选
-	id_token_hint            string // 可选
-	state                    string // 可选
+	RedirectUri string // 可选
+	IDToken            string // 可选
+	State                    string // 可选
 }

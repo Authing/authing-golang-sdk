@@ -82,10 +82,11 @@ func SendRequest(option *RequestOption) (*ResponseData, error) {
 
 	} else if method == fasthttp.MethodPost {
 		req.Header.SetContentType("application/x-www-form-urlencoded; charset=UTF-8")
-		variables := reqDto.(map[string]interface{})
-		bytes := GenFormArgs(variables).QueryString()
-		req.SetBody(bytes)
-
+		if reqDto != nil {
+			variables := reqDto.(map[string]interface{})
+			bytes := GenFormArgs(variables).QueryString()
+			req.SetBody(bytes)
+		}
 	} else if method == fasthttp.MethodGet {
 
 	} else {

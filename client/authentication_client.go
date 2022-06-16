@@ -28,6 +28,10 @@ type AuthenticationClient struct {
 	scope string
 	jwks *keyfunc.JWKS
 }
+var commonHeaders = map[string]string {
+	"x-authing-request-from": "",
+	"x-authing-sdk-version": constant.SdkVersion,
+};
 
 func NewAuthenticationClient(options *AuthenticationClientOptions) (*AuthenticationClient, error) {
 	if options.AppId == "" {
@@ -56,7 +60,7 @@ func NewAuthenticationClient(options *AuthenticationClientOptions) (*Authenticat
 	jwksURL := client.getUrl(JWK_PATH)
 	jwks, err := keyfunc.Get(jwksURL, keyfunc.Options{})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("获取 jwk 密钥失败: %w", err)
 	}
 	client.jwks = jwks
 
@@ -68,6 +72,9 @@ func (client *AuthenticationClient) getUrl(path string) string {
 }
 
 func (client *AuthenticationClient) BuildAuthUrl(params *AuthURLParams) (AuthUrlResult, error) {
+	if params == nil {
+		params = &AuthURLParams{}
+	}
 	scope := params.Scope;
 	if scope == "" {
 		scope = client.scope
@@ -115,6 +122,12 @@ func (client *AuthenticationClient) BuildAuthUrl(params *AuthURLParams) (AuthUrl
 }
 
 func (client *AuthenticationClient) GetLoginStateByAuthCode(params *CodeToTokenParams) (*LoginState, error) {
+	if params == nil {
+		params = &CodeToTokenParams{}
+	}
+	if params.Code == "" {
+		return nil, errors.New("code 参数不能为空")
+	}
 	redirectUrl := params.RedirectUri;
 	if redirectUrl == "" {
 		redirectUrl = client.redirectUri
@@ -130,11 +143,12 @@ func (client *AuthenticationClient) GetLoginStateByAuthCode(params *CodeToTokenP
 		Url: client.getUrl("/oidc/token"),
 		Method: fasthttp.MethodPost,
 		ReqDto: data,
+		Headers: client.getReqHeaders(nil),
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("根据code获取token时失败: %w", err)
 	}
-	if (res.StatusCode >= 400) {
+	if (res.StatusCode != 200) {
 		return nil, fmt.Errorf("根据code获取token失败[%d]:%s", res.StatusCode, res.Body)
 	}
 	// dataStr := string(res.Header.Peek("Date"))
@@ -171,34 +185,34 @@ func (client *AuthenticationClient) getKey4AccessToken(token *jwt.Token) (interf
 func (client *AuthenticationClient) ParsedIDToken(tokenStr string) (*IDTokenClaims, error){
 	tokenJwt, err := jwt.ParseWithClaims(tokenStr, &IDTokenClaims{}, client.getKey4IdToken)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("解析id token失败: %w", err)
 	}
 	claims, ok := tokenJwt.Claims.(*IDTokenClaims)
 	if ok && tokenJwt.Valid {
 		return claims, nil
 	}
 	// TODO return error
-	return nil, nil	
+	return nil, errors.New("id token非法")	
 }
 
 func (client *AuthenticationClient) ParsedAccessToken(tokenStr string) (*AccessTokenClaims, error){
 	token, err := jwt.ParseWithClaims(tokenStr, &AccessTokenClaims{},  client.getKey4AccessToken)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("解析 access token失败: %w", err)
 	}
 	claims, ok := token.Claims.(*AccessTokenClaims)
 	if ok && token.Valid {
 		return claims, nil
 	}
 	// TODO return error
-	return nil, nil
+	return nil, errors.New("access token非法")
 }
 
 func (client *AuthenticationClient) buildLoginState(bytes []byte ) (*LoginState, error) {
 	var loginState LoginState
 	err := json.Unmarshal(bytes, &loginState)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("返回的 token 数据无法解析: %w", err)
 	}
 	var second time.Duration = time.Duration(loginState.ExpiresIn) * time.Second
 	var date time.Time = time.Now()
@@ -213,4 +227,89 @@ func (client *AuthenticationClient) buildLoginState(bytes []byte ) (*LoginState,
 	}
 	return &loginState, nil
 }
+func (client *AuthenticationClient) getReqHeaders(customHeaders map[string]string) map[string]string {
+	newHeaders := make(map[string]string)
+	for key, value := range commonHeaders {
+		newHeaders[key] = value
+	}
+	for key, value := range customHeaders {
+		newHeaders[key] = value
+	}
+	
+	return newHeaders
+}
+func (client *AuthenticationClient) GetUserInfo(accessToken string) (*UserInfo, error) {
+	res, err := util.SendRequest(&util.RequestOption{
+		Method: fasthttp.MethodPost,
+		Url: client.getUrl("/oidc/me"),
+		Headers: client.getReqHeaders(map[string]string{
+			"Authorization": `Bearer ` + accessToken,
+		}),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("根据 access token 获取用户信息时失败: %w", err)
+	}
+	if res.StatusCode != 200 {
+		return nil, fmt.Errorf("根据 access token 获取用户信息失败[%d]:%s", res.StatusCode, res.Body)
+	}
+	var userInfo UserInfo
+	err = json.Unmarshal(res.Body, &userInfo)
+	if err != nil {
+		return nil, fmt.Errorf("无法解析用户信息:%w", err)
+	}
+	return &userInfo, nil
+}
+
+func (client *AuthenticationClient) RefreshLoginState(refreshToken string) (*LoginState, error) {
+	res, err := util.SendRequest(&util.RequestOption{
+		Method: fasthttp.MethodPost,
+		Url: client.getUrl("/oidc/token"),
+		Headers: client.getReqHeaders(nil),
+		ReqDto: map[string]interface{} {
+			"client_id": client.appId,
+			"client_secret": client.appSecret,
+			"refresh_token": refreshToken,
+			"grant_type": "refresh_token",
+		},
+	})
+	if err != nil {
+		return nil, fmt.Errorf("刷新 token 时失败:%w", err)
+	}
+	if res.StatusCode != 200 {
+		return nil, fmt.Errorf("刷新 token 失败 [%d] %s", res.StatusCode, res.Body)
+	}
+	return client.buildLoginState(res.Body)
+}
+
+func (client *AuthenticationClient) BuildLogoutUrl(params *LogoutURLParams) (string, error) {
+	if params == nil {
+		params = &LogoutURLParams{}
+	}
+	idToken := params.IDToken
+	redirectUri := params.RedirectUri
+	if redirectUri == "" {
+		redirectUri = client.logoutRedirectUri
+	}
+	if redirectUri != "" && idToken == "" {
+		return "", errors.New("指定 redirect uri 时，必须同时指定 id token 参数")
+	}
+	
+	data := map[string]interface{} {}
+	if redirectUri != "" {
+		data["post_logout_redirect_uri"] = redirectUri
+	}
+	if idToken != "" {
+		data["id_token_hint"] = params.IDToken
+	}
+
+	if params.State != "" {
+		data["state"] = params.State
+	}
+	queryString := util.GenQueryString(data)
+	if queryString != "" {
+		queryString = "?" + queryString
+	}
+	return client.getUrl("/oidc/session/end") + queryString, nil
+}
+
 
