@@ -1,7 +1,5 @@
 package dto
 
-
-type DeleteUsersBatchDto struct{
-    UserIds  []string `json:"userIds"`
+type DeleteUsersBatchDto struct {
+	UserIds []string `json:"userIds"`
 }
-

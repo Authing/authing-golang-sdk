@@ -9,29 +9,32 @@ import (
 	"strings"
 	"time"
 
-	"authing-go-sdk/constant"
-	"authing-go-sdk/util"
+	"github.com/Authing/authing-golang-sdk/constant"
+	"github.com/Authing/authing-golang-sdk/util"
 
+	keyfunc "github.com/MicahParks/compatibility-keyfunc"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/valyala/fasthttp"
-	"github.com/MicahParks/compatibility-keyfunc"
 )
+
 const RandStringLen = 16
 const ALG_HS256 = "HS256"
 const JWK_PATH = "/oidc/.well-known/jwks.json"
+
 type AuthenticationClient struct {
-	appId string
-	appSecret string
-	domain string
-	redirectUri string;
-	logoutRedirectUri string;
-	scope string
-	jwks *keyfunc.JWKS
+	appId             string
+	appSecret         string
+	domain            string
+	redirectUri       string
+	logoutRedirectUri string
+	scope             string
+	jwks              *keyfunc.JWKS
 }
-var commonHeaders = map[string]string {
+
+var commonHeaders = map[string]string{
 	"x-authing-request-from": "",
-	"x-authing-sdk-version": constant.SdkVersion,
-};
+	"x-authing-sdk-version":  constant.SdkVersion,
+}
 
 func NewAuthenticationClient(options *AuthenticationClientOptions) (*AuthenticationClient, error) {
 	if options.AppId == "" {
@@ -46,15 +49,15 @@ func NewAuthenticationClient(options *AuthenticationClientOptions) (*Authenticat
 	if options.RedirectUri == "" {
 		return nil, errors.New("RedirectUri不能为空")
 	}
-	client := &AuthenticationClient {
-		appId: options.AppId,
-		appSecret: options.AppSecret,
-		domain: options.Domain,
-		redirectUri: options.RedirectUri,
+	client := &AuthenticationClient{
+		appId:             options.AppId,
+		appSecret:         options.AppSecret,
+		domain:            options.Domain,
+		redirectUri:       options.RedirectUri,
 		logoutRedirectUri: options.LogoutRedirectUri,
-	};
+	}
 	if options.Scope == "" {
-		client.scope = constant.DefaultScope;
+		client.scope = constant.DefaultScope
 	}
 
 	jwksURL := client.getUrl(JWK_PATH)
@@ -64,7 +67,7 @@ func NewAuthenticationClient(options *AuthenticationClientOptions) (*Authenticat
 	}
 	client.jwks = jwks
 
-	return client, nil;
+	return client, nil
 }
 
 func (client *AuthenticationClient) getUrl(path string) string {
@@ -75,13 +78,13 @@ func (client *AuthenticationClient) BuildAuthUrl(params *AuthURLParams) (AuthUrl
 	if params == nil {
 		params = &AuthURLParams{}
 	}
-	scope := params.Scope;
+	scope := params.Scope
 	if scope == "" {
 		scope = client.scope
 	}
 	state := params.State
 	if state == "" {
-		;// none to do
+		// none to do
 	}
 	nonce := params.Nonce
 	if nonce == "" {
@@ -91,18 +94,18 @@ func (client *AuthenticationClient) BuildAuthUrl(params *AuthURLParams) (AuthUrl
 	if redirectUri == "" {
 		redirectUri = client.redirectUri
 	}
-	dataMap := map[string]interface{} {
-		"redirect_uri": redirectUri,
-		"client_id": client.appId,
+	dataMap := map[string]interface{}{
+		"redirect_uri":  redirectUri,
+		"client_id":     client.appId,
 		"response_mode": "query",
 		"response_type": "code",
-		"scope": scope,
-		"nonce": nonce,
+		"scope":         scope,
+		"nonce":         nonce,
 	}
 	if state != "" {
 		dataMap["state"] = state
 	}
-	if (params.Forced) {
+	if params.Forced {
 		dataMap["prompt"] = "login"
 	} else {
 		arr := strings.Split(scope, " ")
@@ -114,10 +117,10 @@ func (client *AuthenticationClient) BuildAuthUrl(params *AuthURLParams) (AuthUrl
 			}
 		}
 	}
-	return AuthUrlResult {
+	return AuthUrlResult{
 		State: state,
 		Nonce: nonce,
-		Url: client.getUrl("/oidc/auth?") + util.GenQueryString(dataMap),
+		Url:   client.getUrl("/oidc/auth?") + util.GenQueryString(dataMap),
 	}, nil
 }
 
@@ -128,31 +131,31 @@ func (client *AuthenticationClient) GetLoginStateByAuthCode(params *CodeToTokenP
 	if params.Code == "" {
 		return nil, errors.New("code 参数不能为空")
 	}
-	redirectUrl := params.RedirectUri;
+	redirectUrl := params.RedirectUri
 	if redirectUrl == "" {
 		redirectUrl = client.redirectUri
 	}
-	data := map[string]interface{} {
-		"code": params.Code,
-		"client_id": client.appId,
+	data := map[string]interface{}{
+		"code":          params.Code,
+		"client_id":     client.appId,
 		"client_secret": client.appSecret,
-		"grant_type": "authorization_code",
-		"redirect_uri": redirectUrl,
+		"grant_type":    "authorization_code",
+		"redirect_uri":  redirectUrl,
 	}
 	res, err := util.SendRequest(&util.RequestOption{
-		Url: client.getUrl("/oidc/token"),
-		Method: fasthttp.MethodPost,
-		ReqDto: data,
+		Url:     client.getUrl("/oidc/token"),
+		Method:  fasthttp.MethodPost,
+		ReqDto:  data,
 		Headers: client.getReqHeaders(nil),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("根据code获取token时失败: %w", err)
 	}
-	if (res.StatusCode != 200) {
+	if res.StatusCode != 200 {
 		return nil, fmt.Errorf("根据code获取token失败[%d]:%s", res.StatusCode, res.Body)
 	}
 	// dataStr := string(res.Header.Peek("Date"))
-	// serverTime, _ := http.ParseTime(dataStr) 
+	// serverTime, _ := http.ParseTime(dataStr)
 	fmt.Println(string(res.Body))
 	return client.buildLoginState(res.Body)
 }
@@ -171,18 +174,18 @@ func (client *AuthenticationClient) getKeyCommon(token *jwt.Token) (interface{},
 func (client *AuthenticationClient) getKey4IdToken(token *jwt.Token) (interface{}, error) {
 	claims := token.Claims.(*IDTokenClaims)
 	claims.IssuedAt = 0
-	
+
 	return client.getKeyCommon(token)
 }
 
 func (client *AuthenticationClient) getKey4AccessToken(token *jwt.Token) (interface{}, error) {
 	claims := token.Claims.(*AccessTokenClaims)
 	claims.IssuedAt = 0
-	
+
 	return client.getKeyCommon(token)
 }
 
-func (client *AuthenticationClient) ParsedIDToken(tokenStr string) (*IDTokenClaims, error){
+func (client *AuthenticationClient) ParsedIDToken(tokenStr string) (*IDTokenClaims, error) {
 	tokenJwt, err := jwt.ParseWithClaims(tokenStr, &IDTokenClaims{}, client.getKey4IdToken)
 	if err != nil {
 		return nil, fmt.Errorf("解析id token失败: %w", err)
@@ -192,11 +195,11 @@ func (client *AuthenticationClient) ParsedIDToken(tokenStr string) (*IDTokenClai
 		return claims, nil
 	}
 	// TODO return error
-	return nil, errors.New("id token非法")	
+	return nil, errors.New("id token非法")
 }
 
-func (client *AuthenticationClient) ParsedAccessToken(tokenStr string) (*AccessTokenClaims, error){
-	token, err := jwt.ParseWithClaims(tokenStr, &AccessTokenClaims{},  client.getKey4AccessToken)
+func (client *AuthenticationClient) ParsedAccessToken(tokenStr string) (*AccessTokenClaims, error) {
+	token, err := jwt.ParseWithClaims(tokenStr, &AccessTokenClaims{}, client.getKey4AccessToken)
 	if err != nil {
 		return nil, fmt.Errorf("解析 access token失败: %w", err)
 	}
@@ -208,7 +211,7 @@ func (client *AuthenticationClient) ParsedAccessToken(tokenStr string) (*AccessT
 	return nil, errors.New("access token非法")
 }
 
-func (client *AuthenticationClient) buildLoginState(bytes []byte ) (*LoginState, error) {
+func (client *AuthenticationClient) buildLoginState(bytes []byte) (*LoginState, error) {
 	var loginState LoginState
 	err := json.Unmarshal(bytes, &loginState)
 	if err != nil {
@@ -235,13 +238,13 @@ func (client *AuthenticationClient) getReqHeaders(customHeaders map[string]strin
 	for key, value := range customHeaders {
 		newHeaders[key] = value
 	}
-	
+
 	return newHeaders
 }
 func (client *AuthenticationClient) GetUserInfo(accessToken string) (*UserInfo, error) {
 	res, err := util.SendRequest(&util.RequestOption{
 		Method: fasthttp.MethodPost,
-		Url: client.getUrl("/oidc/me"),
+		Url:    client.getUrl("/oidc/me"),
 		Headers: client.getReqHeaders(map[string]string{
 			"Authorization": `Bearer ` + accessToken,
 		}),
@@ -262,14 +265,14 @@ func (client *AuthenticationClient) GetUserInfo(accessToken string) (*UserInfo, 
 
 func (client *AuthenticationClient) RefreshLoginState(refreshToken string) (*LoginState, error) {
 	res, err := util.SendRequest(&util.RequestOption{
-		Method: fasthttp.MethodPost,
-		Url: client.getUrl("/oidc/token"),
+		Method:  fasthttp.MethodPost,
+		Url:     client.getUrl("/oidc/token"),
 		Headers: client.getReqHeaders(nil),
-		ReqDto: map[string]interface{} {
-			"client_id": client.appId,
+		ReqDto: map[string]interface{}{
+			"client_id":     client.appId,
 			"client_secret": client.appSecret,
 			"refresh_token": refreshToken,
-			"grant_type": "refresh_token",
+			"grant_type":    "refresh_token",
 		},
 	})
 	if err != nil {
@@ -293,8 +296,8 @@ func (client *AuthenticationClient) BuildLogoutUrl(params *LogoutURLParams) (str
 	if redirectUri != "" && idToken == "" {
 		return "", errors.New("指定 redirect uri 时，必须同时指定 id token 参数")
 	}
-	
-	data := map[string]interface{} {}
+
+	data := map[string]interface{}{}
 	if redirectUri != "" {
 		data["post_logout_redirect_uri"] = redirectUri
 	}
@@ -311,5 +314,3 @@ func (client *AuthenticationClient) BuildLogoutUrl(params *LogoutURLParams) (str
 	}
 	return client.getUrl("/oidc/session/end") + queryString, nil
 }
-
-

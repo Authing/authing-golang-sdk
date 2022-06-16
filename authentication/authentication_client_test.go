@@ -1,9 +1,10 @@
 package client
 
 import (
-	"authing-go-sdk/constant"
-	"authing-go-sdk/util"
 	"fmt"
+
+	"github.com/Authing/authing-golang-sdk/constant"
+	"github.com/Authing/authing-golang-sdk/util"
 
 	// "fmt"
 	"strings"
@@ -14,13 +15,14 @@ import (
 
 var clientAuth *AuthenticationClient
 var options = AuthenticationClientOptions{
-	AppId:     "62a8570a85859e2390ef388f",
-	AppSecret: "ffe0ecad57823426e065a8c6d6bcd0b8",
-	Domain: "localtest.test2.authing-inc.co",
+	AppId:       "62a8570a85859e2390ef388f",
+	AppSecret:   "ffe0ecad57823426e065a8c6d6bcd0b8",
+	Domain:      "localtest.test2.authing-inc.co",
 	RedirectUri: "http://localhost:7001/callback",
 }
+
 func init() {
-	
+
 	var err error
 	clientAuth, err = NewAuthenticationClient(&options)
 	if err != nil {
@@ -51,16 +53,16 @@ func TestAuthUrl(t *testing.T) {
 	})
 	if err != nil {
 		t.Fatalf("构建授权url失败 %v", err)
-		return;
+		return
 	}
 	fmt.Println(result)
 	res, err1 := util.SendRequest(&util.RequestOption{
-		Url: result.Url,
+		Url:    result.Url,
 		Method: fasthttp.MethodGet,
 	})
 	if err1 != nil {
 		t.Fatalf("请求授权url失败 %v", err1)
-		return;
+		return
 	}
 	if res.StatusCode >= 400 {
 		t.Fatalf("请求授权时失败：[%d]", res.StatusCode)
@@ -73,24 +75,24 @@ func TestAuthUrl(t *testing.T) {
 		return
 	}
 	pathEle := strings.Split(urlEle[0], "/")
-	uuid := pathEle[len(pathEle) - 1]
+	uuid := pathEle[len(pathEle)-1]
 	fmt.Println(uuid)
 	cookieStr := getCookieStr(res.Header)
-	headers := map[string]string {
+	headers := map[string]string{
 		"cookie": cookieStr,
 	}
 	res, err1 = util.SendRequest(&util.RequestOption{
-		Url: getReqUrl(string(loginPath)),
-		Headers:headers,
-		Method: fasthttp.MethodGet,
+		Url:     getReqUrl(string(loginPath)),
+		Headers: headers,
+		Method:  fasthttp.MethodGet,
 	})
 	if err1 != nil {
 		t.Fatalf("请求登录url失败 %v", err1)
-		return;
+		return
 	}
 	if res.StatusCode >= 400 {
 		t.Fatalf("请求登录url时失败： %d", res.StatusCode)
-		return;
+		return
 	}
 
 }
@@ -107,18 +109,18 @@ func TestCode(t *testing.T) {
 }
 
 func TestAccessToken(t *testing.T) {
-	accessToken := `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6I`+
-`jROVS13OVZIcmVjU1BuT20zNzJubVF4V0ROV1hQbUQxbDdBckNseXhyVTAifQ.eyJ` +
-`qdGkiOiJWeFdMRVJPY0FjSy0xR240Y0M3UGciLCJzdWIiOiI2MjkwNzU3ODliNDI0` +
-`M2E1MGY2YzA0NTYiLCJpYXQiOjE2NTUyOTgxNzMsImV4cCI6MTY1NjUwNzc3Mywic` +
-`2NvcGUiOiJvcGVuaWQgcHJvZmlsZSIsImlzcyI6Imh0dHBzOi8vbG9jYWx0ZXN0Ln` +
-`Rlc3QyLmF1dGhpbmctaW5jLmNvL29pZGMiLCJhdWQiOiI2MmE4NTcwYTg1ODU5ZTI` +
-`zOTBlZjM4OGYifQ.c64QBODEI_u1KQJaTi_00kz-zquXBwndwvKSRRc2N0LQBX9Ki` +
-`mObyLBLEodkdZH61k-JVtI1IFlyupYB1QxejyxpfsbKMCokJ7JaM4J9l1I4Sre9RZ` +
-`5CFrP3I03p0eEGiPSfLx3zBswfTz__b9ClnxyAGy3vqj69j3BZxK139ocnG39LHqg` +
-`svZ5thY8w4iwFqZE3lZwKNPRdbaRnC5YyP6Y9M8xP9sQNiRTNxNGZPazCsj1RZWhK` +
-`VP8a71QyTydSPccIi6s4-GzusO5iKC2bPEGtjwYaWlIK_C-cJtGhXwoYppbUP5sQV` +
-`tVUPTVtbua_KYomBjsVIoGaeadV-cg1TA`
+	accessToken := `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6I` +
+		`jROVS13OVZIcmVjU1BuT20zNzJubVF4V0ROV1hQbUQxbDdBckNseXhyVTAifQ.eyJ` +
+		`qdGkiOiJWeFdMRVJPY0FjSy0xR240Y0M3UGciLCJzdWIiOiI2MjkwNzU3ODliNDI0` +
+		`M2E1MGY2YzA0NTYiLCJpYXQiOjE2NTUyOTgxNzMsImV4cCI6MTY1NjUwNzc3Mywic` +
+		`2NvcGUiOiJvcGVuaWQgcHJvZmlsZSIsImlzcyI6Imh0dHBzOi8vbG9jYWx0ZXN0Ln` +
+		`Rlc3QyLmF1dGhpbmctaW5jLmNvL29pZGMiLCJhdWQiOiI2MmE4NTcwYTg1ODU5ZTI` +
+		`zOTBlZjM4OGYifQ.c64QBODEI_u1KQJaTi_00kz-zquXBwndwvKSRRc2N0LQBX9Ki` +
+		`mObyLBLEodkdZH61k-JVtI1IFlyupYB1QxejyxpfsbKMCokJ7JaM4J9l1I4Sre9RZ` +
+		`5CFrP3I03p0eEGiPSfLx3zBswfTz__b9ClnxyAGy3vqj69j3BZxK139ocnG39LHqg` +
+		`svZ5thY8w4iwFqZE3lZwKNPRdbaRnC5YyP6Y9M8xP9sQNiRTNxNGZPazCsj1RZWhK` +
+		`VP8a71QyTydSPccIi6s4-GzusO5iKC2bPEGtjwYaWlIK_C-cJtGhXwoYppbUP5sQV` +
+		`tVUPTVtbua_KYomBjsVIoGaeadV-cg1TA`
 	charim, err := clientAuth.ParsedAccessToken(accessToken)
 	if err != nil {
 		t.Fatalf("access token 校验失败, %v", err)
@@ -134,17 +136,17 @@ func TestAccessToken(t *testing.T) {
 
 func TestIDToken(t *testing.T) {
 	const idToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiO" +
-"iI2MjkwNzU3ODliNDI0M2E1MGY2YzA0NTYiLCJiaXJ0aGRhdGUiOm51bGwsImZhbWls" +
-"eV9uYW1lIjpudWxsLCJnZW5kZXIiOiJVIiwiZ2l2ZW5fbmFtZSI6bnVsbCwibG9jYWx" +
-"lIjpudWxsLCJtaWRkbGVfbmFtZSI6bnVsbCwibmFtZSI6bnVsbCwibmlja25hbWUiOm" +
-"51bGwsInBpY3R1cmUiOiJodHRwczovL2ZpbGVzLmF1dGhpbmcuY28vYXV0aGluZy1jb" +
-"25zb2xlL2RlZmF1bHQtdXNlci1hdmF0YXIucG5nIiwicHJlZmVycmVkX3VzZXJuYW1l" +
-"IjpudWxsLCJwcm9maWxlIjpudWxsLCJ1cGRhdGVkX2F0IjoiMjAyMi0wNi0xNFQxMjo" +
-"zNDoxNC4yNjFaIiwid2Vic2l0ZSI6bnVsbCwiem9uZWluZm8iOm51bGwsImF0X2hhc2" +
-"giOiJGdkctUFBDWks5YlFMQ0dtRUxYMkZ3IiwiYXVkIjoiNjJhODU3MGE4NTg1OWUyM" +
-"zkwZWYzODhmIiwiZXhwIjoxNjU2NTA4MzQ1LCJpYXQiOjE2NTUyOTg3NDUsImlzcyI6" +
-"Imh0dHBzOi8vbG9jYWx0ZXN0LnRlc3QyLmF1dGhpbmctaW5jLmNvL29pZGMifQ.X50a" +
-"K3EYwmhUcRtgOKJXFIDYRr8gfaRDukg8Ev697Wo"
+		"iI2MjkwNzU3ODliNDI0M2E1MGY2YzA0NTYiLCJiaXJ0aGRhdGUiOm51bGwsImZhbWls" +
+		"eV9uYW1lIjpudWxsLCJnZW5kZXIiOiJVIiwiZ2l2ZW5fbmFtZSI6bnVsbCwibG9jYWx" +
+		"lIjpudWxsLCJtaWRkbGVfbmFtZSI6bnVsbCwibmFtZSI6bnVsbCwibmlja25hbWUiOm" +
+		"51bGwsInBpY3R1cmUiOiJodHRwczovL2ZpbGVzLmF1dGhpbmcuY28vYXV0aGluZy1jb" +
+		"25zb2xlL2RlZmF1bHQtdXNlci1hdmF0YXIucG5nIiwicHJlZmVycmVkX3VzZXJuYW1l" +
+		"IjpudWxsLCJwcm9maWxlIjpudWxsLCJ1cGRhdGVkX2F0IjoiMjAyMi0wNi0xNFQxMjo" +
+		"zNDoxNC4yNjFaIiwid2Vic2l0ZSI6bnVsbCwiem9uZWluZm8iOm51bGwsImF0X2hhc2" +
+		"giOiJGdkctUFBDWks5YlFMQ0dtRUxYMkZ3IiwiYXVkIjoiNjJhODU3MGE4NTg1OWUyM" +
+		"zkwZWYzODhmIiwiZXhwIjoxNjU2NTA4MzQ1LCJpYXQiOjE2NTUyOTg3NDUsImlzcyI6" +
+		"Imh0dHBzOi8vbG9jYWx0ZXN0LnRlc3QyLmF1dGhpbmctaW5jLmNvL29pZGMifQ.X50a" +
+		"K3EYwmhUcRtgOKJXFIDYRr8gfaRDukg8Ev697Wo"
 
 	charim, err := clientAuth.ParsedIDToken(idToken)
 	if err != nil {

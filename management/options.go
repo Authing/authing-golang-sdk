@@ -1,12 +1,14 @@
-package client
+package management
 
 import (
-	"authing-go-sdk/constant"
-	"authing-go-sdk/dto"
-	"authing-go-sdk/util/cache"
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/Authing/authing-golang-sdk/constant"
+	"github.com/Authing/authing-golang-sdk/dto"
+	"github.com/Authing/authing-golang-sdk/util/cache"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/valyala/fasthttp"
 	"net/http"
 	"strings"
 	"sync"
@@ -18,11 +20,11 @@ import (
 
 type ManagementClient struct {
 	HttpClient *http.Client
-	options    *ManagementClientOptions
+	options    *ClientOptions
 	userPoolId string
 }
 
-type ManagementClientOptions struct {
+type ClientOptions struct {
 	AccessKeyId     string
 	AccessKeySecret string
 	TenantId        string
@@ -33,7 +35,7 @@ type ManagementClientOptions struct {
 	Headers         fasthttp.RequestHeader
 }
 
-func NewManagementClient(options *ManagementClientOptions) (*ManagementClient, error) {
+func NewClient(options *ClientOptions) (*Client, error) {
 	if options.Host == "" {
 		options.Host = constant.ApiServiceUrl
 	}

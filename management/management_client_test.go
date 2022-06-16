@@ -1,15 +1,15 @@
-package client
+package management
 
 import (
-	"authing-go-sdk/dto"
 	"fmt"
+	"github.com/Authing/authing-golang-sdk/dto"
 	"testing"
 )
 
 var client *ManagementClient
 
 func init() {
-	options := ManagementClientOptions{
+	options := ClientOptions{
 		AccessKeyId:     "60e043f8cd91b87d712b6365",
 		AccessKeySecret: "158c7679333bc196b524d78d745813e5",
 	}
@@ -309,7 +309,7 @@ func TestClient_AddGroupMembers(t *testing.T) {
 			},
 		},
 	}
-	response := client.RevokeRoleBatch(&request)
+	response := management.RevokeRoleBatch(&request)
 	fmt.Println(response)
 
 }*/
@@ -552,7 +552,7 @@ func TestClient_CreateExtIdpConn(t *testing.T) {
 			},
 		},
 	}
-	response := client.AssignRoleBatch(&request)
+	response := management.AssignRoleBatch(&request)
 	fmt.Println(response)
 
 }*/
@@ -850,7 +850,6 @@ func TestClient_CreateDepartment(t *testing.T) {
 		OrganizationCode: "steamory",
 		Name:             "开发部2",
 		Code:             "development2",
-		LeaderUserId:     "611a149db64310ca4764ab15",
 		OpenDepartmentId: "dpt_development2",
 	}
 	response := client.CreateDepartment(&request)
@@ -1095,18 +1094,6 @@ func TestClient_DeleteNamespacesBatch(t *testing.T) {
 		CodeList: nil,
 	}
 	response := client.DeleteNamespacesBatch(&request)
-	fmt.Println(response)
-
-}
-
-func TestClient_GetTargetAuthorizedResources(t *testing.T) {
-	request := dto.GetAuthorizedResourcesDto{
-		TargetType:       "targetType_9851",
-		TargetIdentifier: "targetIdentifier_8941",
-		Namespace:        "namespace_7824",
-		ResourceType:     "resourceType_2521",
-	}
-	response := client.GetTargetAuthorizedResources(&request)
 	fmt.Println(response)
 
 }

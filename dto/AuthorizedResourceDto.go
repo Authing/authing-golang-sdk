@@ -1,10 +1,11 @@
 package dto
 
-
-type AuthorizedResourceDto struct{
-    ResourceCode  string `json:"resourceCode"`
-    ResourceType  string  `json:"resourceType,omitempty"`
-    Actions  []string `json:"actions,omitempty"`
-    ApiIdentifier  string `json:"apiIdentifier,omitempty"`
+type AuthorizedResourceDto struct {
+	ResourceCode  string            `json:"resourceCode"`
+	Description   string            `json:"description,omitempty"`
+	Condition     []PolicyCondition `json:"condition,omitempty"`
+	ResourceType  string            `json:"resourceType"`
+	ApiIdentifier string            `json:"apiIdentifier"`
+	Actions       []string          `json:"actions"`
+	Effect        string            `json:"effect"`
 }
-
