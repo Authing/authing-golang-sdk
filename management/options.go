@@ -4,21 +4,19 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/Authing/authing-golang-sdk/constant"
-	"github.com/Authing/authing-golang-sdk/dto"
-	"github.com/Authing/authing-golang-sdk/util/cache"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/valyala/fasthttp"
 	"net/http"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/Authing/authing-golang-sdk/constant"
+	"github.com/Authing/authing-golang-sdk/dto"
+	"github.com/Authing/authing-golang-sdk/util/cache"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/valyala/fasthttp"
 )
 
-type ManagementClient struct {
+type Client struct {
 	HttpClient *http.Client
 	options    *ClientOptions
 	userPoolId string
@@ -39,7 +37,7 @@ func NewClient(options *ClientOptions) (*Client, error) {
 	if options.Host == "" {
 		options.Host = constant.ApiServiceUrl
 	}
-	c := &ManagementClient{
+	c := &Client{
 		options: options,
 	}
 	if c.HttpClient == nil {
@@ -63,7 +61,7 @@ type JwtClaims struct {
 	Username string
 }
 
-func GetAccessToken(client *ManagementClient) (string, error) {
+func GetAccessToken(client *Client) (string, error) {
 	// 从缓存获取token
 	cacheToken, b := cache.GetCache(constant.TokenCacheKeyPrefix + client.options.AccessKeyId)
 	if b && cacheToken != nil {
@@ -91,7 +89,7 @@ func GetAccessToken(client *ManagementClient) (string, error) {
 	return resp.Data.AccessToken, nil
 }
 
-func QueryAccessToken(client *ManagementClient) (*dto.GetManagementTokenRespDto, error) {
+func QueryAccessToken(client *Client) (*dto.GetManagementTokenRespDto, error) {
 	variables := map[string]interface{}{
 		"accessKeyId":     client.options.AccessKeyId,
 		"accessKeySecret": client.options.AccessKeySecret,
@@ -108,7 +106,7 @@ func QueryAccessToken(client *ManagementClient) (*dto.GetManagementTokenRespDto,
 	return &r, nil
 }
 
-func (c *ManagementClient) SendHttpRequest(url string, method string, reqDto interface{}) ([]byte, error) {
+func (c *Client) SendHttpRequest(url string, method string, reqDto interface{}) ([]byte, error) {
 	var buf bytes.Buffer
 	err := json.NewEncoder(&buf).Encode(reqDto)
 	if err != nil {

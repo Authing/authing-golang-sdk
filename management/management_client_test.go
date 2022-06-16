@@ -2,11 +2,12 @@ package management
 
 import (
 	"fmt"
-	"github.com/Authing/authing-golang-sdk/dto"
 	"testing"
+
+	"github.com/Authing/authing-golang-sdk/dto"
 )
 
-var client *ManagementClient
+var client *Client
 
 func init() {
 	options := ClientOptions{
@@ -14,7 +15,7 @@ func init() {
 		AccessKeySecret: "158c7679333bc196b524d78d745813e5",
 	}
 	var err error
-	client, err = NewManagementClient(&options)
+	client, err = NewClient(&options)
 	if err != nil {
 		panic(err)
 	}

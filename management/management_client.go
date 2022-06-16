@@ -3,6 +3,7 @@ package management
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/Authing/authing-golang-sdk/dto"
 	"github.com/valyala/fasthttp"
 )
@@ -13,7 +14,7 @@ import (
  * @param requestBody
  * @returns GetManagementTokenRespDto
  */
-func (c *ManagementClient) GetManagementToken(reqDto *dto.GetManagementAccessTokenDto) *dto.GetManagementTokenRespDto {
+func (c *Client) GetManagementToken(reqDto *dto.GetManagementAccessTokenDto) *dto.GetManagementTokenRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-management-token", fasthttp.MethodPost, reqDto)
 	var response dto.GetManagementTokenRespDto
 	if err != nil {
@@ -41,7 +42,7 @@ func (c *ManagementClient) GetManagementToken(reqDto *dto.GetManagementAccessTok
  * @param externalId 原系统 ID
  * @returns UserSingleRespDto
  */
-func (c *ManagementClient) GetUser(reqDto *dto.GetUserDto) *dto.UserSingleRespDto {
+func (c *Client) GetUser(reqDto *dto.GetUserDto) *dto.UserSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-user", fasthttp.MethodGet, reqDto)
 	var response dto.UserSingleRespDto
 	if err != nil {
@@ -65,7 +66,7 @@ func (c *ManagementClient) GetUser(reqDto *dto.GetUserDto) *dto.UserSingleRespDt
  * @param withDepartmentIds 是否获取部门 ID 列表
  * @returns UserListRespDto
  */
-func (c *ManagementClient) GetUserBatch(reqDto *dto.GetUserBatchDto) *dto.UserListRespDto {
+func (c *Client) GetUserBatch(reqDto *dto.GetUserBatchDto) *dto.UserListRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-user-batch", fasthttp.MethodGet, reqDto)
 	var response dto.UserListRespDto
 	if err != nil {
@@ -90,7 +91,7 @@ func (c *ManagementClient) GetUserBatch(reqDto *dto.GetUserBatchDto) *dto.UserLi
  * @param withDepartmentIds 是否获取部门 ID 列表
  * @returns UserPaginatedRespDto
  */
-func (c *ManagementClient) ListUsers(reqDto *dto.ListUsersDto) *dto.UserPaginatedRespDto {
+func (c *Client) ListUsers(reqDto *dto.ListUsersDto) *dto.UserPaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/list-users", fasthttp.MethodGet, reqDto)
 	var response dto.UserPaginatedRespDto
 	if err != nil {
@@ -111,7 +112,7 @@ func (c *ManagementClient) ListUsers(reqDto *dto.ListUsersDto) *dto.UserPaginate
  * @param userId 用户 ID
  * @returns IdentityListRespDto
  */
-func (c *ManagementClient) GetUserIdentities(reqDto *dto.GetUserIdentitiesDto) *dto.IdentityListRespDto {
+func (c *Client) GetUserIdentities(reqDto *dto.GetUserIdentitiesDto) *dto.IdentityListRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-user-identities", fasthttp.MethodGet, reqDto)
 	var response dto.IdentityListRespDto
 	if err != nil {
@@ -133,7 +134,7 @@ func (c *ManagementClient) GetUserIdentities(reqDto *dto.GetUserIdentitiesDto) *
  * @param namespace 所属权限分组的 code
  * @returns RolePaginatedRespDto
  */
-func (c *ManagementClient) GetUserRoles(reqDto *dto.GetUserRolesDto) *dto.RolePaginatedRespDto {
+func (c *Client) GetUserRoles(reqDto *dto.GetUserRolesDto) *dto.RolePaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-user-roles", fasthttp.MethodGet, reqDto)
 	var response dto.RolePaginatedRespDto
 	if err != nil {
@@ -154,7 +155,7 @@ func (c *ManagementClient) GetUserRoles(reqDto *dto.GetUserRolesDto) *dto.RolePa
  * @param userId 用户 ID
  * @returns PrincipalAuthenticationInfoPaginatedRespDto
  */
-func (c *ManagementClient) GetUserPrincipalAuthenticationInfo(reqDto *dto.GetUserPrincipalAuthenticationInfoDto) *dto.PrincipalAuthenticationInfoPaginatedRespDto {
+func (c *Client) GetUserPrincipalAuthenticationInfo(reqDto *dto.GetUserPrincipalAuthenticationInfoDto) *dto.PrincipalAuthenticationInfoPaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-user-principal-authentication-info", fasthttp.MethodGet, reqDto)
 	var response dto.PrincipalAuthenticationInfoPaginatedRespDto
 	if err != nil {
@@ -175,7 +176,7 @@ func (c *ManagementClient) GetUserPrincipalAuthenticationInfo(reqDto *dto.GetUse
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) ResetUserPrincipalAuthenticationInfo(reqDto *dto.ResetUserPrincipalAuthenticationInfoDto) *dto.IsSuccessRespDto {
+func (c *Client) ResetUserPrincipalAuthenticationInfo(reqDto *dto.ResetUserPrincipalAuthenticationInfoDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/reset-user-principal-authentication-info", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -196,7 +197,7 @@ func (c *ManagementClient) ResetUserPrincipalAuthenticationInfo(reqDto *dto.Rese
  * @param userId 用户 ID
  * @returns UserDepartmentPaginatedRespDto
  */
-func (c *ManagementClient) GetUserDepartments(reqDto *dto.GetUserDepartmentsDto) *dto.UserDepartmentPaginatedRespDto {
+func (c *Client) GetUserDepartments(reqDto *dto.GetUserDepartmentsDto) *dto.UserDepartmentPaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-user-departments", fasthttp.MethodGet, reqDto)
 	var response dto.UserDepartmentPaginatedRespDto
 	if err != nil {
@@ -217,7 +218,7 @@ func (c *ManagementClient) GetUserDepartments(reqDto *dto.GetUserDepartmentsDto)
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) SetUserDepartment(reqDto *dto.SetUserDepartmentsDto) *dto.IsSuccessRespDto {
+func (c *Client) SetUserDepartment(reqDto *dto.SetUserDepartmentsDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/set-user-departments", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -238,7 +239,7 @@ func (c *ManagementClient) SetUserDepartment(reqDto *dto.SetUserDepartmentsDto) 
  * @param userId 用户 ID
  * @returns GroupPaginatedRespDto
  */
-func (c *ManagementClient) GetUserGroups(reqDto *dto.GetUserGroupsDto) *dto.GroupPaginatedRespDto {
+func (c *Client) GetUserGroups(reqDto *dto.GetUserGroupsDto) *dto.GroupPaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-user-groups", fasthttp.MethodGet, reqDto)
 	var response dto.GroupPaginatedRespDto
 	if err != nil {
@@ -259,7 +260,7 @@ func (c *ManagementClient) GetUserGroups(reqDto *dto.GetUserGroupsDto) *dto.Grou
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) DeleteUsersBatch(reqDto *dto.DeleteUsersBatchDto) *dto.IsSuccessRespDto {
+func (c *Client) DeleteUsersBatch(reqDto *dto.DeleteUsersBatchDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/delete-users-batch", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -280,7 +281,7 @@ func (c *ManagementClient) DeleteUsersBatch(reqDto *dto.DeleteUsersBatchDto) *dt
  * @param userId 用户 ID
  * @returns UserMfaSingleRespDto
  */
-func (c *ManagementClient) GetUserMfaInfo(reqDto *dto.GetUserMfaInfoDto) *dto.UserMfaSingleRespDto {
+func (c *Client) GetUserMfaInfo(reqDto *dto.GetUserMfaInfoDto) *dto.UserMfaSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-user-mfa-info", fasthttp.MethodGet, reqDto)
 	var response dto.UserMfaSingleRespDto
 	if err != nil {
@@ -302,7 +303,7 @@ func (c *ManagementClient) GetUserMfaInfo(reqDto *dto.GetUserMfaInfoDto) *dto.Us
  * @param limit 每页数目，最大不能超过 50，默认为 10
  * @returns ListArchivedUsersSingleRespDto
  */
-func (c *ManagementClient) ListArchivedUsers(reqDto *dto.ListArchivedUsersDto) *dto.ListArchivedUsersSingleRespDto {
+func (c *Client) ListArchivedUsers(reqDto *dto.ListArchivedUsersDto) *dto.ListArchivedUsersSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/list-archived-users", fasthttp.MethodGet, reqDto)
 	var response dto.ListArchivedUsersSingleRespDto
 	if err != nil {
@@ -323,7 +324,7 @@ func (c *ManagementClient) ListArchivedUsers(reqDto *dto.ListArchivedUsersDto) *
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) KickUsers(reqDto *dto.KickUsersDto) *dto.IsSuccessRespDto {
+func (c *Client) KickUsers(reqDto *dto.KickUsersDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/kick-users", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -344,7 +345,7 @@ func (c *ManagementClient) KickUsers(reqDto *dto.KickUsersDto) *dto.IsSuccessRes
  * @param requestBody
  * @returns IsUserExistsRespDto
  */
-func (c *ManagementClient) IsUserExists(reqDto *dto.IsUserExistsReqDto) *dto.IsUserExistsRespDto {
+func (c *Client) IsUserExists(reqDto *dto.IsUserExistsReqDto) *dto.IsUserExistsRespDto {
 	b, err := c.SendHttpRequest("/api/v3/is-user-exists", fasthttp.MethodPost, reqDto)
 	var response dto.IsUserExistsRespDto
 	if err != nil {
@@ -365,7 +366,7 @@ func (c *ManagementClient) IsUserExists(reqDto *dto.IsUserExistsReqDto) *dto.IsU
  * @param requestBody
  * @returns UserSingleRespDto
  */
-func (c *ManagementClient) CreateUser(reqDto *dto.CreateUserReqDto) *dto.UserSingleRespDto {
+func (c *Client) CreateUser(reqDto *dto.CreateUserReqDto) *dto.UserSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/create-user", fasthttp.MethodPost, reqDto)
 	var response dto.UserSingleRespDto
 	if err != nil {
@@ -386,7 +387,7 @@ func (c *ManagementClient) CreateUser(reqDto *dto.CreateUserReqDto) *dto.UserSin
  * @param requestBody
  * @returns UserListRespDto
  */
-func (c *ManagementClient) CreateUserBatch(reqDto *dto.CreateUserBatchReqDto) *dto.UserListRespDto {
+func (c *Client) CreateUserBatch(reqDto *dto.CreateUserBatchReqDto) *dto.UserListRespDto {
 	b, err := c.SendHttpRequest("/api/v3/create-users-batch", fasthttp.MethodPost, reqDto)
 	var response dto.UserListRespDto
 	if err != nil {
@@ -407,7 +408,7 @@ func (c *ManagementClient) CreateUserBatch(reqDto *dto.CreateUserBatchReqDto) *d
  * @param requestBody
  * @returns UserSingleRespDto
  */
-func (c *ManagementClient) UpdateUser(reqDto *dto.UpdateUserReqDto) *dto.UserSingleRespDto {
+func (c *Client) UpdateUser(reqDto *dto.UpdateUserReqDto) *dto.UserSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/update-user", fasthttp.MethodPost, reqDto)
 	var response dto.UserSingleRespDto
 	if err != nil {
@@ -428,7 +429,7 @@ func (c *ManagementClient) UpdateUser(reqDto *dto.UpdateUserReqDto) *dto.UserSin
  * @param userId 用户 ID
  * @returns AppListRespDto
  */
-func (c *ManagementClient) GetUserAccessibleApps(reqDto *dto.GetUserAccessibleAppsDto) *dto.AppListRespDto {
+func (c *Client) GetUserAccessibleApps(reqDto *dto.GetUserAccessibleAppsDto) *dto.AppListRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-user-accessible-apps", fasthttp.MethodGet, reqDto)
 	var response dto.AppListRespDto
 	if err != nil {
@@ -449,7 +450,7 @@ func (c *ManagementClient) GetUserAccessibleApps(reqDto *dto.GetUserAccessibleAp
  * @param userId 用户 ID
  * @returns AppListRespDto
  */
-func (c *ManagementClient) GetUserAuthorizedApps(reqDto *dto.GetUserAuthorizedAppsDto) *dto.AppListRespDto {
+func (c *Client) GetUserAuthorizedApps(reqDto *dto.GetUserAuthorizedAppsDto) *dto.AppListRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-user-authorized-apps", fasthttp.MethodGet, reqDto)
 	var response dto.AppListRespDto
 	if err != nil {
@@ -470,7 +471,7 @@ func (c *ManagementClient) GetUserAuthorizedApps(reqDto *dto.GetUserAuthorizedAp
  * @param requestBody
  * @returns HasAnyRoleRespDto
  */
-func (c *ManagementClient) HasAnyRole(reqDto *dto.HasAnyRoleReqDto) *dto.HasAnyRoleRespDto {
+func (c *Client) HasAnyRole(reqDto *dto.HasAnyRoleReqDto) *dto.HasAnyRoleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/has-any-role", fasthttp.MethodPost, reqDto)
 	var response dto.HasAnyRoleRespDto
 	if err != nil {
@@ -497,7 +498,7 @@ func (c *ManagementClient) HasAnyRole(reqDto *dto.HasAnyRoleReqDto) *dto.HasAnyR
  * @param limit 每页数目，最大不能超过 50，默认为 10
  * @returns UserLoginHistoryPaginatedRespDto
  */
-func (c *ManagementClient) GetUserLoginHistory(reqDto *dto.GetUserLoginHistoryDto) *dto.UserLoginHistoryPaginatedRespDto {
+func (c *Client) GetUserLoginHistory(reqDto *dto.GetUserLoginHistoryDto) *dto.UserLoginHistoryPaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-user-login-history", fasthttp.MethodGet, reqDto)
 	var response dto.UserLoginHistoryPaginatedRespDto
 	if err != nil {
@@ -518,7 +519,7 @@ func (c *ManagementClient) GetUserLoginHistory(reqDto *dto.GetUserLoginHistoryDt
  * @param userId 用户 ID
  * @returns UserLoggedInAppsListRespDto
  */
-func (c *ManagementClient) GetUserLoggedInApps(reqDto *dto.GetUserLoggedinAppsDto) *dto.UserLoggedInAppsListRespDto {
+func (c *Client) GetUserLoggedInApps(reqDto *dto.GetUserLoggedinAppsDto) *dto.UserLoggedInAppsListRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-user-loggedin-apps", fasthttp.MethodGet, reqDto)
 	var response dto.UserLoggedInAppsListRespDto
 	if err != nil {
@@ -562,7 +563,7 @@ func (c *Client) GetUserLoggedInIdentities(reqDto *dto.GetUserLoggedInIdentities
  * @param resourceType 资源类型
  * @returns AuthorizedResourcePaginatedRespDto
  */
-func (c *ManagementClient) GetUserAuthorizedResources(reqDto *dto.GetUserAuthorizedResourcesDto) *dto.AuthorizedResourcePaginatedRespDto {
+func (c *Client) GetUserAuthorizedResources(reqDto *dto.GetUserAuthorizedResourcesDto) *dto.AuthorizedResourcePaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-user-authorized-resources", fasthttp.MethodGet, reqDto)
 	var response dto.AuthorizedResourcePaginatedRespDto
 	if err != nil {
@@ -583,7 +584,7 @@ func (c *ManagementClient) GetUserAuthorizedResources(reqDto *dto.GetUserAuthori
  * @param code 分组 code
  * @returns GroupSingleRespDto
  */
-func (c *ManagementClient) GetGroup(reqDto *dto.GetGroupDto) *dto.GroupSingleRespDto {
+func (c *Client) GetGroup(reqDto *dto.GetGroupDto) *dto.GroupSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-group", fasthttp.MethodGet, reqDto)
 	var response dto.GroupSingleRespDto
 	if err != nil {
@@ -605,7 +606,7 @@ func (c *ManagementClient) GetGroup(reqDto *dto.GetGroupDto) *dto.GroupSingleRes
  * @param limit 每页数目，最大不能超过 50，默认为 10
  * @returns GroupPaginatedRespDto
  */
-func (c *ManagementClient) ListGroups(reqDto *dto.ListGroupsDto) *dto.GroupPaginatedRespDto {
+func (c *Client) ListGroups(reqDto *dto.ListGroupsDto) *dto.GroupPaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/list-groups", fasthttp.MethodGet, reqDto)
 	var response dto.GroupPaginatedRespDto
 	if err != nil {
@@ -626,7 +627,7 @@ func (c *ManagementClient) ListGroups(reqDto *dto.ListGroupsDto) *dto.GroupPagin
  * @param requestBody
  * @returns GroupSingleRespDto
  */
-func (c *ManagementClient) CreateGroup(reqDto *dto.CreateGroupReqDto) *dto.GroupSingleRespDto {
+func (c *Client) CreateGroup(reqDto *dto.CreateGroupReqDto) *dto.GroupSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/create-group", fasthttp.MethodPost, reqDto)
 	var response dto.GroupSingleRespDto
 	if err != nil {
@@ -647,7 +648,7 @@ func (c *ManagementClient) CreateGroup(reqDto *dto.CreateGroupReqDto) *dto.Group
  * @param requestBody
  * @returns GroupListRespDto
  */
-func (c *ManagementClient) CreateGroupsBatch(reqDto *dto.CreateGroupBatchReqDto) *dto.GroupListRespDto {
+func (c *Client) CreateGroupsBatch(reqDto *dto.CreateGroupBatchReqDto) *dto.GroupListRespDto {
 	b, err := c.SendHttpRequest("/api/v3/create-groups-batch", fasthttp.MethodPost, reqDto)
 	var response dto.GroupListRespDto
 	if err != nil {
@@ -668,7 +669,7 @@ func (c *ManagementClient) CreateGroupsBatch(reqDto *dto.CreateGroupBatchReqDto)
  * @param requestBody
  * @returns GroupSingleRespDto
  */
-func (c *ManagementClient) UpdateGroup(reqDto *dto.UpdateGroupReqDto) *dto.GroupSingleRespDto {
+func (c *Client) UpdateGroup(reqDto *dto.UpdateGroupReqDto) *dto.GroupSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/update-group", fasthttp.MethodPost, reqDto)
 	var response dto.GroupSingleRespDto
 	if err != nil {
@@ -689,7 +690,7 @@ func (c *ManagementClient) UpdateGroup(reqDto *dto.UpdateGroupReqDto) *dto.Group
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) DeleteGroupsBatch(reqDto *dto.DeleteGroupsReqDto) *dto.IsSuccessRespDto {
+func (c *Client) DeleteGroupsBatch(reqDto *dto.DeleteGroupsReqDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/delete-groups-batch", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -710,7 +711,7 @@ func (c *ManagementClient) DeleteGroupsBatch(reqDto *dto.DeleteGroupsReqDto) *dt
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) AddGroupMembers(reqDto *dto.AddGroupMembersReqDto) *dto.IsSuccessRespDto {
+func (c *Client) AddGroupMembers(reqDto *dto.AddGroupMembersReqDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/add-group-members", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -731,7 +732,7 @@ func (c *ManagementClient) AddGroupMembers(reqDto *dto.AddGroupMembersReqDto) *d
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) RemoveGroupMembers(reqDto *dto.RemoveGroupMembersReqDto) *dto.IsSuccessRespDto {
+func (c *Client) RemoveGroupMembers(reqDto *dto.RemoveGroupMembersReqDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/remove-group-members", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -757,7 +758,7 @@ func (c *ManagementClient) RemoveGroupMembers(reqDto *dto.RemoveGroupMembersReqD
  * @param withDepartmentIds 是否获取部门 ID 列表
  * @returns UserPaginatedRespDto
  */
-func (c *ManagementClient) ListGroupMembers(reqDto *dto.ListGroupMembersDto) *dto.UserPaginatedRespDto {
+func (c *Client) ListGroupMembers(reqDto *dto.ListGroupMembersDto) *dto.UserPaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/list-group-members", fasthttp.MethodGet, reqDto)
 	var response dto.UserPaginatedRespDto
 	if err != nil {
@@ -780,7 +781,7 @@ func (c *ManagementClient) ListGroupMembers(reqDto *dto.ListGroupMembersDto) *dt
  * @param resourceType 资源类型
  * @returns AuthorizedResourceListRespDto
  */
-func (c *ManagementClient) GetGroupAuthorizedResources(reqDto *dto.GetGroupAuthorizedResourcesDto) *dto.AuthorizedResourceListRespDto {
+func (c *Client) GetGroupAuthorizedResources(reqDto *dto.GetGroupAuthorizedResourcesDto) *dto.AuthorizedResourceListRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-group-authorized-resources", fasthttp.MethodGet, reqDto)
 	var response dto.AuthorizedResourceListRespDto
 	if err != nil {
@@ -802,7 +803,7 @@ func (c *ManagementClient) GetGroupAuthorizedResources(reqDto *dto.GetGroupAutho
  * @param namespace 所属权限分组的 code
  * @returns RoleSingleRespDto
  */
-func (c *ManagementClient) GetRole(reqDto *dto.GetRoleDto) *dto.RoleSingleRespDto {
+func (c *Client) GetRole(reqDto *dto.GetRoleDto) *dto.RoleSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-role", fasthttp.MethodGet, reqDto)
 	var response dto.RoleSingleRespDto
 	if err != nil {
@@ -823,7 +824,7 @@ func (c *ManagementClient) GetRole(reqDto *dto.GetRoleDto) *dto.RoleSingleRespDt
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) AssignRole(reqDto *dto.AssignRoleDto) *dto.IsSuccessRespDto {
+func (c *Client) AssignRole(reqDto *dto.AssignRoleDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/assign-role", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -844,7 +845,7 @@ func (c *ManagementClient) AssignRole(reqDto *dto.AssignRoleDto) *dto.IsSuccessR
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) RevokeRole(reqDto *dto.RevokeRoleDto) *dto.IsSuccessRespDto {
+func (c *Client) RevokeRole(reqDto *dto.RevokeRoleDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/revoke-role", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -867,7 +868,7 @@ func (c *ManagementClient) RevokeRole(reqDto *dto.RevokeRoleDto) *dto.IsSuccessR
  * @param resourceType 资源类型
  * @returns RoleAuthorizedResourcePaginatedRespDto
  */
-func (c *ManagementClient) GetRoleAuthorizedResources(reqDto *dto.GetRoleAuthorizedResourcesDto) *dto.RoleAuthorizedResourcePaginatedRespDto {
+func (c *Client) GetRoleAuthorizedResources(reqDto *dto.GetRoleAuthorizedResourcesDto) *dto.RoleAuthorizedResourcePaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-role-authorized-resources", fasthttp.MethodGet, reqDto)
 	var response dto.RoleAuthorizedResourcePaginatedRespDto
 	if err != nil {
@@ -894,7 +895,7 @@ func (c *ManagementClient) GetRoleAuthorizedResources(reqDto *dto.GetRoleAuthori
  * @param namespace 所属权限分组的 code
  * @returns UserPaginatedRespDto
  */
-func (c *ManagementClient) ListRoleMembers(reqDto *dto.ListRoleMembersDto) *dto.UserPaginatedRespDto {
+func (c *Client) ListRoleMembers(reqDto *dto.ListRoleMembersDto) *dto.UserPaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/list-role-members", fasthttp.MethodGet, reqDto)
 	var response dto.UserPaginatedRespDto
 	if err != nil {
@@ -918,7 +919,7 @@ func (c *ManagementClient) ListRoleMembers(reqDto *dto.ListRoleMembersDto) *dto.
  * @param limit 每页数目，最大不能超过 50，默认为 10
  * @returns RoleDepartmentListPaginatedRespDto
  */
-func (c *ManagementClient) ListRoleDepartments(reqDto *dto.ListRoleDepartmentsDto) *dto.RoleDepartmentListPaginatedRespDto {
+func (c *Client) ListRoleDepartments(reqDto *dto.ListRoleDepartmentsDto) *dto.RoleDepartmentListPaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/list-role-departments", fasthttp.MethodGet, reqDto)
 	var response dto.RoleDepartmentListPaginatedRespDto
 	if err != nil {
@@ -939,7 +940,7 @@ func (c *ManagementClient) ListRoleDepartments(reqDto *dto.ListRoleDepartmentsDt
  * @param requestBody
  * @returns RoleSingleRespDto
  */
-func (c *ManagementClient) CreateRole(reqDto *dto.CreateRoleDto) *dto.RoleSingleRespDto {
+func (c *Client) CreateRole(reqDto *dto.CreateRoleDto) *dto.RoleSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/create-role", fasthttp.MethodPost, reqDto)
 	var response dto.RoleSingleRespDto
 	if err != nil {
@@ -962,7 +963,7 @@ func (c *ManagementClient) CreateRole(reqDto *dto.CreateRoleDto) *dto.RoleSingle
  * @param limit 每页数目，最大不能超过 50，默认为 10
  * @returns RolePaginatedRespDto
  */
-func (c *ManagementClient) ListRoles(reqDto *dto.ListRolesDto) *dto.RolePaginatedRespDto {
+func (c *Client) ListRoles(reqDto *dto.ListRolesDto) *dto.RolePaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/list-roles", fasthttp.MethodGet, reqDto)
 	var response dto.RolePaginatedRespDto
 	if err != nil {
@@ -983,7 +984,7 @@ func (c *ManagementClient) ListRoles(reqDto *dto.ListRolesDto) *dto.RolePaginate
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) DeleteRolesBatch(reqDto *dto.DeleteRoleDto) *dto.IsSuccessRespDto {
+func (c *Client) DeleteRolesBatch(reqDto *dto.DeleteRoleDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/delete-roles-batch", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -1004,7 +1005,7 @@ func (c *ManagementClient) DeleteRolesBatch(reqDto *dto.DeleteRoleDto) *dto.IsSu
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) CreateRolesBatch(reqDto *dto.CreateRolesBatch) *dto.IsSuccessRespDto {
+func (c *Client) CreateRolesBatch(reqDto *dto.CreateRolesBatch) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/create-roles-batch", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -1025,7 +1026,7 @@ func (c *ManagementClient) CreateRolesBatch(reqDto *dto.CreateRolesBatch) *dto.I
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) UpdateRole(reqDto *dto.UpdateRoleDto) *dto.IsSuccessRespDto {
+func (c *Client) UpdateRole(reqDto *dto.UpdateRoleDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/update-role", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -1048,7 +1049,7 @@ func (c *ManagementClient) UpdateRole(reqDto *dto.UpdateRoleDto) *dto.IsSuccessR
  * @param fetchAll 拉取所有
  * @returns OrganizationPaginatedRespDto
  */
-func (c *ManagementClient) ListOrganizations(reqDto *dto.ListOrganizationsDto) *dto.OrganizationPaginatedRespDto {
+func (c *Client) ListOrganizations(reqDto *dto.ListOrganizationsDto) *dto.OrganizationPaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/list-organizations", fasthttp.MethodGet, reqDto)
 	var response dto.OrganizationPaginatedRespDto
 	if err != nil {
@@ -1069,7 +1070,7 @@ func (c *ManagementClient) ListOrganizations(reqDto *dto.ListOrganizationsDto) *
  * @param requestBody
  * @returns OrganizationSingleRespDto
  */
-func (c *ManagementClient) CreateOrganization(reqDto *dto.CreateOrganizationReqDto) *dto.OrganizationSingleRespDto {
+func (c *Client) CreateOrganization(reqDto *dto.CreateOrganizationReqDto) *dto.OrganizationSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/create-organization", fasthttp.MethodPost, reqDto)
 	var response dto.OrganizationSingleRespDto
 	if err != nil {
@@ -1090,7 +1091,7 @@ func (c *ManagementClient) CreateOrganization(reqDto *dto.CreateOrganizationReqD
  * @param requestBody
  * @returns OrganizationSingleRespDto
  */
-func (c *ManagementClient) UpdateOrganization(reqDto *dto.UpdateOrganizationReqDto) *dto.OrganizationSingleRespDto {
+func (c *Client) UpdateOrganization(reqDto *dto.UpdateOrganizationReqDto) *dto.OrganizationSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/update-organization", fasthttp.MethodPost, reqDto)
 	var response dto.OrganizationSingleRespDto
 	if err != nil {
@@ -1111,7 +1112,7 @@ func (c *ManagementClient) UpdateOrganization(reqDto *dto.UpdateOrganizationReqD
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) DeleteOrganization(reqDto *dto.DeleteOrganizationReqDto) *dto.IsSuccessRespDto {
+func (c *Client) DeleteOrganization(reqDto *dto.DeleteOrganizationReqDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/delete-organization", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -1134,7 +1135,7 @@ func (c *ManagementClient) DeleteOrganization(reqDto *dto.DeleteOrganizationReqD
  * @param departmentIdType 此次调用中使用的部门 ID 的类型
  * @returns DepartmentSingleRespDto
  */
-func (c *ManagementClient) GetDepartment(reqDto *dto.GetDepartmentDto) *dto.DepartmentSingleRespDto {
+func (c *Client) GetDepartment(reqDto *dto.GetDepartmentDto) *dto.DepartmentSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-department", fasthttp.MethodGet, reqDto)
 	var response dto.DepartmentSingleRespDto
 	if err != nil {
@@ -1155,7 +1156,7 @@ func (c *ManagementClient) GetDepartment(reqDto *dto.GetDepartmentDto) *dto.Depa
  * @param requestBody
  * @returns DepartmentSingleRespDto
  */
-func (c *ManagementClient) CreateDepartment(reqDto *dto.CreateDepartmentReqDto) *dto.DepartmentSingleRespDto {
+func (c *Client) CreateDepartment(reqDto *dto.CreateDepartmentReqDto) *dto.DepartmentSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/create-department", fasthttp.MethodPost, reqDto)
 	var response dto.DepartmentSingleRespDto
 	if err != nil {
@@ -1176,7 +1177,7 @@ func (c *ManagementClient) CreateDepartment(reqDto *dto.CreateDepartmentReqDto) 
  * @param requestBody
  * @returns DepartmentSingleRespDto
  */
-func (c *ManagementClient) UpdateDepartment(reqDto *dto.UpdateDepartmentReqDto) *dto.DepartmentSingleRespDto {
+func (c *Client) UpdateDepartment(reqDto *dto.UpdateDepartmentReqDto) *dto.DepartmentSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/update-department", fasthttp.MethodPost, reqDto)
 	var response dto.DepartmentSingleRespDto
 	if err != nil {
@@ -1197,7 +1198,7 @@ func (c *ManagementClient) UpdateDepartment(reqDto *dto.UpdateDepartmentReqDto) 
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) DeleteDepartment(reqDto *dto.DeleteDepartmentReqDto) *dto.IsSuccessRespDto {
+func (c *Client) DeleteDepartment(reqDto *dto.DeleteDepartmentReqDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/delete-department", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -1218,7 +1219,7 @@ func (c *ManagementClient) DeleteDepartment(reqDto *dto.DeleteDepartmentReqDto) 
  * @param requestBody
  * @returns DepartmentListRespDto
  */
-func (c *ManagementClient) SearchDepartments(reqDto *dto.SearchDepartmentsReqDto) *dto.DepartmentListRespDto {
+func (c *Client) SearchDepartments(reqDto *dto.SearchDepartmentsReqDto) *dto.DepartmentListRespDto {
 	b, err := c.SendHttpRequest("/api/v3/search-departments", fasthttp.MethodPost, reqDto)
 	var response dto.DepartmentListRespDto
 	if err != nil {
@@ -1241,7 +1242,7 @@ func (c *ManagementClient) SearchDepartments(reqDto *dto.SearchDepartmentsReqDto
  * @param departmentIdType 此次调用中使用的部门 ID 的类型
  * @returns DepartmentPaginatedRespDto
  */
-func (c *ManagementClient) ListChildrenDepartments(reqDto *dto.ListChildrenDepartmentsDto) *dto.DepartmentPaginatedRespDto {
+func (c *Client) ListChildrenDepartments(reqDto *dto.ListChildrenDepartmentsDto) *dto.DepartmentPaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/list-children-departments", fasthttp.MethodGet, reqDto)
 	var response dto.DepartmentPaginatedRespDto
 	if err != nil {
@@ -1293,7 +1294,7 @@ func (c *Client) ListDepartmentMembers(reqDto *dto.ListDepartmentMembersDto) *dt
  * @param departmentIdType 此次调用中使用的部门 ID 的类型
  * @returns UserIdListRespDto
  */
-func (c *ManagementClient) ListDepartmentMemberIds(reqDto *dto.ListDepartmentMemberIdsDto) *dto.UserIdListRespDto {
+func (c *Client) ListDepartmentMemberIds(reqDto *dto.ListDepartmentMemberIdsDto) *dto.UserIdListRespDto {
 	b, err := c.SendHttpRequest("/api/v3/list-department-member-ids", fasthttp.MethodGet, reqDto)
 	var response dto.UserIdListRespDto
 	if err != nil {
@@ -1314,7 +1315,7 @@ func (c *ManagementClient) ListDepartmentMemberIds(reqDto *dto.ListDepartmentMem
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) AddDepartmentMembers(reqDto *dto.AddDepartmentMembersReqDto) *dto.IsSuccessRespDto {
+func (c *Client) AddDepartmentMembers(reqDto *dto.AddDepartmentMembersReqDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/add-department-members", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -1335,7 +1336,7 @@ func (c *ManagementClient) AddDepartmentMembers(reqDto *dto.AddDepartmentMembers
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) RemoveDepartmentMembers(reqDto *dto.RemoveDepartmentMembersReqDto) *dto.IsSuccessRespDto {
+func (c *Client) RemoveDepartmentMembers(reqDto *dto.RemoveDepartmentMembersReqDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/remove-department-members", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -1358,7 +1359,7 @@ func (c *ManagementClient) RemoveDepartmentMembers(reqDto *dto.RemoveDepartmentM
  * @param departmentIdType 此次调用中使用的部门 ID 的类型
  * @returns DepartmentSingleRespDto
  */
-func (c *ManagementClient) GetParentDepartment(reqDto *dto.GetParentDepartmentDto) *dto.DepartmentSingleRespDto {
+func (c *Client) GetParentDepartment(reqDto *dto.GetParentDepartmentDto) *dto.DepartmentSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-parent-department", fasthttp.MethodGet, reqDto)
 	var response dto.DepartmentSingleRespDto
 	if err != nil {
@@ -1379,7 +1380,7 @@ func (c *ManagementClient) GetParentDepartment(reqDto *dto.GetParentDepartmentDt
  * @param tenantId 租户 ID
  * @returns ExtIdpListPaginatedRespDto
  */
-func (c *ManagementClient) ListExtIdp(reqDto *dto.ListExtIdpDto) *dto.ExtIdpListPaginatedRespDto {
+func (c *Client) ListExtIdp(reqDto *dto.ListExtIdpDto) *dto.ExtIdpListPaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/list-ext-idp", fasthttp.MethodGet, reqDto)
 	var response dto.ExtIdpListPaginatedRespDto
 	if err != nil {
@@ -1401,7 +1402,7 @@ func (c *ManagementClient) ListExtIdp(reqDto *dto.ListExtIdpDto) *dto.ExtIdpList
  * @param tenantId 租户 ID
  * @returns ExtIdpDetailSingleRespDto
  */
-func (c *ManagementClient) GetExtIdp(reqDto *dto.GetExtIdpDto) *dto.ExtIdpDetailSingleRespDto {
+func (c *Client) GetExtIdp(reqDto *dto.GetExtIdpDto) *dto.ExtIdpDetailSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-ext-idp", fasthttp.MethodGet, reqDto)
 	var response dto.ExtIdpDetailSingleRespDto
 	if err != nil {
@@ -1422,7 +1423,7 @@ func (c *ManagementClient) GetExtIdp(reqDto *dto.GetExtIdpDto) *dto.ExtIdpDetail
  * @param requestBody
  * @returns ExtIdpSingleRespDto
  */
-func (c *ManagementClient) CreateExtIdp(reqDto *dto.CreateExtIdpDto) *dto.ExtIdpSingleRespDto {
+func (c *Client) CreateExtIdp(reqDto *dto.CreateExtIdpDto) *dto.ExtIdpSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/create-ext-idp", fasthttp.MethodPost, reqDto)
 	var response dto.ExtIdpSingleRespDto
 	if err != nil {
@@ -1443,7 +1444,7 @@ func (c *ManagementClient) CreateExtIdp(reqDto *dto.CreateExtIdpDto) *dto.ExtIdp
  * @param requestBody
  * @returns ExtIdpSingleRespDto
  */
-func (c *ManagementClient) UpdateExtIdp(reqDto *dto.UpdateExtIdpDto) *dto.ExtIdpSingleRespDto {
+func (c *Client) UpdateExtIdp(reqDto *dto.UpdateExtIdpDto) *dto.ExtIdpSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/update-ext-idp", fasthttp.MethodPost, reqDto)
 	var response dto.ExtIdpSingleRespDto
 	if err != nil {
@@ -1464,7 +1465,7 @@ func (c *ManagementClient) UpdateExtIdp(reqDto *dto.UpdateExtIdpDto) *dto.ExtIdp
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) DeleteExtIdp(reqDto *dto.DeleteExtIdpDto) *dto.IsSuccessRespDto {
+func (c *Client) DeleteExtIdp(reqDto *dto.DeleteExtIdpDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/delete-ext-idp", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -1485,7 +1486,7 @@ func (c *ManagementClient) DeleteExtIdp(reqDto *dto.DeleteExtIdpDto) *dto.IsSucc
  * @param requestBody
  * @returns ExtIdpConnDetailSingleRespDto
  */
-func (c *ManagementClient) CreateExtIdpConn(reqDto *dto.CreateExtIdpConnDto) *dto.ExtIdpConnDetailSingleRespDto {
+func (c *Client) CreateExtIdpConn(reqDto *dto.CreateExtIdpConnDto) *dto.ExtIdpConnDetailSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/create-ext-idp-conn", fasthttp.MethodPost, reqDto)
 	var response dto.ExtIdpConnDetailSingleRespDto
 	if err != nil {
@@ -1506,7 +1507,7 @@ func (c *ManagementClient) CreateExtIdpConn(reqDto *dto.CreateExtIdpConnDto) *dt
  * @param requestBody
  * @returns ExtIdpConnDetailSingleRespDto
  */
-func (c *ManagementClient) UpdateExtIdpConn(reqDto *dto.UpdateExtIdpConnDto) *dto.ExtIdpConnDetailSingleRespDto {
+func (c *Client) UpdateExtIdpConn(reqDto *dto.UpdateExtIdpConnDto) *dto.ExtIdpConnDetailSingleRespDto {
 	b, err := c.SendHttpRequest("/api/v3/update-ext-idp-conn", fasthttp.MethodPost, reqDto)
 	var response dto.ExtIdpConnDetailSingleRespDto
 	if err != nil {
@@ -1527,7 +1528,7 @@ func (c *ManagementClient) UpdateExtIdpConn(reqDto *dto.UpdateExtIdpConnDto) *dt
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) DeleteExtIdpConn(reqDto *dto.DeleteExtIdpConnDto) *dto.IsSuccessRespDto {
+func (c *Client) DeleteExtIdpConn(reqDto *dto.DeleteExtIdpConnDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/delete-ext-idp-conn", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -1548,7 +1549,7 @@ func (c *ManagementClient) DeleteExtIdpConn(reqDto *dto.DeleteExtIdpConnDto) *dt
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) ChangeConnState(reqDto *dto.EnableExtIdpConnDto) *dto.IsSuccessRespDto {
+func (c *Client) ChangeConnState(reqDto *dto.EnableExtIdpConnDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/enable-ext-idp-conn", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -1569,7 +1570,7 @@ func (c *ManagementClient) ChangeConnState(reqDto *dto.EnableExtIdpConnDto) *dto
  * @param targetType 主体类型，目前支持用户、角色、分组和部门
  * @returns CustomFieldListRespDto
  */
-func (c *ManagementClient) GetCustomFields(reqDto *dto.GetCustomFieldsDto) *dto.CustomFieldListRespDto {
+func (c *Client) GetCustomFields(reqDto *dto.GetCustomFieldsDto) *dto.CustomFieldListRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-custom-fields", fasthttp.MethodGet, reqDto)
 	var response dto.CustomFieldListRespDto
 	if err != nil {
@@ -1590,7 +1591,7 @@ func (c *ManagementClient) GetCustomFields(reqDto *dto.GetCustomFieldsDto) *dto.
  * @param requestBody
  * @returns CustomFieldListRespDto
  */
-func (c *ManagementClient) SetCustomFields(reqDto *dto.SetCustomFieldsReqDto) *dto.CustomFieldListRespDto {
+func (c *Client) SetCustomFields(reqDto *dto.SetCustomFieldsReqDto) *dto.CustomFieldListRespDto {
 	b, err := c.SendHttpRequest("/api/v3/set-custom-fields", fasthttp.MethodPost, reqDto)
 	var response dto.CustomFieldListRespDto
 	if err != nil {
@@ -1611,7 +1612,7 @@ func (c *ManagementClient) SetCustomFields(reqDto *dto.SetCustomFieldsReqDto) *d
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) SetCustomData(reqDto *dto.SetCustomDataReqDto) *dto.IsSuccessRespDto {
+func (c *Client) SetCustomData(reqDto *dto.SetCustomDataReqDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/set-custom-data", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -1634,7 +1635,7 @@ func (c *ManagementClient) SetCustomData(reqDto *dto.SetCustomDataReqDto) *dto.I
  * @param namespace 所属权限分组的 code，当 targetType 为角色的时候需要填写，否则可以忽略。
  * @returns GetCustomDataRespDto
  */
-func (c *ManagementClient) GetCustomData(reqDto *dto.GetCustomDataDto) *dto.GetCustomDataRespDto {
+func (c *Client) GetCustomData(reqDto *dto.GetCustomDataDto) *dto.GetCustomDataRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-custom-data", fasthttp.MethodGet, reqDto)
 	var response dto.GetCustomDataRespDto
 	if err != nil {
@@ -1655,7 +1656,7 @@ func (c *ManagementClient) GetCustomData(reqDto *dto.GetCustomDataDto) *dto.GetC
  * @param requestBody
  * @returns ResourceRespDto
  */
-func (c *ManagementClient) CreateResource(reqDto *dto.CreateResourceDto) *dto.ResourceRespDto {
+func (c *Client) CreateResource(reqDto *dto.CreateResourceDto) *dto.ResourceRespDto {
 	b, err := c.SendHttpRequest("/api/v3/create-resource", fasthttp.MethodPost, reqDto)
 	var response dto.ResourceRespDto
 	if err != nil {
@@ -1676,7 +1677,7 @@ func (c *ManagementClient) CreateResource(reqDto *dto.CreateResourceDto) *dto.Re
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) CreateResourcesBatch(reqDto *dto.CreateResourcesBatchDto) *dto.IsSuccessRespDto {
+func (c *Client) CreateResourcesBatch(reqDto *dto.CreateResourcesBatchDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/create-resources-batch", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -1698,7 +1699,7 @@ func (c *ManagementClient) CreateResourcesBatch(reqDto *dto.CreateResourcesBatch
  * @param namespace 所属权限分组的 code
  * @returns ResourceRespDto
  */
-func (c *ManagementClient) GetResource(reqDto *dto.GetResourceDto) *dto.ResourceRespDto {
+func (c *Client) GetResource(reqDto *dto.GetResourceDto) *dto.ResourceRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-resource", fasthttp.MethodGet, reqDto)
 	var response dto.ResourceRespDto
 	if err != nil {
@@ -1720,7 +1721,7 @@ func (c *ManagementClient) GetResource(reqDto *dto.GetResourceDto) *dto.Resource
  * @param namespace 所属权限分组的 code
  * @returns ResourceListRespDto
  */
-func (c *ManagementClient) GetResourcesBatch(reqDto *dto.GetResourcesBatchDto) *dto.ResourceListRespDto {
+func (c *Client) GetResourcesBatch(reqDto *dto.GetResourcesBatchDto) *dto.ResourceListRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-resources-batch", fasthttp.MethodGet, reqDto)
 	var response dto.ResourceListRespDto
 	if err != nil {
@@ -1744,7 +1745,7 @@ func (c *ManagementClient) GetResourcesBatch(reqDto *dto.GetResourcesBatchDto) *
  * @param limit 每页数目，最大不能超过 50，默认为 10
  * @returns ResourcePaginatedRespDto
  */
-func (c *ManagementClient) ListResources(reqDto *dto.ListResourcesDto) *dto.ResourcePaginatedRespDto {
+func (c *Client) ListResources(reqDto *dto.ListResourcesDto) *dto.ResourcePaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/list-resources", fasthttp.MethodGet, reqDto)
 	var response dto.ResourcePaginatedRespDto
 	if err != nil {
@@ -1765,7 +1766,7 @@ func (c *ManagementClient) ListResources(reqDto *dto.ListResourcesDto) *dto.Reso
  * @param requestBody
  * @returns ResourceRespDto
  */
-func (c *ManagementClient) UpdateResource(reqDto *dto.UpdateResourceDto) *dto.ResourceRespDto {
+func (c *Client) UpdateResource(reqDto *dto.UpdateResourceDto) *dto.ResourceRespDto {
 	b, err := c.SendHttpRequest("/api/v3/update-resource", fasthttp.MethodPost, reqDto)
 	var response dto.ResourceRespDto
 	if err != nil {
@@ -1786,7 +1787,7 @@ func (c *ManagementClient) UpdateResource(reqDto *dto.UpdateResourceDto) *dto.Re
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) DeleteResource(reqDto *dto.DeleteResourceDto) *dto.IsSuccessRespDto {
+func (c *Client) DeleteResource(reqDto *dto.DeleteResourceDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/delete-resource", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -1807,7 +1808,7 @@ func (c *ManagementClient) DeleteResource(reqDto *dto.DeleteResourceDto) *dto.Is
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) DeleteResourcesBatch(reqDto *dto.DeleteResourcesBatchDto) *dto.IsSuccessRespDto {
+func (c *Client) DeleteResourcesBatch(reqDto *dto.DeleteResourcesBatchDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/delete-resources-batch", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -1828,7 +1829,7 @@ func (c *ManagementClient) DeleteResourcesBatch(reqDto *dto.DeleteResourcesBatch
  * @param requestBody
  * @returns NamespaceRespDto
  */
-func (c *ManagementClient) CreateNamespace(reqDto *dto.CreateNamespaceDto) *dto.NamespaceRespDto {
+func (c *Client) CreateNamespace(reqDto *dto.CreateNamespaceDto) *dto.NamespaceRespDto {
 	b, err := c.SendHttpRequest("/api/v3/create-namespace", fasthttp.MethodPost, reqDto)
 	var response dto.NamespaceRespDto
 	if err != nil {
@@ -1849,7 +1850,7 @@ func (c *ManagementClient) CreateNamespace(reqDto *dto.CreateNamespaceDto) *dto.
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) CreateNamespacesBatch(reqDto *dto.CreateNamespacesBatchDto) *dto.IsSuccessRespDto {
+func (c *Client) CreateNamespacesBatch(reqDto *dto.CreateNamespacesBatchDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/create-namespaces-batch", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -1870,7 +1871,7 @@ func (c *ManagementClient) CreateNamespacesBatch(reqDto *dto.CreateNamespacesBat
  * @param code 权限分组唯一标志符
  * @returns NamespaceRespDto
  */
-func (c *ManagementClient) GetNamespace(reqDto *dto.GetNamespaceDto) *dto.NamespaceRespDto {
+func (c *Client) GetNamespace(reqDto *dto.GetNamespaceDto) *dto.NamespaceRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-namespace", fasthttp.MethodGet, reqDto)
 	var response dto.NamespaceRespDto
 	if err != nil {
@@ -1891,7 +1892,7 @@ func (c *ManagementClient) GetNamespace(reqDto *dto.GetNamespaceDto) *dto.Namesp
  * @param codeList 资源 code 列表,批量可以使用逗号分隔
  * @returns NamespaceListRespDto
  */
-func (c *ManagementClient) GetNamespacesBatch(reqDto *dto.GetNamespacesBatchDto) *dto.NamespaceListRespDto {
+func (c *Client) GetNamespacesBatch(reqDto *dto.GetNamespacesBatchDto) *dto.NamespaceListRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-namespaces-batch", fasthttp.MethodGet, reqDto)
 	var response dto.NamespaceListRespDto
 	if err != nil {
@@ -1912,7 +1913,7 @@ func (c *ManagementClient) GetNamespacesBatch(reqDto *dto.GetNamespacesBatchDto)
  * @param requestBody
  * @returns UpdateNamespaceRespDto
  */
-func (c *ManagementClient) UpdateNamespace(reqDto *dto.UpdateNamespaceDto) *dto.UpdateNamespaceRespDto {
+func (c *Client) UpdateNamespace(reqDto *dto.UpdateNamespaceDto) *dto.UpdateNamespaceRespDto {
 	b, err := c.SendHttpRequest("/api/v3/update-namespace", fasthttp.MethodPost, reqDto)
 	var response dto.UpdateNamespaceRespDto
 	if err != nil {
@@ -1933,7 +1934,7 @@ func (c *ManagementClient) UpdateNamespace(reqDto *dto.UpdateNamespaceDto) *dto.
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) DeleteNamespace(reqDto *dto.DeleteNamespaceDto) *dto.IsSuccessRespDto {
+func (c *Client) DeleteNamespace(reqDto *dto.DeleteNamespaceDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/delete-namespace", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -1954,7 +1955,7 @@ func (c *ManagementClient) DeleteNamespace(reqDto *dto.DeleteNamespaceDto) *dto.
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) DeleteNamespacesBatch(reqDto *dto.DeleteNamespacesBatchDto) *dto.IsSuccessRespDto {
+func (c *Client) DeleteNamespacesBatch(reqDto *dto.DeleteNamespacesBatchDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/delete-namespaces-batch", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -1975,7 +1976,7 @@ func (c *ManagementClient) DeleteNamespacesBatch(reqDto *dto.DeleteNamespacesBat
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *ManagementClient) AuthorizeResources(reqDto *dto.AuthorizeResourcesDto) *dto.IsSuccessRespDto {
+func (c *Client) AuthorizeResources(reqDto *dto.AuthorizeResourcesDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/authorize-resources", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
