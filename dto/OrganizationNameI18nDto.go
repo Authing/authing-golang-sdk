@@ -1,5 +1,5 @@
 package dto
 
 type OrganizationNameI18nDto struct {
-	OrganizationName LangObject `json:"organizationName"`
+	OrganizationName string `json:"organizationName"`
 }
