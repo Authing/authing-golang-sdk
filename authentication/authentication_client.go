@@ -83,9 +83,6 @@ func (client *AuthenticationClient) BuildAuthUrl(params *AuthURLParams) (AuthUrl
 		scope = client.scope
 	}
 	state := params.State
-	if state == "" {
-		// none to do
-	}
 	nonce := params.Nonce
 	if nonce == "" {
 		nonce = util.RandStringImpr(RandStringLen)
@@ -288,13 +285,13 @@ func (client *AuthenticationClient) BuildLogoutUrl(params *LogoutURLParams) (str
 	if params == nil {
 		params = &LogoutURLParams{}
 	}
-	idToken := params.IDToken
+	idToken := params.IDTokenHint
 	redirectUri := params.RedirectUri
 	if redirectUri == "" {
 		redirectUri = client.logoutRedirectUri
 	}
 	if redirectUri != "" && idToken == "" {
-		return "", errors.New("指定 redirect uri 时，必须同时指定 id token 参数")
+		return "", errors.New("指定 logout redirect uri 时，必须同时指定 id token 参数")
 	}
 
 	data := map[string]interface{}{}
@@ -302,7 +299,7 @@ func (client *AuthenticationClient) BuildLogoutUrl(params *LogoutURLParams) (str
 		data["post_logout_redirect_uri"] = redirectUri
 	}
 	if idToken != "" {
-		data["id_token_hint"] = params.IDToken
+		data["id_token_hint"] = params.IDTokenHint
 	}
 
 	if params.State != "" {

@@ -39,11 +39,6 @@ type AuthenticationClientOptions struct {
 	 * 服务端的 JWKS 公钥，用于验证 Token 签名，默认会通过网络请求从服务端的 JWKS 端点自动获取
 	 */
 	// serverJWKS JWKSObject;
-
-	/**
-	 * 存储认证上下文的 Cookie 名称
-	 */
-	CookieKey string
 }
 type AuthUrlResult struct {
 	Url   string
@@ -59,32 +54,17 @@ type AuthURLParams struct {
 	Forced      bool
 }
 
-type OIDCTokenResponse struct {
-	access_token  string
-	id_token      string
-	expires_in    uint64
-	refresh_token string
-	token_type    string
-}
-
-type NativeTokenParams struct { //TODO 允许扩展
-	grant_type    string
-	client_id     string
-	client_secret string
-	scope         string
-}
-
 type CodeToTokenParams struct {
 	Code        string
 	RedirectUri string
 }
 
-type RefreshTokenParams struct {
-	grant_type    string //'refresh_token'
-	client_id     string
-	client_secret string
-	refresh_token string
-}
+// type RefreshTokenParams struct {
+// 	grant_type    string //'refresh_token'
+// 	client_id     string
+// 	client_secret string
+// 	refresh_token string
+// }
 
 type LoginState struct {
 	AccessToken       string `json:"access_token"`
@@ -96,18 +76,18 @@ type LoginState struct {
 	ParsedAccessToken *AccessTokenClaims
 }
 
-type LoginTransaction struct {
-	state       string
-	nonce       string
-	redirectUri string
-}
+// type LoginTransaction struct {
+// 	state       string
+// 	nonce       string
+// 	redirectUri string
+// }
 type UserInfoCommon struct {
 	Name              string `json:"name,omitempty"`
 	Nickname          string `json:"nickname,omitempty"`
 	GivenName         string `json:"given_name,omitempty"`
 	FamilyName        string `json:"family_name,omitempty"`
 	Birthdate         string `json:"birthdate,omitempty"`
-	Gender            string `json:"gender,omitempty"`//'M' | 'F' | 'U'
+	Gender            string `json:"gender,omitempty"` //'M' | 'F' | 'U'
 	Picture           string `json:"picture,omitempty"`
 	UpdatedAt         string `json:"updated_at,omitempty"`
 	Zoneinfo          string `json:"zoneinfo,omitempty"`
@@ -115,22 +95,22 @@ type UserInfoCommon struct {
 	Locale            string `json:"locale,omitempty"`
 }
 type UserInfo struct { // TODO 允许扩展
-	Sub               string `json:"sub,omitempty"`
+	Sub string `json:"sub,omitempty"`
 	UserInfoCommon
 }
 
 type TokenCommon struct {
-	Sub      string `json:"sub,omitempty"`
-	Aud      string `json:"aud,omitempty"`
-	Exp      uint64 `json:"exp,omitempty"`
-	Iat      uint64 `json:"iat,omitempty"`
-	Iss      string `json:"iss,omitempty"`
-	Jti      string `json:"jti,omitempty"`
+	Sub string `json:"sub,omitempty"`
+	Aud string `json:"aud,omitempty"`
+	Exp uint64 `json:"exp,omitempty"`
+	Iat uint64 `json:"iat,omitempty"`
+	Iss string `json:"iss,omitempty"`
+	Jti string `json:"jti,omitempty"`
 }
 type IDTokenExtended struct {
-	Nonce    string `json:"nonce,omitempty"`
-	AtHash   string `json:"at_hash,omitempty"`
-	SHash    string `json:"s_hash,omitempty"`
+	Nonce  string `json:"nonce,omitempty"`
+	AtHash string `json:"at_hash,omitempty"`
+	SHash  string `json:"s_hash,omitempty"`
 }
 type IDToken struct {
 	UserInfoCommon //扩展自UserInfo
@@ -156,33 +136,8 @@ type AccessTokenClaims struct {
 	AccessTokenExtended
 }
 
-//   type IDToken struct {// TODO 允许扩展
-// 	// Token 字段
-// 	sub string
-// 	aud string
-// 	exp uint64
-// 	iat uint64
-// 	iss string
-// 	nonce string
-// 	at_hash string
-// 	s_hash string
-
-// 	// 用户信息字段
-// 	name string
-// 	nickname string
-// 	given_name string
-// 	family_name string
-// 	birthdate string
-// 	gender string//'M' | 'F' | 'U'
-// 	picture string
-// 	updated_at string
-// 	zoneinfo string
-// 	preferred_username string
-// 	locale string
-//   }
-
 type LogoutURLParams struct {
 	RedirectUri string // 可选
-	IDToken            string // 可选
-	State                    string // 可选
+	IDTokenHint string // 可选
+	State       string // 可选
 }
