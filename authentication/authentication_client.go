@@ -153,7 +153,7 @@ func (client *Client) GetLoginStateByAuthCode(params *CodeToTokenParams) (*Login
 	}
 	// dataStr := string(res.Header.Peek("Date"))
 	// serverTime, _ := http.ParseTime(dataStr)
-	fmt.Println(string(res.Body))
+	// fmt.Println(string(res.Body))
 	return client.buildLoginState(res.Body)
 }
 
