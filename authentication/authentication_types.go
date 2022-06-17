@@ -60,13 +60,6 @@ type CodeToTokenParams struct {
 	Nonce       string
 }
 
-// type RefreshTokenParams struct {
-// 	grant_type    string //'refresh_token'
-// 	client_id     string
-// 	client_secret string
-// 	refresh_token string
-// }
-
 type LoginState struct {
 	AccessToken       string `json:"access_token"`
 	IDToken           string `json:"id_token"`
@@ -77,11 +70,7 @@ type LoginState struct {
 	ParsedAccessToken *AccessTokenClaims
 }
 
-// type LoginTransaction struct {
-// 	state       string
-// 	nonce       string
-// 	redirectUri string
-// }
+
 type UserInfoCommon struct {
 	Name              string `json:"name,omitempty"`
 	Nickname          string `json:"nickname,omitempty"`
@@ -96,27 +85,15 @@ type UserInfoCommon struct {
 	Locale            string `json:"locale,omitempty"`
 }
 type UserInfo struct { // TODO 允许扩展
-	Sub string `json:"sub,omitempty"`
+	Subject string `json:"sub,omitempty"` // 用户 ID
 	UserInfoCommon
 }
 
-type TokenCommon struct {
-	Sub string `json:"sub,omitempty"`
-	Aud string `json:"aud,omitempty"`
-	Exp uint64 `json:"exp,omitempty"`
-	Iat uint64 `json:"iat,omitempty"`
-	Iss string `json:"iss,omitempty"`
-	Jti string `json:"jti,omitempty"`
-}
+
 type IDTokenExtended struct {
 	Nonce  string `json:"nonce,omitempty"`
 	AtHash string `json:"at_hash,omitempty"`
 	SHash  string `json:"s_hash,omitempty"`
-}
-type IDToken struct {
-	UserInfoCommon //扩展自UserInfo
-	TokenCommon
-	IDTokenExtended
 }
 
 type IDTokenClaims struct {
@@ -127,10 +104,7 @@ type IDTokenClaims struct {
 type AccessTokenExtended struct {
 	Scope string `json:"scope,omitempty"`
 }
-type AccessToken struct {
-	TokenCommon
-	AccessTokenExtended
-}
+
 
 type AccessTokenClaims struct {
 	jwt.StandardClaims
