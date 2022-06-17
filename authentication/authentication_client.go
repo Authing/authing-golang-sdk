@@ -151,10 +151,15 @@ func (client *Client) GetLoginStateByAuthCode(params *CodeToTokenParams) (*Login
 	if res.StatusCode != 200 {
 		return nil, fmt.Errorf("根据code获取token失败[%d]:%s", res.StatusCode, res.Body)
 	}
-	// dataStr := string(res.Header.Peek("Date"))
-	// serverTime, _ := http.ParseTime(dataStr)
-	// fmt.Println(string(res.Body))
-	return client.buildLoginState(res.Body)
+	var loginState *LoginState
+	loginState, err = client.buildLoginState(res.Body)
+	if err != nil {
+		return nil, err
+	}
+	if params.Nonce != "" && loginState.ParsedIDToken.Nonce != params.Nonce {
+		return nil, errors.New("nonce 参数不匹配")
+	}
+	return loginState, nil
 }
 
 func (client *Client) getKeyCommon(token *jwt.Token) (interface{}, error) {
@@ -217,7 +222,7 @@ func (client *Client) buildLoginState(bytes []byte) (*LoginState, error) {
 	var second time.Duration = time.Duration(loginState.ExpiresIn) * time.Second
 	var date time.Time = time.Now()
 	loginState.ExpireAt = date.Add(second)
-	loginState.ParsedIDToken, err = client.ParsedIDToken(loginState.IdToken)
+	loginState.ParsedIDToken, err = client.ParsedIDToken(loginState.IDToken)
 	if err != nil {
 		return nil, err
 	}
@@ -286,7 +291,7 @@ func (client *Client) BuildLogoutUrl(params *LogoutURLParams) (string, error) {
 		params = &LogoutURLParams{}
 	}
 	idToken := params.IDTokenHint
-	redirectUri := params.RedirectUri
+	redirectUri := params.PostLogoutRedirectUri
 	if redirectUri == "" {
 		redirectUri = client.logoutRedirectUri
 	}

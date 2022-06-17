@@ -57,6 +57,7 @@ type AuthURLParams struct {
 type CodeToTokenParams struct {
 	Code        string
 	RedirectUri string
+	Nonce       string
 }
 
 // type RefreshTokenParams struct {
@@ -68,7 +69,7 @@ type CodeToTokenParams struct {
 
 type LoginState struct {
 	AccessToken       string `json:"access_token"`
-	IdToken           string `json:"id_token"`
+	IDToken           string `json:"id_token"`
 	RefreshToken      string `json:"refresh_token"` //可选
 	ExpiresIn         uint64 `json:"expires_in"`
 	ExpireAt          time.Time
@@ -137,7 +138,7 @@ type AccessTokenClaims struct {
 }
 
 type LogoutURLParams struct {
-	RedirectUri string // 可选
-	IDTokenHint string // 可选
-	State       string // 可选
+	PostLogoutRedirectUri string // 可选
+	IDTokenHint           string // 可选
+	State                 string // 可选
 }
