@@ -5,8 +5,8 @@ const (
 
 	TokenCacheKeyPrefix = "accessKeyId_token_"
 
-	SdkName = "go-sdk"
-	SdkVersion = "1.0.0"
+	SdkName = "SDK"
+	SdkVersion = "golang:5.0.0"
 
 	DefaultScope = "openid profile"
 )
