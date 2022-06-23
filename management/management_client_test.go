@@ -947,6 +947,16 @@ func TestClient_GetUserAuthorizedResources(t *testing.T) {
 
 }
 
+func TestClient_GetAuthorizedResources(t *testing.T) {
+	response := client.GetAuthorizedResources(&dto.GetAuthorizedResourcesDto{
+		TargetType:       "USER",
+		TargetIdentifier: "sdfs",
+		Namespace:        "default",
+		WithDenied:       false,
+	})
+	fmt.Println(response)
+}
+
 func TestClient_GetPrincipalAuthenticationInfo(t *testing.T) {
 	request := dto.GetUserPrincipalAuthenticationInfoDto{
 		UserId: "611a149db64310ca4764ab15",
