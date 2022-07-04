@@ -103,7 +103,7 @@ func main() {
 }
 ```
 
-完整的接口列表，你可以在 [Authing Open API](https://api.authing.cn/openapi/) 和 [SDK 文档](https://authing-open-api.readme.io/reference/go) 中获取。
+完整的接口列表，你可以在 [Authing Open API](https://api.authing.cn/openapi/) 和 [SDK 文档](https://docs.authing.cn/v2/reference-new/sdk-v5/go/install.html) 中获取。
 
 ## 错误处理
 
@@ -190,7 +190,7 @@ func main() {
 - [官网](https://authing.cn)
 - [开发者文档](https://docs.authing.cn/)
 - [Authing Open API](https://api.authing.cn/openapi/)
-- [SDK 文档](https://authing-open-api.readme.io/reference/nodejs)
+- [SDK 文档](https://docs.authing.cn/v2/reference-new/sdk-v5/go/install.html)
 - [论坛社区](https://forum.authing.cn/)
 
 ## 获取帮助
