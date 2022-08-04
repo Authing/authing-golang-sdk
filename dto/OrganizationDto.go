@@ -9,5 +9,6 @@ type OrganizationDto struct {
 	HasChildren      bool                    `json:"hasChildren"`
 	LeaderUserIds    []string                `json:"leaderUserIds,omitempty"`
 	MembersCount     int                     `json:"membersCount"`
+	IsVirtualNode    bool                    `json:"isVirtualNode"`
 	I18n             OrganizationNameI18nDto `json:"i18n,omitempty"`
 }

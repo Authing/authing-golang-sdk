@@ -492,7 +492,7 @@ func TestClient_CreateUserBatch(t *testing.T) {
 		},
 		Options: dto.CreateUserOptionsDto{},
 	}
-	response := client.CreateUserBatch(&request)
+	response := client.CreateUsersBatch(&request)
 	fmt.Println(response)
 
 }
@@ -733,7 +733,7 @@ func TestClient_SetUserDepartment(t *testing.T) {
 		Departments: departments,
 		UserId:      "611a149db64310ca4764ab15",
 	}
-	response := client.SetUserDepartment(&request)
+	response := client.SetUserDepartments(&request)
 	fmt.Println(response)
 
 }
@@ -904,7 +904,7 @@ func TestClient_GetUserLoggedInApps(t *testing.T) {
 	request := dto.GetUserLoggedinAppsDto{
 		UserId: "611a149db64310ca4764ab15",
 	}
-	response := client.GetUserLoggedInApps(&request)
+	response := client.GetUserLoggedinApps(&request)
 	fmt.Println(response)
 
 }

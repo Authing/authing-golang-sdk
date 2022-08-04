@@ -1,7 +1,7 @@
 package dto
 
 type DeleteDepartmentReqDto struct {
-	OrganizationCode string `json:"organizationCode"`
 	DepartmentId     string `json:"departmentId"`
+	OrganizationCode string `json:"organizationCode"`
 	DepartmentIdType string `json:"departmentIdType,omitempty"`
 }

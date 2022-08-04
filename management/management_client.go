@@ -3,14 +3,13 @@ package management
 import (
 	"encoding/json"
 	"fmt"
-
 	"github.com/Authing/authing-golang-sdk/dto"
 	"github.com/valyala/fasthttp"
 )
 
 /*
  * @summary 获取 Management API Token
- * @description 获取 Management API Token
+ * @description 通过 AccessKey ID 与 AccessKey Secret 获取 Management API Token，此 Token 可以用来操作 Management API。
  * @param requestBody
  * @returns GetManagementTokenRespDto
  */
@@ -31,15 +30,12 @@ func (c *Client) GetManagementToken(reqDto *dto.GetManagementAccessTokenDto) *dt
 
 /*
  * @summary 获取用户信息
- * @description 通过 id、username、email、phone、email、externalId 获取用户详情
+ * @description 通过用户 ID，获取用户详情，可以选择获取自定义数据、identities、选择指定用户 ID 类型等。
  * @param userId 用户 ID
+ * @param userIdType 用户 ID 类型，可以指定为用户 ID、手机号、邮箱、用户名和 externalId。
  * @param withCustomData 是否获取自定义数据
  * @param withIdentities 是否获取 identities
  * @param withDepartmentIds 是否获取部门 ID 列表
- * @param phone 手机号
- * @param email 邮箱
- * @param username 用户名
- * @param externalId 原系统 ID
  * @returns UserSingleRespDto
  */
 func (c *Client) GetUser(reqDto *dto.GetUserDto) *dto.UserSingleRespDto {
@@ -59,8 +55,9 @@ func (c *Client) GetUser(reqDto *dto.GetUserDto) *dto.UserSingleRespDto {
 
 /*
  * @summary 批量获取用户信息
- * @description 根据用户 id 批量获取用户信息
+ * @description 通过用户 ID 列表，批量获取用户信息，可以选择获取自定义数据、identities、选择指定用户 ID 类型等。
  * @param userIds 用户 ID 数组
+ * @param userIdType 用户 ID 类型，可以指定为用户 ID、手机号、邮箱、用户名和 externalId。
  * @param withCustomData 是否获取自定义数据
  * @param withIdentities 是否获取 identities
  * @param withDepartmentIds 是否获取部门 ID 列表
@@ -83,9 +80,12 @@ func (c *Client) GetUserBatch(reqDto *dto.GetUserBatchDto) *dto.UserListRespDto 
 
 /*
  * @summary 获取用户列表
- * @description 获取用户列表接口，支持分页
+ * @description 获取用户列表接口，支持分页，可以选择获取自定义数据、identities 等。
  * @param page 当前页数，从 1 开始
  * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @param status 账户当前状态，如 已停用、已离职、正常状态、已归档
+ * @param updatedAtStart 用户创建、修改开始时间，为精确到秒的 UNIX 时间戳；支持获取从某一段时间之后的增量数据
+ * @param updatedAtEnd 用户创建、修改终止时间，为精确到秒的 UNIX 时间戳；支持获取某一段时间内的增量数据。默认为当前时间
  * @param withCustomData 是否获取自定义数据
  * @param withIdentities 是否获取 identities
  * @param withDepartmentIds 是否获取部门 ID 列表
@@ -108,8 +108,9 @@ func (c *Client) ListUsers(reqDto *dto.ListUsersDto) *dto.UserPaginatedRespDto {
 
 /*
  * @summary 获取用户的外部身份源
- * @description 获取用户的外部身份源
+ * @description 通过用户 ID，获取用户的外部身份源、选择指定用户 ID 类型。
  * @param userId 用户 ID
+ * @param userIdType 用户 ID 类型，可以指定为用户 ID、手机号、邮箱、用户名和 externalId。
  * @returns IdentityListRespDto
  */
 func (c *Client) GetUserIdentities(reqDto *dto.GetUserIdentitiesDto) *dto.IdentityListRespDto {
@@ -129,8 +130,9 @@ func (c *Client) GetUserIdentities(reqDto *dto.GetUserIdentitiesDto) *dto.Identi
 
 /*
  * @summary 获取用户角色列表
- * @description 获取用户角色列表
+ * @description 通过用户 ID，获取用户角色列表，可以选择所属权限分组 code、选择指定用户 ID 类型等。
  * @param userId 用户 ID
+ * @param userIdType 用户 ID 类型，可以指定为用户 ID、手机号、邮箱、用户名和 externalId。
  * @param namespace 所属权限分组的 code
  * @returns RolePaginatedRespDto
  */
@@ -151,8 +153,9 @@ func (c *Client) GetUserRoles(reqDto *dto.GetUserRolesDto) *dto.RolePaginatedRes
 
 /*
  * @summary 获取用户实名认证信息
- * @description 获取用户实名认证信息
+ * @description 通过用户 ID，获取用户实名认证信息，可以选择指定用户 ID 类型。
  * @param userId 用户 ID
+ * @param userIdType 用户 ID 类型，可以指定为用户 ID、手机号、邮箱、用户名和 externalId。
  * @returns PrincipalAuthenticationInfoPaginatedRespDto
  */
 func (c *Client) GetUserPrincipalAuthenticationInfo(reqDto *dto.GetUserPrincipalAuthenticationInfoDto) *dto.PrincipalAuthenticationInfoPaginatedRespDto {
@@ -172,7 +175,7 @@ func (c *Client) GetUserPrincipalAuthenticationInfo(reqDto *dto.GetUserPrincipal
 
 /*
  * @summary 删除用户实名认证信息
- * @description 删除用户实名认证信息
+ * @description 通过用户 ID，删除用户实名认证信息，可以选择指定用户 ID 类型等。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -193,8 +196,14 @@ func (c *Client) ResetUserPrincipalAuthenticationInfo(reqDto *dto.ResetUserPrinc
 
 /*
  * @summary 获取用户部门列表
- * @description 获取用户部门列表
+ * @description 通过用户 ID，获取用户部门列表，支持分页，可以选择获取自定义数据、选择指定用户 ID 类型、增序或降序等。
  * @param userId 用户 ID
+ * @param userIdType 用户 ID 类型，可以指定为用户 ID、手机号、邮箱、用户名和 externalId。
+ * @param page 当前页数，从 1 开始
+ * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @param withCustomData 是否获取自定义数据
+ * @param sortBy 排序依据，如 部门创建时间、加入部门时间、部门名称、部门标志符
+ * @param orderBy 增序或降序
  * @returns UserDepartmentPaginatedRespDto
  */
 func (c *Client) GetUserDepartments(reqDto *dto.GetUserDepartmentsDto) *dto.UserDepartmentPaginatedRespDto {
@@ -214,11 +223,11 @@ func (c *Client) GetUserDepartments(reqDto *dto.GetUserDepartmentsDto) *dto.User
 
 /*
  * @summary 设置用户所在部门
- * @description 设置用户所在部门
+ * @description 通过用户 ID，设置用户所在部门，可以选择指定用户 ID 类型等。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (c *Client) SetUserDepartment(reqDto *dto.SetUserDepartmentsDto) *dto.IsSuccessRespDto {
+func (c *Client) SetUserDepartments(reqDto *dto.SetUserDepartmentsDto) *dto.IsSuccessRespDto {
 	b, err := c.SendHttpRequest("/api/v3/set-user-departments", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
@@ -235,8 +244,9 @@ func (c *Client) SetUserDepartment(reqDto *dto.SetUserDepartmentsDto) *dto.IsSuc
 
 /*
  * @summary 获取用户分组列表
- * @description 获取用户分组列表
+ * @description 通过用户 ID，获取用户分组列表，可以选择指定用户 ID 类型等。
  * @param userId 用户 ID
+ * @param userIdType 用户 ID 类型，可以指定为用户 ID、手机号、邮箱、用户名和 externalId。
  * @returns GroupPaginatedRespDto
  */
 func (c *Client) GetUserGroups(reqDto *dto.GetUserGroupsDto) *dto.GroupPaginatedRespDto {
@@ -256,7 +266,7 @@ func (c *Client) GetUserGroups(reqDto *dto.GetUserGroupsDto) *dto.GroupPaginated
 
 /*
  * @summary 删除用户
- * @description 删除用户（支持批量删除）
+ * @description 通过用户 ID 列表，删除用户，支持批量删除，可以选择指定用户 ID 类型等。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -277,8 +287,9 @@ func (c *Client) DeleteUsersBatch(reqDto *dto.DeleteUsersBatchDto) *dto.IsSucces
 
 /*
  * @summary 获取用户 MFA 绑定信息
- * @description 获取用户 MFA 绑定信息
+ * @description 通过用户 ID，获取用户 MFA 绑定信息，可以选择指定用户 ID 类型等。
  * @param userId 用户 ID
+ * @param userIdType 用户 ID 类型，可以指定为用户 ID、手机号、邮箱、用户名和 externalId。
  * @returns UserMfaSingleRespDto
  */
 func (c *Client) GetUserMfaInfo(reqDto *dto.GetUserMfaInfoDto) *dto.UserMfaSingleRespDto {
@@ -298,9 +309,10 @@ func (c *Client) GetUserMfaInfo(reqDto *dto.GetUserMfaInfoDto) *dto.UserMfaSingl
 
 /*
  * @summary 获取已归档的用户列表
- * @description 获取已归档的用户列表
+ * @description 获取已归档的用户列表，支持分页，可以筛选开始时间等。
  * @param page 当前页数，从 1 开始
  * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @param startAt 开始时间，为精确到秒的 UNIX 时间戳，默认不指定
  * @returns ListArchivedUsersSingleRespDto
  */
 func (c *Client) ListArchivedUsers(reqDto *dto.ListArchivedUsersDto) *dto.ListArchivedUsersSingleRespDto {
@@ -320,7 +332,7 @@ func (c *Client) ListArchivedUsers(reqDto *dto.ListArchivedUsersDto) *dto.ListAr
 
 /*
  * @summary 强制下线用户
- * @description 强制下线用户
+ * @description 通过用户 ID、App ID 列表，强制让用户下线，可以选择指定用户 ID 类型等。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -341,7 +353,7 @@ func (c *Client) KickUsers(reqDto *dto.KickUsersDto) *dto.IsSuccessRespDto {
 
 /*
  * @summary 判断用户是否存在
- * @description 根据条件判断用户是否存在
+ * @description 根据条件判断用户是否存在，可以筛选用户名、邮箱、手机号、第三方外部 ID 等。
  * @param requestBody
  * @returns IsUserExistsRespDto
  */
@@ -362,7 +374,7 @@ func (c *Client) IsUserExists(reqDto *dto.IsUserExistsReqDto) *dto.IsUserExistsR
 
 /*
  * @summary 创建用户
- * @description 创建用户，邮箱、手机号、用户名必须包含其中一个
+ * @description 创建用户，邮箱、手机号、用户名必须包含其中一个，邮箱、手机号、用户名、externalId 用户池内唯一，此接口将以管理员身份创建用户因此不需要进行手机号验证码检验等安全检测。
  * @param requestBody
  * @returns UserSingleRespDto
  */
@@ -383,11 +395,11 @@ func (c *Client) CreateUser(reqDto *dto.CreateUserReqDto) *dto.UserSingleRespDto
 
 /*
  * @summary 批量创建用户
- * @description 此接口将以管理员身份批量创建用户，不需要进行手机号验证码检验等安全检测。用户的手机号、邮箱、用户名、externalId 用户池内唯一。
+ * @description 批量创建用户，邮箱、手机号、用户名必须包含其中一个，邮箱、手机号、用户名、externalId 用户池内唯一，此接口将以管理员身份批量创建用户因此不需要进行手机号验证码检验等安全检测。
  * @param requestBody
  * @returns UserListRespDto
  */
-func (c *Client) CreateUserBatch(reqDto *dto.CreateUserBatchReqDto) *dto.UserListRespDto {
+func (c *Client) CreateUsersBatch(reqDto *dto.CreateUserBatchReqDto) *dto.UserListRespDto {
 	b, err := c.SendHttpRequest("/api/v3/create-users-batch", fasthttp.MethodPost, reqDto)
 	var response dto.UserListRespDto
 	if err != nil {
@@ -404,7 +416,7 @@ func (c *Client) CreateUserBatch(reqDto *dto.CreateUserBatchReqDto) *dto.UserLis
 
 /*
  * @summary 修改用户资料
- * @description 修改用户资料
+ * @description 通过用户 ID，修改用户资料，邮箱、手机号、用户名、externalId 用户池内唯一，此接口将以管理员身份修改用户资料因此不需要进行手机号验证码检验等安全检测。
  * @param requestBody
  * @returns UserSingleRespDto
  */
@@ -424,9 +436,10 @@ func (c *Client) UpdateUser(reqDto *dto.UpdateUserReqDto) *dto.UserSingleRespDto
 }
 
 /*
- * @summary 获取用户可访问应用
- * @description 获取用户可访问应用
+ * @summary 获取用户可访问的应用
+ * @description 通过用户 ID，获取用户可访问的应用，可以选择指定用户 ID 类型等。
  * @param userId 用户 ID
+ * @param userIdType 用户 ID 类型，可以指定为用户 ID、手机号、邮箱、用户名和 externalId。
  * @returns AppListRespDto
  */
 func (c *Client) GetUserAccessibleApps(reqDto *dto.GetUserAccessibleAppsDto) *dto.AppListRespDto {
@@ -446,8 +459,9 @@ func (c *Client) GetUserAccessibleApps(reqDto *dto.GetUserAccessibleAppsDto) *dt
 
 /*
  * @summary 获取用户授权的应用
- * @description 获取用户授权的应用
+ * @description 通过用户 ID，获取用户授权的应用，可以选择指定用户 ID 类型等。
  * @param userId 用户 ID
+ * @param userIdType 用户 ID 类型，可以指定为用户 ID、手机号、邮箱、用户名和 externalId。
  * @returns AppListRespDto
  */
 func (c *Client) GetUserAuthorizedApps(reqDto *dto.GetUserAuthorizedAppsDto) *dto.AppListRespDto {
@@ -467,7 +481,7 @@ func (c *Client) GetUserAuthorizedApps(reqDto *dto.GetUserAuthorizedAppsDto) *dt
 
 /*
  * @summary 判断用户是否有某个角色
- * @description 判断用户是否有某个角色，支持同时传入多个角色进行判断
+ * @description 通过用户 ID，判断用户是否有某个角色，支持传入多个角色，可以选择指定用户 ID 类型等。
  * @param requestBody
  * @returns HasAnyRoleRespDto
  */
@@ -488,8 +502,9 @@ func (c *Client) HasAnyRole(reqDto *dto.HasAnyRoleReqDto) *dto.HasAnyRoleRespDto
 
 /*
  * @summary 获取用户的登录历史记录
- * @description 获取用户登录历史记录
+ * @description 通过用户 ID，获取用户登录历史记录，支持分页，可以选择指定用户 ID 类型、应用 ID、开始与结束时间戳等。
  * @param userId 用户 ID
+ * @param userIdType 用户 ID 类型，可以指定为用户 ID、手机号、邮箱、用户名和 externalId。
  * @param appId 应用 ID
  * @param clientIp 客户端 IP
  * @param start 开始时间戳（毫秒）
@@ -514,12 +529,13 @@ func (c *Client) GetUserLoginHistory(reqDto *dto.GetUserLoginHistoryDto) *dto.Us
 }
 
 /*
- * @summary 获取用户曾经登录过的应用
+ * @summary 通过用户 ID，获取用户曾经登录过的应用，可以选择指定用户 ID 类型等。
  * @description 获取用户曾经登录过的应用
  * @param userId 用户 ID
+ * @param userIdType 用户 ID 类型，可以指定为用户 ID、手机号、邮箱、用户名和 externalId。
  * @returns UserLoggedInAppsListRespDto
  */
-func (c *Client) GetUserLoggedInApps(reqDto *dto.GetUserLoggedinAppsDto) *dto.UserLoggedInAppsListRespDto {
+func (c *Client) GetUserLoggedinApps(reqDto *dto.GetUserLoggedinAppsDto) *dto.UserLoggedInAppsListRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-user-loggedin-apps", fasthttp.MethodGet, reqDto)
 	var response dto.UserLoggedInAppsListRespDto
 	if err != nil {
@@ -535,12 +551,13 @@ func (c *Client) GetUserLoggedInApps(reqDto *dto.GetUserLoggedinAppsDto) *dto.Us
 }
 
 /*
- * @summary 获取用户曾经登录过的身份源
+ * @summary 通过用户 ID，获取用户曾经登录过的身份源，可以选择指定用户 ID 类型等。
  * @description 获取用户曾经登录过的身份源
  * @param userId 用户 ID
+ * @param userIdType 用户 ID 类型，可以指定为用户 ID、手机号、邮箱、用户名和 externalId。
  * @returns UserLoggedInIdentitiesRespDto
  */
-func (c *Client) GetUserLoggedInIdentities(reqDto *dto.GetUserLoggedInIdentitiesDto) *dto.UserLoggedInIdentitiesRespDto {
+func (c *Client) GetUserLoggedinIdentities(reqDto *dto.GetUserLoggedInIdentitiesDto) *dto.UserLoggedInIdentitiesRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-user-logged-in-identities", fasthttp.MethodGet, reqDto)
 	var response dto.UserLoggedInIdentitiesRespDto
 	if err != nil {
@@ -557,10 +574,11 @@ func (c *Client) GetUserLoggedInIdentities(reqDto *dto.GetUserLoggedInIdentities
 
 /*
  * @summary 获取用户被授权的所有资源
- * @description 获取用户被授权的所有资源，用户被授权的资源是用户自身被授予、通过分组继承、通过角色继承、通过组织机构继承的集合
+ * @description 通过用户 ID，获取用户被授权的所有资源，可以选择指定用户 ID 类型等，用户被授权的资源是用户自身被授予、通过分组继承、通过角色继承、通过组织机构继承的集合。
  * @param userId 用户 ID
+ * @param userIdType 用户 ID 类型，可以指定为用户 ID、手机号、邮箱、用户名和 externalId。
  * @param namespace 所属权限分组的 code
- * @param resourceType 资源类型
+ * @param resourceType 资源类型，如 数据、API、菜单、按钮
  * @returns AuthorizedResourcePaginatedRespDto
  */
 func (c *Client) GetUserAuthorizedResources(reqDto *dto.GetUserAuthorizedResourcesDto) *dto.AuthorizedResourcePaginatedRespDto {
@@ -580,7 +598,7 @@ func (c *Client) GetUserAuthorizedResources(reqDto *dto.GetUserAuthorizedResourc
 
 /*
  * @summary 获取分组详情
- * @description 获取分组详情，通过 code 唯一标志用户池中的一个分组
+ * @description 通过分组 code，获取分组详情。
  * @param code 分组 code
  * @returns GroupSingleRespDto
  */
@@ -601,7 +619,8 @@ func (c *Client) GetGroup(reqDto *dto.GetGroupDto) *dto.GroupSingleRespDto {
 
 /*
  * @summary 获取分组列表
- * @description 获取分组列表接口，支持分页
+ * @description 获取分组列表，支持分页。
+ * @param keywords 搜索分组 code 或分组名称
  * @param page 当前页数，从 1 开始
  * @param limit 每页数目，最大不能超过 50，默认为 10
  * @returns GroupPaginatedRespDto
@@ -623,7 +642,7 @@ func (c *Client) ListGroups(reqDto *dto.ListGroupsDto) *dto.GroupPaginatedRespDt
 
 /*
  * @summary 创建分组
- * @description 创建分组，一个分组必须包含一个用户池全局唯一的标志符（code），此标志符必须为一个合法的英文标志符，如 developers；以及分组名称
+ * @description 创建分组，一个分组必须包含分组名称与唯一标志符 code，且必须为一个合法的英文标志符，如 developers。
  * @param requestBody
  * @returns GroupSingleRespDto
  */
@@ -644,7 +663,7 @@ func (c *Client) CreateGroup(reqDto *dto.CreateGroupReqDto) *dto.GroupSingleResp
 
 /*
  * @summary 批量创建分组
- * @description 批量创建分组
+ * @description 批量创建分组，一个分组必须包含分组名称与唯一标志符 code，且必须为一个合法的英文标志符，如 developers。
  * @param requestBody
  * @returns GroupListRespDto
  */
@@ -665,7 +684,7 @@ func (c *Client) CreateGroupsBatch(reqDto *dto.CreateGroupBatchReqDto) *dto.Grou
 
 /*
  * @summary 修改分组
- * @description 修改分组，通过 code 唯一标志用户池中的一个分组。你可以修改此分组的 code
+ * @description 通过分组 code，修改分组，可以修改此分组的 code。
  * @param requestBody
  * @returns GroupSingleRespDto
  */
@@ -686,7 +705,7 @@ func (c *Client) UpdateGroup(reqDto *dto.UpdateGroupReqDto) *dto.GroupSingleResp
 
 /*
  * @summary 批量删除分组
- * @description 批量删除分组
+ * @description 通过分组 code，批量删除分组。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -707,7 +726,7 @@ func (c *Client) DeleteGroupsBatch(reqDto *dto.DeleteGroupsReqDto) *dto.IsSucces
 
 /*
  * @summary 添加分组成员
- * @description 添加分组成员
+ * @description 添加分组成员，成员以用户 ID 数组形式传递。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -728,7 +747,7 @@ func (c *Client) AddGroupMembers(reqDto *dto.AddGroupMembersReqDto) *dto.IsSucce
 
 /*
  * @summary 批量移除分组成员
- * @description 批量移除分组成员
+ * @description 批量移除分组成员，成员以用户 ID 数组形式传递。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -749,7 +768,7 @@ func (c *Client) RemoveGroupMembers(reqDto *dto.RemoveGroupMembersReqDto) *dto.I
 
 /*
  * @summary 获取分组成员列表
- * @description 获取分组成员列表
+ * @description 通过分组 code，获取分组成员列表，支持分页，可以获取自定义数据、identities、部门 ID 列表。
  * @param code 分组 code
  * @param page 当前页数，从 1 开始
  * @param limit 每页数目，最大不能超过 50，默认为 10
@@ -775,7 +794,7 @@ func (c *Client) ListGroupMembers(reqDto *dto.ListGroupMembersDto) *dto.UserPagi
 
 /*
  * @summary 获取分组被授权的资源列表
- * @description 获取分组被授权的资源列表
+ * @description 通过分组 code，获取分组被授权的资源列表，可以通过资源类型、权限分组 code 筛选。
  * @param code 分组 code
  * @param namespace 所属权限分组的 code
  * @param resourceType 资源类型
@@ -798,7 +817,7 @@ func (c *Client) GetGroupAuthorizedResources(reqDto *dto.GetGroupAuthorizedResou
 
 /*
  * @summary 获取角色详情
- * @description 获取角色详情
+ * @description 通过权限分组内角色 code，获取角色详情。
  * @param code 权限分组内角色的唯一标识符
  * @param namespace 所属权限分组的 code
  * @returns RoleSingleRespDto
@@ -820,7 +839,7 @@ func (c *Client) GetRole(reqDto *dto.GetRoleDto) *dto.RoleSingleRespDto {
 
 /*
  * @summary 分配角色
- * @description 分配角色，被分配者可以是用户，可以是部门
+ * @description 通过权限分组内角色 code，分配角色，被分配者可以是用户或部门。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -841,7 +860,7 @@ func (c *Client) AssignRole(reqDto *dto.AssignRoleDto) *dto.IsSuccessRespDto {
 
 /*
  * @summary 移除分配的角色
- * @description 移除分配的角色，被分配者可以是用户，可以是部门
+ * @description 通过权限分组内角色 code，移除分配的角色，被分配者可以是用户或部门。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -861,11 +880,11 @@ func (c *Client) RevokeRole(reqDto *dto.RevokeRoleDto) *dto.IsSuccessRespDto {
 }
 
 /*
- * @summary 角色被授权的资源列表
- * @description 角色被授权的资源列表
+ * @summary 获取角色被授权的资源列表
+ * @description 通过权限分组内角色 code，获取角色被授权的资源列表。
  * @param code 权限分组内角色的唯一标识符
  * @param namespace 所属权限分组的 code
- * @param resourceType 资源类型
+ * @param resourceType 资源类型，如 数据、API、按钮、菜单
  * @returns RoleAuthorizedResourcePaginatedRespDto
  */
 func (c *Client) GetRoleAuthorizedResources(reqDto *dto.GetRoleAuthorizedResourcesDto) *dto.RoleAuthorizedResourcePaginatedRespDto {
@@ -885,7 +904,7 @@ func (c *Client) GetRoleAuthorizedResources(reqDto *dto.GetRoleAuthorizedResourc
 
 /*
  * @summary 获取角色成员列表
- * @description 获取角色成员列表
+ * @description 通过权限分组内内角色 code，获取角色成员列表，支持分页，可以选择或获取自定义数据、identities 等。
  * @param code 权限分组内角色的唯一标识符
  * @param page 当前页数，从 1 开始
  * @param limit 每页数目，最大不能超过 50，默认为 10
@@ -912,7 +931,7 @@ func (c *Client) ListRoleMembers(reqDto *dto.ListRoleMembersDto) *dto.UserPagina
 
 /*
  * @summary 获取角色的部门列表
- * @description 获取角色的部门列表
+ * @description 通过权限分组内角色 code，获取角色的部门列表，支持分页。
  * @param code 权限分组内角色的唯一标识符
  * @param namespace 所属权限分组的 code
  * @param page 当前页数，从 1 开始
@@ -936,7 +955,7 @@ func (c *Client) ListRoleDepartments(reqDto *dto.ListRoleDepartmentsDto) *dto.Ro
 
 /*
  * @summary 创建角色
- * @description 创建角色，可以指定不同的权限分组
+ * @description 通过权限分组内角色 code，创建角色，可以选择权限分组、角色描述等。
  * @param requestBody
  * @returns RoleSingleRespDto
  */
@@ -957,7 +976,8 @@ func (c *Client) CreateRole(reqDto *dto.CreateRoleDto) *dto.RoleSingleRespDto {
 
 /*
  * @summary 获取角色列表
- * @description 获取角色列表
+ * @description 获取角色列表，支持分页。
+ * @param keywords 搜索角色 code
  * @param namespace 所属权限分组的 code
  * @param page 当前页数，从 1 开始
  * @param limit 每页数目，最大不能超过 50，默认为 10
@@ -979,8 +999,8 @@ func (c *Client) ListRoles(reqDto *dto.ListRolesDto) *dto.RolePaginatedRespDto {
 }
 
 /*
- * @summary （批量）删除角色
- * @description 删除角色
+ * @summary 删除角色
+ * @description 删除角色，可以批量删除。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1001,7 +1021,7 @@ func (c *Client) DeleteRolesBatch(reqDto *dto.DeleteRoleDto) *dto.IsSuccessRespD
 
 /*
  * @summary 批量创建角色
- * @description 批量创建角色
+ * @description 批量创建角色，可以选择权限分组、角色描述等。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1022,7 +1042,7 @@ func (c *Client) CreateRolesBatch(reqDto *dto.CreateRolesBatch) *dto.IsSuccessRe
 
 /*
  * @summary 修改角色
- * @description 修改角色
+ * @description 通过权限分组内角色新旧 code，修改角色，可以选择角色描述等。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1043,7 +1063,7 @@ func (c *Client) UpdateRole(reqDto *dto.UpdateRoleDto) *dto.IsSuccessRespDto {
 
 /*
  * @summary 获取顶层组织机构列表
- * @description 获取顶层组织机构列表
+ * @description 获取顶层组织机构列表，支持分页。
  * @param page 当前页数，从 1 开始
  * @param limit 每页数目，最大不能超过 50，默认为 10
  * @param fetchAll 拉取所有
@@ -1066,7 +1086,7 @@ func (c *Client) ListOrganizations(reqDto *dto.ListOrganizationsDto) *dto.Organi
 
 /*
  * @summary 创建顶层组织机构
- * @description 创建组织机构，会创建一个只有一个节点的组织机构
+ * @description 创建组织机构，会创建一个只有一个节点的组织机构，可以选择组织描述信息、根节点自定义 ID、多语言等。
  * @param requestBody
  * @returns OrganizationSingleRespDto
  */
@@ -1087,7 +1107,7 @@ func (c *Client) CreateOrganization(reqDto *dto.CreateOrganizationReqDto) *dto.O
 
 /*
  * @summary 修改顶层组织机构
- * @description 修改顶层组织机构
+ * @description 通过组织 code，修改顶层组织机构，可以选择部门描述、新组织 code、组织名称等。
  * @param requestBody
  * @returns OrganizationSingleRespDto
  */
@@ -1108,7 +1128,7 @@ func (c *Client) UpdateOrganization(reqDto *dto.UpdateOrganizationReqDto) *dto.O
 
 /*
  * @summary 删除组织机构
- * @description 删除组织机构树
+ * @description 通过组织 code，删除组织机构树。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1128,11 +1148,36 @@ func (c *Client) DeleteOrganization(reqDto *dto.DeleteOrganizationReqDto) *dto.I
 }
 
 /*
+ * @summary 搜索顶层组织机构列表
+ * @description 通过搜索关键词，搜索顶层组织机构列表，支持分页。
+ * @param keywords 搜索关键词，如组织机构名称
+ * @param page 当前页数，从 1 开始
+ * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @returns OrganizationPaginatedRespDto
+ */
+func (c *Client) SearchOrganizations(reqDto *dto.SearchOrganizationsDto) *dto.OrganizationPaginatedRespDto {
+	b, err := c.SendHttpRequest("/api/v3/search-organizations", fasthttp.MethodGet, reqDto)
+	var response dto.OrganizationPaginatedRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
  * @summary 获取部门信息
- * @description 获取部门信息
+ * @description 通过组织 code 以及 部门 ID 或 部门 code，获取部门信息，可以获取自定义数据。
  * @param organizationCode 组织 code
- * @param departmentId 部门 id，根部门传 `root`
+ * @param departmentId 部门 ID，根部门传 `root`。departmentId 和 departmentCode 必传其一。
+ * @param departmentCode 部门 code。departmentId 和 departmentCode 必传其一。
  * @param departmentIdType 此次调用中使用的部门 ID 的类型
+ * @param withCustomData 是否获取自定义数据
  * @returns DepartmentSingleRespDto
  */
 func (c *Client) GetDepartment(reqDto *dto.GetDepartmentDto) *dto.DepartmentSingleRespDto {
@@ -1152,7 +1197,7 @@ func (c *Client) GetDepartment(reqDto *dto.GetDepartmentDto) *dto.DepartmentSing
 
 /*
  * @summary 创建部门
- * @description 创建部门
+ * @description 通过组织 code、部门名称、父部门 ID，创建部门，可以设置多种参数。
  * @param requestBody
  * @returns DepartmentSingleRespDto
  */
@@ -1173,7 +1218,7 @@ func (c *Client) CreateDepartment(reqDto *dto.CreateDepartmentReqDto) *dto.Depar
 
 /*
  * @summary 修改部门
- * @description 修改部门
+ * @description 通过组织 code、部门 ID，修改部门，可以设置多种参数。
  * @param requestBody
  * @returns DepartmentSingleRespDto
  */
@@ -1194,7 +1239,7 @@ func (c *Client) UpdateDepartment(reqDto *dto.UpdateDepartmentReqDto) *dto.Depar
 
 /*
  * @summary 删除部门
- * @description 删除部门
+ * @description 通过组织 code、部门 ID，删除部门。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1215,7 +1260,7 @@ func (c *Client) DeleteDepartment(reqDto *dto.DeleteDepartmentReqDto) *dto.IsSuc
 
 /*
  * @summary 搜索部门
- * @description 搜索部门
+ * @description 通过组织 code、搜索关键词，搜索部门，可以搜索组织名称等。
  * @param requestBody
  * @returns DepartmentListRespDto
  */
@@ -1236,10 +1281,13 @@ func (c *Client) SearchDepartments(reqDto *dto.SearchDepartmentsReqDto) *dto.Dep
 
 /*
  * @summary 获取子部门列表
- * @description 获取子部门列表
- * @param departmentId 需要获取的部门 ID
+ * @description 通过组织 code、部门 ID，获取子部门列表，可以选择获取自定义数据、虚拟组织等。
  * @param organizationCode 组织 code
+ * @param departmentId 需要获取的部门 ID
  * @param departmentIdType 此次调用中使用的部门 ID 的类型
+ * @param excludeVirtualNode 是否要排除虚拟组织
+ * @param onlyVirtualNode 是否只包含虚拟组织
+ * @param withCustomData 是否获取自定义数据
  * @returns DepartmentPaginatedRespDto
  */
 func (c *Client) ListChildrenDepartments(reqDto *dto.ListChildrenDepartmentsDto) *dto.DepartmentPaginatedRespDto {
@@ -1259,9 +1307,9 @@ func (c *Client) ListChildrenDepartments(reqDto *dto.ListChildrenDepartmentsDto)
 
 /*
  * @summary 获取部门成员列表
- * @description 获取部门成员列表
+ * @description 通过组织 code、部门 ID、排序，获取部门成员列表，支持分页，可以选择获取自定义数据、identities 等。
  * @param organizationCode 组织 code
- * @param departmentId 部门 id，根部门传 `root`
+ * @param departmentId 部门 ID，根部门传 `root`
  * @param departmentIdType 此次调用中使用的部门 ID 的类型
  * @param includeChildrenDepartments 是否包含子部门的成员
  * @param page 当前页数，从 1 开始
@@ -1269,6 +1317,8 @@ func (c *Client) ListChildrenDepartments(reqDto *dto.ListChildrenDepartmentsDto)
  * @param withCustomData 是否获取自定义数据
  * @param withIdentities 是否获取 identities
  * @param withDepartmentIds 是否获取部门 ID 列表
+ * @param sortBy 排序依据
+ * @param orderBy 增序还是倒序
  * @returns UserPaginatedRespDto
  */
 func (c *Client) ListDepartmentMembers(reqDto *dto.ListDepartmentMembersDto) *dto.UserPaginatedRespDto {
@@ -1288,9 +1338,9 @@ func (c *Client) ListDepartmentMembers(reqDto *dto.ListDepartmentMembersDto) *dt
 
 /*
  * @summary 获取部门直属成员 ID 列表
- * @description 获取部门直属成员 ID 列表
+ * @description 通过组织 code、部门 ID，获取部门直属成员 ID 列表。
  * @param organizationCode 组织 code
- * @param departmentId 部门 id，根部门传 `root`
+ * @param departmentId 部门 ID，根部门传 `root`
  * @param departmentIdType 此次调用中使用的部门 ID 的类型
  * @returns UserIdListRespDto
  */
@@ -1310,8 +1360,38 @@ func (c *Client) ListDepartmentMemberIds(reqDto *dto.ListDepartmentMemberIdsDto)
 }
 
 /*
+ * @summary 搜索部门下的成员
+ * @description 通过组织 code、部门 ID、搜索关键词，搜索部门下的成员，支持分页，可以选择获取自定义数据、identities 等。
+ * @param organizationCode 组织 code
+ * @param departmentId 部门 ID，根部门传 `root`
+ * @param keywords 搜索关键词，如成员名称
+ * @param page 当前页数，从 1 开始
+ * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @param departmentIdType 此次调用中使用的部门 ID 的类型
+ * @param includeChildrenDepartments 是否包含子部门的成员
+ * @param withCustomData 是否获取自定义数据
+ * @param withIdentities 是否获取 identities
+ * @param withDepartmentIds 是否获取部门 ID 列表
+ * @returns UserPaginatedRespDto
+ */
+func (c *Client) SearchDepartmentMembers(reqDto *dto.SearchDepartmentMembersDto) *dto.UserPaginatedRespDto {
+	b, err := c.SendHttpRequest("/api/v3/search-department-members", fasthttp.MethodGet, reqDto)
+	var response dto.UserPaginatedRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
  * @summary 部门下添加成员
- * @description 部门下添加成员
+ * @description 通过部门 ID、组织 code，添加部门下成员。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1332,7 +1412,7 @@ func (c *Client) AddDepartmentMembers(reqDto *dto.AddDepartmentMembersReqDto) *d
 
 /*
  * @summary 部门下删除成员
- * @description 部门下删除成员
+ * @description 通过部门 ID、组织 code，删除部门下成员。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1353,10 +1433,11 @@ func (c *Client) RemoveDepartmentMembers(reqDto *dto.RemoveDepartmentMembersReqD
 
 /*
  * @summary 获取父部门信息
- * @description 获取父部门信息
+ * @description 通过组织 code、部门 ID，获取父部门信息，可以选择获取自定义数据等。
  * @param organizationCode 组织 code
- * @param departmentId 部门 id
+ * @param departmentId 部门 ID
  * @param departmentIdType 此次调用中使用的部门 ID 的类型
+ * @param withCustomData 是否获取自定义数据
  * @returns DepartmentSingleRespDto
  */
 func (c *Client) GetParentDepartment(reqDto *dto.GetParentDepartmentDto) *dto.DepartmentSingleRespDto {
@@ -1375,8 +1456,33 @@ func (c *Client) GetParentDepartment(reqDto *dto.GetParentDepartmentDto) *dto.De
 }
 
 /*
+ * @summary 判断用户是否在某个部门下
+ * @description 通过组织 code、部门 ID，判断用户是否在某个部门下，可以选择包含子部门。
+ * @param userId 用户 ID
+ * @param organizationCode 组织 code
+ * @param departmentId 部门 ID，根部门传 `root`。departmentId 和 departmentCode 必传其一。
+ * @param departmentIdType 此次调用中使用的部门 ID 的类型
+ * @param includeChildrenDepartments 是否包含子部门
+ * @returns IsUserInDepartmentRespDto
+ */
+func (c *Client) IsUserInDepartment(reqDto *dto.IsUserInDepartmentDto) *dto.IsUserInDepartmentRespDto {
+	b, err := c.SendHttpRequest("/api/v3/is-user-in-department", fasthttp.MethodGet, reqDto)
+	var response dto.IsUserInDepartmentRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
  * @summary 获取身份源列表
- * @description 获取身份源列表
+ * @description 获取身份源列表，可以指定 租户 ID 筛选。
  * @param tenantId 租户 ID
  * @returns ExtIdpListPaginatedRespDto
  */
@@ -1397,8 +1503,8 @@ func (c *Client) ListExtIdp(reqDto *dto.ListExtIdpDto) *dto.ExtIdpListPaginatedR
 
 /*
  * @summary 获取身份源详情
- * @description 获取身份源详情
- * @param id 身份源 id
+ * @description 通过 身份源 ID，获取身份源详情，可以指定 租户 ID 筛选。
+ * @param id 身份源 ID
  * @param tenantId 租户 ID
  * @returns ExtIdpDetailSingleRespDto
  */
@@ -1419,7 +1525,7 @@ func (c *Client) GetExtIdp(reqDto *dto.GetExtIdpDto) *dto.ExtIdpDetailSingleResp
 
 /*
  * @summary 创建身份源
- * @description 创建身份源
+ * @description 创建身份源，可以设置身份源名称、连接类型、租户 ID 等。
  * @param requestBody
  * @returns ExtIdpSingleRespDto
  */
@@ -1440,7 +1546,7 @@ func (c *Client) CreateExtIdp(reqDto *dto.CreateExtIdpDto) *dto.ExtIdpSingleResp
 
 /*
  * @summary 更新身份源配置
- * @description 更新身份源配置
+ * @description 更新身份源配置，可以设置身份源 ID 与 名称。
  * @param requestBody
  * @returns ExtIdpSingleRespDto
  */
@@ -1461,7 +1567,7 @@ func (c *Client) UpdateExtIdp(reqDto *dto.UpdateExtIdpDto) *dto.ExtIdpSingleResp
 
 /*
  * @summary 删除身份源
- * @description 删除身份源
+ * @description 通过身份源 ID，删除身份源。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1482,7 +1588,7 @@ func (c *Client) DeleteExtIdp(reqDto *dto.DeleteExtIdpDto) *dto.IsSuccessRespDto
 
 /*
  * @summary 在某个已有身份源下创建新连接
- * @description 在某个已有身份源下创建新连接
+ * @description 在某个已有身份源下创建新连接，可以设置身份源图标、是否只支持登录等。
  * @param requestBody
  * @returns ExtIdpConnDetailSingleRespDto
  */
@@ -1503,7 +1609,7 @@ func (c *Client) CreateExtIdpConn(reqDto *dto.CreateExtIdpConnDto) *dto.ExtIdpCo
 
 /*
  * @summary 更新身份源连接
- * @description 更新身份源连接
+ * @description 更新身份源连接，可以设置身份源图标、是否只支持登录等。
  * @param requestBody
  * @returns ExtIdpConnDetailSingleRespDto
  */
@@ -1524,7 +1630,7 @@ func (c *Client) UpdateExtIdpConn(reqDto *dto.UpdateExtIdpConnDto) *dto.ExtIdpCo
 
 /*
  * @summary 删除身份源连接
- * @description 删除身份源连接
+ * @description 通过身份源连接 ID，删除身份源连接。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1545,7 +1651,7 @@ func (c *Client) DeleteExtIdpConn(reqDto *dto.DeleteExtIdpConnDto) *dto.IsSucces
 
 /*
  * @summary 身份源连接开关
- * @description 身份源连接开关
+ * @description 身份源连接开关，可以打开或关闭身份源连接。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1566,8 +1672,8 @@ func (c *Client) ChangeConnState(reqDto *dto.EnableExtIdpConnDto) *dto.IsSuccess
 
 /*
  * @summary 获取用户池配置的自定义字段列表
- * @description 获取用户池配置的自定义字段列表
- * @param targetType 主体类型，目前支持用户、角色、分组和部门
+ * @description 通过主体类型，获取用户池配置的自定义字段列表。
+ * @param targetType 主体类型，目前支持用户、角色、分组、部门
  * @returns CustomFieldListRespDto
  */
 func (c *Client) GetCustomFields(reqDto *dto.GetCustomFieldsDto) *dto.CustomFieldListRespDto {
@@ -1629,10 +1735,10 @@ func (c *Client) SetCustomData(reqDto *dto.SetCustomDataReqDto) *dto.IsSuccessRe
 
 /*
  * @summary 获取用户、分组、角色、组织机构的自定义字段值
- * @description 获取用户、分组、角色、组织机构的自定义字段值
- * @param targetType 主体类型，目前支持用户、角色、分组和部门
+ * @description 通过筛选条件，获取用户、分组、角色、组织机构的自定义字段值。
+ * @param targetType 主体类型，目前支持用户、角色、分组、部门
  * @param targetIdentifier 目标对象唯一标志符
- * @param namespace 所属权限分组的 code，当 targetType 为角色的时候需要填写，否则可以忽略。
+ * @param namespace 所属权限分组的 code，当 targetType 为角色的时候需要填写，否则可以忽略
  * @returns GetCustomDataRespDto
  */
 func (c *Client) GetCustomData(reqDto *dto.GetCustomDataDto) *dto.GetCustomDataRespDto {
@@ -1652,7 +1758,7 @@ func (c *Client) GetCustomData(reqDto *dto.GetCustomDataDto) *dto.GetCustomDataR
 
 /*
  * @summary 创建资源
- * @description 创建资源
+ * @description 创建资源，可以设置资源的描述、定义的操作类型、URL 标识等。
  * @param requestBody
  * @returns ResourceRespDto
  */
@@ -1673,7 +1779,7 @@ func (c *Client) CreateResource(reqDto *dto.CreateResourceDto) *dto.ResourceResp
 
 /*
  * @summary 批量创建资源
- * @description 批量创建资源
+ * @description 批量创建资源，可以设置资源的描述、定义的操作类型、URL 标识等。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1694,7 +1800,7 @@ func (c *Client) CreateResourcesBatch(reqDto *dto.CreateResourcesBatchDto) *dto.
 
 /*
  * @summary 获取资源详情
- * @description 获取资源详情
+ * @description 根据筛选条件，获取资源详情。
  * @param code 资源唯一标志符
  * @param namespace 所属权限分组的 code
  * @returns ResourceRespDto
@@ -1716,8 +1822,8 @@ func (c *Client) GetResource(reqDto *dto.GetResourceDto) *dto.ResourceRespDto {
 
 /*
  * @summary 批量获取资源详情
- * @description 批量获取资源详情
- * @param codeList 资源 code 列表,批量可以使用逗号分隔
+ * @description 根据筛选条件，批量获取资源详情。
+ * @param codeList 资源 code 列表，批量可以使用逗号分隔
  * @param namespace 所属权限分组的 code
  * @returns ResourceListRespDto
  */
@@ -1738,7 +1844,7 @@ func (c *Client) GetResourcesBatch(reqDto *dto.GetResourcesBatchDto) *dto.Resour
 
 /*
  * @summary 分页获取资源列表
- * @description 分页获取资源列表
+ * @description 根据筛选条件，分页获取资源详情列表。
  * @param namespace 所属权限分组的 code
  * @param type 资源类型
  * @param page 当前页数，从 1 开始
@@ -1762,7 +1868,7 @@ func (c *Client) ListResources(reqDto *dto.ListResourcesDto) *dto.ResourcePagina
 
 /*
  * @summary 修改资源
- * @description 修改资源（Pratial Update）
+ * @description 修改资源，可以设置资源的描述、定义的操作类型、URL 标识等。
  * @param requestBody
  * @returns ResourceRespDto
  */
@@ -1783,7 +1889,7 @@ func (c *Client) UpdateResource(reqDto *dto.UpdateResourceDto) *dto.ResourceResp
 
 /*
  * @summary 删除资源
- * @description 删除资源
+ * @description 通过资源唯一标志符以及所属权限分组，删除资源。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1804,7 +1910,7 @@ func (c *Client) DeleteResource(reqDto *dto.DeleteResourceDto) *dto.IsSuccessRes
 
 /*
  * @summary 批量删除资源
- * @description 批量删除资源
+ * @description 通过资源唯一标志符以及所属权限分组，批量删除资源
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1825,7 +1931,7 @@ func (c *Client) DeleteResourcesBatch(reqDto *dto.DeleteResourcesBatchDto) *dto.
 
 /*
  * @summary 创建权限分组
- * @description 创建权限分组
+ * @description 创建权限分组，可以设置分组名称与描述信息。
  * @param requestBody
  * @returns NamespaceRespDto
  */
@@ -1846,7 +1952,7 @@ func (c *Client) CreateNamespace(reqDto *dto.CreateNamespaceDto) *dto.NamespaceR
 
 /*
  * @summary 批量创建权限分组
- * @description 批量创建权限分组
+ * @description 批量创建权限分组，可以分别设置分组名称与描述信息。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1867,7 +1973,7 @@ func (c *Client) CreateNamespacesBatch(reqDto *dto.CreateNamespacesBatchDto) *dt
 
 /*
  * @summary 获取权限分组详情
- * @description 获取权限分组详情
+ * @description 通过权限分组唯一标志符，获取权限分组详情。
  * @param code 权限分组唯一标志符
  * @returns NamespaceRespDto
  */
@@ -1888,8 +1994,8 @@ func (c *Client) GetNamespace(reqDto *dto.GetNamespaceDto) *dto.NamespaceRespDto
 
 /*
  * @summary 批量获取权限分组详情
- * @description 批量获取权限分组详情
- * @param codeList 资源 code 列表,批量可以使用逗号分隔
+ * @description 分别通过权限分组唯一标志符，批量获取权限分组详情。
+ * @param codeList 资源 code 列表，批量可以使用逗号分隔
  * @returns NamespaceListRespDto
  */
 func (c *Client) GetNamespacesBatch(reqDto *dto.GetNamespacesBatchDto) *dto.NamespaceListRespDto {
@@ -1909,7 +2015,7 @@ func (c *Client) GetNamespacesBatch(reqDto *dto.GetNamespacesBatchDto) *dto.Name
 
 /*
  * @summary 修改权限分组信息
- * @description 修改权限分组信息
+ * @description 修改权限分组信息，可以修改名称、描述信息以及新的唯一标志符。
  * @param requestBody
  * @returns UpdateNamespaceRespDto
  */
@@ -1930,7 +2036,7 @@ func (c *Client) UpdateNamespace(reqDto *dto.UpdateNamespaceDto) *dto.UpdateName
 
 /*
  * @summary 删除权限分组信息
- * @description 删除权限分组信息
+ * @description 通过权限分组唯一标志符，删除权限分组信息。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1951,7 +2057,7 @@ func (c *Client) DeleteNamespace(reqDto *dto.DeleteNamespaceDto) *dto.IsSuccessR
 
 /*
  * @summary 批量删除权限分组
- * @description 批量删除权限分组
+ * @description 分别通过权限分组唯一标志符，批量删除权限分组。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1972,7 +2078,7 @@ func (c *Client) DeleteNamespacesBatch(reqDto *dto.DeleteNamespacesBatchDto) *dt
 
 /*
  * @summary 授权资源
- * @description 给多个主体同时授权多个资源
+ * @description 将一个/多个资源授权给用户、角色、分组、组织机构等主体，且可以分别指定不同的操作权限。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1993,17 +2099,39 @@ func (c *Client) AuthorizeResources(reqDto *dto.AuthorizeResourcesDto) *dto.IsSu
 
 /*
  * @summary 获取某个主体被授权的资源列表
- * @description 获取某个主体被授权的资源列表
+ * @description 根据筛选条件，获取某个主体被授权的资源列表。
  * @param targetType 目标对象类型
  * @param targetIdentifier 目标对象唯一标志符
  * @param namespace 所属权限分组的 code
- * @param resourceType 资源类型，如数据、API、按钮、菜单
+ * @param resourceType 限定资源类型，如数据、API、按钮、菜单
+ * @param resourceList 限定查询的资源列表，如果指定，只会返回所指定的资源列表。
  * @param withDenied 是否获取被拒绝的资源
  * @returns AuthorizedResourcePaginatedRespDto
  */
 func (c *Client) GetAuthorizedResources(reqDto *dto.GetAuthorizedResourcesDto) *dto.AuthorizedResourcePaginatedRespDto {
 	b, err := c.SendHttpRequest("/api/v3/get-authorized-resources", fasthttp.MethodGet, reqDto)
 	var response dto.AuthorizedResourcePaginatedRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 判断用户是否对某个资源的某个操作有权限
+ * @description 判断用户是否对某个资源的某个操作有权限。
+ * @param requestBody
+ * @returns IsActionAllowedRespDtp
+ */
+func (c *Client) IsActionAllowed(reqDto *dto.IsActionAllowedDto) *dto.IsActionAllowedRespDtp {
+	b, err := c.SendHttpRequest("/api/v3/is-action-allowed", fasthttp.MethodPost, reqDto)
+	var response dto.IsActionAllowedRespDtp
 	if err != nil {
 		fmt.Println(err)
 		return nil
