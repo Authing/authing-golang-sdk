@@ -4,11 +4,9 @@
   <img width="250" src="https://files.authing.co/authing-console/authing-logo-new-20210924.svg" />
 </div>
 
-<div align=center>
-  <a href="https://badge.fury.io/js/@authing%2Fbrowser" target="_blank"><img src="https://badge.fury.io/js/@authing%2Fbrowser.svg" alt="npm version"></a>
-  <a href="https://npmcharts.com/compare/@authing/browser" target="_blank"><img src="https://img.shields.io/npm/dm/@authing/browser" alt="download"></a>
-  <a href="https://forum.authing.cn/" target="_blank"><img src="https://img.shields.io/badge/chat-forum-blue" /></a>
-  <a href="https://opensource.org/licenses/MIT" target="_blank"><img src="https://img.shields.io/badge/License-MIT-success" alt="License"></a>
+<div align="center">
+    <a href="https://forum.authing.cn/" target="_blank"><img src="https://img.shields.io/badge/chat-forum-blue" /></a>
+    <a href="https://opensource.org/licenses/MIT" target="_blank"><img src="https://img.shields.io/badge/License-MIT-success" alt="License"></a>
 </div>
 
 **English** | [简体中文](./README.zh-CN.md)
