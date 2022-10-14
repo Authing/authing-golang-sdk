@@ -3,6 +3,7 @@ package util
 import (
 	"github.com/Authing/authing-golang-sdk/constant"
 	"math/rand"
+	"sort"
 )
 
 var letters = []rune("abcdefhijkmnprstwxyz2345678")
@@ -49,4 +50,9 @@ func GetValueOrDefault(value ...string) string {
 		}
 	}
 	return constant.StringEmpty
+}
+
+func StringContains(s []string, searchTerm string) bool {
+	i := sort.SearchStrings(s, searchTerm)
+	return i < len(s) && s[i] == searchTerm
 }

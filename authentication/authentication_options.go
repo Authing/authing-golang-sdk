@@ -1,9 +1,8 @@
 package authentication
 
 import (
-	"time"
-
 	"github.com/dgrijalva/jwt-go"
+	"time"
 )
 
 type AuthenticationClientOptions struct {
@@ -21,6 +20,11 @@ type AuthenticationClientOptions struct {
 	应用域名，例如 pool.authing.cn
 	*/
 	AppHost string
+
+	/**
+	用户的 Access Token
+	*/
+	AccessToken string
 
 	/**
 	认证完成后的重定向目标 URL
@@ -68,13 +72,14 @@ type AuthenticationClientOptions struct {
 	/**
 	请求超时时间
 	*/
-	Timeout int8
+	Timeout int
 
 	/**
 	是否拒绝非法的 HTTPS 请求，默认为 true；如果是私有化部署的场景且证书不被信任，可以设置为 false
 	*/
 	RejectUnauthorized bool
 }
+
 type AuthUrlResult struct {
 	Url   string
 	State string

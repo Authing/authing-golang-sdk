@@ -7,7 +7,7 @@ import (
 	"github.com/Authing/authing-golang-sdk/dto"
 )
 
-var client *Client
+var client *ManagementClient
 
 func init() {
 	options := ClientOptions{

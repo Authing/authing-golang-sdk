@@ -2,57 +2,18 @@ package management
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"strings"
-	"sync"
-	"time"
-
 	"github.com/Authing/authing-golang-sdk/constant"
 	"github.com/Authing/authing-golang-sdk/dto"
 	"github.com/Authing/authing-golang-sdk/util/cache"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/valyala/fasthttp"
+	"strings"
+	"sync"
+	"time"
 )
-
-type Client struct {
-	HttpClient *http.Client
-	options    *ClientOptions
-	userPoolId string
-}
-
-type ClientOptions struct {
-	AccessKeyId     string
-	AccessKeySecret string
-	TenantId        string
-	Timeout         int
-	RequestFrom     string
-	Lang            string
-	Host            string
-	Headers         fasthttp.RequestHeader
-}
-
-func NewClient(options *ClientOptions) (*Client, error) {
-	if options.Host == "" {
-		options.Host = constant.ApiServiceUrl
-	}
-	c := &Client{
-		options: options,
-	}
-	if c.HttpClient == nil {
-		c.HttpClient = &http.Client{}
-		_, err := GetAccessToken(c)
-		if err != nil {
-			return nil, err
-		}
-		/*src := oauth2.StaticTokenSource(
-			&oauth2.Token{AccessToken: accessToken},
-		)
-		c.HttpClient = oauth2.NewClient(context.Background(), src)*/
-	}
-	return c, nil
-}
 
 type JwtClaims struct {
 	*jwt.StandardClaims
@@ -61,7 +22,7 @@ type JwtClaims struct {
 	Username string
 }
 
-func GetAccessToken(client *Client) (string, error) {
+func GetAccessToken(client *ManagementClient) (string, error) {
 	// 从缓存获取token
 	cacheToken, b := cache.GetCache(constant.TokenCacheKeyPrefix + client.options.AccessKeyId)
 	if b && cacheToken != nil {
@@ -89,7 +50,7 @@ func GetAccessToken(client *Client) (string, error) {
 	return resp.Data.AccessToken, nil
 }
 
-func QueryAccessToken(client *Client) (*dto.GetManagementTokenRespDto, error) {
+func QueryAccessToken(client *ManagementClient) (*dto.GetManagementTokenRespDto, error) {
 	variables := map[string]interface{}{
 		"accessKeyId":     client.options.AccessKeyId,
 		"accessKeySecret": client.options.AccessKeySecret,
@@ -106,7 +67,7 @@ func QueryAccessToken(client *Client) (*dto.GetManagementTokenRespDto, error) {
 	return &r, nil
 }
 
-func (c *Client) SendHttpRequest(url string, method string, reqDto interface{}) ([]byte, error) {
+func (c *ManagementClient) SendHttpRequest(url string, method string, reqDto interface{}) ([]byte, error) {
 	var buf bytes.Buffer
 	err := json.NewEncoder(&buf).Encode(reqDto)
 	if err != nil {
@@ -141,7 +102,7 @@ func (c *Client) SendHttpRequest(url string, method string, reqDto interface{}) 
 		req.Header.Add("Content-Type", "application/json;charset=UTF-8")
 	}
 	req.Header.Add("x-authing-app-tenant-id", ""+c.options.TenantId)
-	req.Header.Add("x-authing-request-from", c.options.RequestFrom)
+	//req.Header.Add("x-authing-request-from", c.options.RequestFrom)
 	req.Header.Add("x-authing-sdk-version", constant.SdkVersion)
 	req.Header.Add("x-authing-lang", c.options.Lang)
 	if url != "/api/v3/get-management-token" {
@@ -159,7 +120,11 @@ func (c *Client) SendHttpRequest(url string, method string, reqDto interface{}) 
 	req.SetBody(bytes)
 	resp := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(resp)
-	client := &fasthttp.Client{}
+
+	client := &fasthttp.Client{
+		TLSConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
 	client.Do(req, resp)
 	body := resp.Body()
 	return body, err
