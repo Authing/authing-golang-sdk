@@ -1,5 +1,7 @@
 package dto
 
-type HasAnyRoleOptionsDto struct {
-	UserIdType string `json:"userIdType,omitempty"`
+
+type HasAnyRoleOptionsDto struct{
+    UserIdType  string  `json:"userIdType,omitempty"`
 }
+

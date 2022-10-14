@@ -1,4 +1,6 @@
 package dto
 
-type AccessTokenDto struct {
+
+type AccessTokenDto struct{
 }
+

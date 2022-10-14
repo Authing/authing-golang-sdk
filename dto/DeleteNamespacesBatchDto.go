@@ -1,5 +1,7 @@
 package dto
 
-type DeleteNamespacesBatchDto struct {
-	CodeList []string `json:"codeList"`
+
+type DeleteNamespacesBatchDto struct{
+    CodeList  []string `json:"codeList"`
 }
+

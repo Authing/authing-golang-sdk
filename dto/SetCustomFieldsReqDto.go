@@ -1,5 +1,7 @@
 package dto
 
-type SetCustomFieldsReqDto struct {
-	List []SetCustomFieldDto `json:"list"`
+
+type SetCustomFieldsReqDto struct{
+    List  []SetCustomFieldDto `json:"list"`
 }
+

@@ -1,5 +1,7 @@
 package dto
 
-type SetUserCustomDataDto struct {
-	Success bool `json:"success"`
+
+type SetUserCustomDataDto struct{
+    Success  bool `json:"success"`
 }
+

@@ -1,8 +1,11 @@
 package dto
 
-type RoleSingleRespDto struct {
-	StatusCode int     `json:"statusCode"`
-	Message    string  `json:"message"`
-	ApiCode    int     `json:"apiCode,omitempty"`
-	Data       RoleDto `json:"data"`
+
+type RoleSingleRespDto struct{
+    StatusCode  int `json:"statusCode"`
+    Message  string `json:"message"`
+    ApiCode  int `json:"apiCode,omitempty"`
+    RequestId  string `json:"requestId,omitempty"`
+    Data  RoleDto `json:"data"`
 }
+

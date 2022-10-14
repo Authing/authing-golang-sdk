@@ -1,6 +1,8 @@
 package dto
 
-type GetUserIdentitiesDto struct {
-	UserId     string `json:"userId,omitempty"`
-	UserIdType string `json:"userIdType,omitempty"`
+
+type GetUserIdentitiesDto struct{
+    UserId string `json:"userId,omitempty"`
+    UserIdType string `json:"userIdType,omitempty"`
 }
+

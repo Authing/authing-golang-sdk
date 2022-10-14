@@ -1,5 +1,7 @@
 package dto
 
-type DeleteUsersBatchOptionsDto struct {
-	UserIdType string `json:"userIdType,omitempty"`
+
+type DeleteUsersBatchOptionsDto struct{
+    UserIdType  string  `json:"userIdType,omitempty"`
 }
+

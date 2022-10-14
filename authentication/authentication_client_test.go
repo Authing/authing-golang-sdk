@@ -61,7 +61,7 @@ func getCookieStr(header *fasthttp.ResponseHeader) string {
 }
 
 func TestAuthUrl(t *testing.T) {
-	result, err := clientAuth.BuildAuthUrl(&AuthURLParams{
+	result, err := clientAuth.BuildAuthUrl(&OIDCAuthURLParams{
 		Scope: "offline_access " + constant.DefaultScope,
 	})
 	if err != nil {

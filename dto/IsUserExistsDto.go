@@ -1,5 +1,7 @@
 package dto
 
-type IsUserExistsDto struct {
-	Exists bool `json:"exists"`
+
+type IsUserExistsDto struct{
+    Exists  bool `json:"exists"`
 }
+

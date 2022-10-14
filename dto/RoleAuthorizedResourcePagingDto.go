@@ -1,6 +1,8 @@
 package dto
 
-type RoleAuthorizedResourcePagingDto struct {
-	TotalCount int                              `json:"totalCount"`
-	List       []RoleAuthorizedResourcesRespDto `json:"list"`
+
+type RoleAuthorizedResourcePagingDto struct{
+    TotalCount  int `json:"totalCount"`
+    List  []RoleAuthorizedResourcesRespDto `json:"list"`
 }
+

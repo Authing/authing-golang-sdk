@@ -1,5 +1,7 @@
 package dto
 
-type DeleteNamespaceDto struct {
-	Code string `json:"code"`
+
+type DeleteNamespaceDto struct{
+    Code  string `json:"code"`
 }
+

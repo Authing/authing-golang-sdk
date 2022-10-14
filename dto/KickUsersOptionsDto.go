@@ -1,5 +1,7 @@
 package dto
 
-type KickUsersOptionsDto struct {
-	UserIdType string `json:"userIdType,omitempty"`
+
+type KickUsersOptionsDto struct{
+    UserIdType  string  `json:"userIdType,omitempty"`
 }
+

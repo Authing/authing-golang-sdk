@@ -1,5 +1,7 @@
 package dto
 
-type ResetUserPrincipalAuthenticationInfoOptionsDto struct {
-	UserIdType string `json:"userIdType,omitempty"`
+
+type ResetUserPrincipalAuthenticationInfoOptionsDto struct{
+    UserIdType  string  `json:"userIdType,omitempty"`
 }
+

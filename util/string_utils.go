@@ -1,6 +1,7 @@
 package util
 
 import (
+	"github.com/Authing/authing-golang-sdk/constant"
 	"math/rand"
 )
 
@@ -16,9 +17,9 @@ func RandomString(length int) string {
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 const (
-    letterIdxBits = 6                    // 6 bits to represent a letter index
-    letterIdxMask = 1<<letterIdxBits - 1 // All 1-bits, as many as letterIdxBits
-    letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
+	letterIdxBits = 6                    // 6 bits to represent a letter index
+	letterIdxMask = 1<<letterIdxBits - 1 // All 1-bits, as many as letterIdxBits
+	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
 )
 
 func RandStringImpr(n int) string {
@@ -38,14 +39,14 @@ func RandStringImpr(n int) string {
 	return string(b)
 }
 
-// func GetValidValue(value ...string) string {
-// 	if value == nil || len(value) == 0 {
-// 		return constant.StringEmpty
-// 	}
-// 	for _, val := range value {
-// 		if val != "" {
-// 			return val
-// 		}
-// 	}
-// 	return constant.StringEmpty
-// }
+func GetValueOrDefault(value ...string) string {
+	if value == nil || len(value) == 0 {
+		return constant.StringEmpty
+	}
+	for _, val := range value {
+		if val != "" {
+			return val
+		}
+	}
+	return constant.StringEmpty
+}

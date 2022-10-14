@@ -1,5 +1,7 @@
 package dto
 
-type CreateGroupBatchReqDto struct {
-	List []CreateGroupReqDto `json:"list"`
+
+type CreateGroupBatchReqDto struct{
+    List  []CreateGroupReqDto `json:"list"`
 }
+

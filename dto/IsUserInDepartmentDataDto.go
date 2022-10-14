@@ -1,5 +1,7 @@
 package dto
 
-type IsUserInDepartmentDataDto struct {
-	InDepartment bool `json:"inDepartment"`
+
+type IsUserInDepartmentDataDto struct{
+    InDepartment  bool `json:"inDepartment"`
 }
+

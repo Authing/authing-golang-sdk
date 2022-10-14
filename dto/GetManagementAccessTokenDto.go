@@ -1,6 +1,8 @@
 package dto
 
-type GetManagementAccessTokenDto struct {
-	AccessKeySecret string `json:"accessKeySecret"`
-	AccessKeyId     string `json:"accessKeyId"`
+
+type GetManagementAccessTokenDto struct{
+    AccessKeyId  string `json:"accessKeyId"`
+    AccessKeySecret  string `json:"accessKeySecret"`
 }
+

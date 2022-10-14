@@ -11,14 +11,28 @@ var client *Client
 
 func init() {
 	options := ClientOptions{
-		AccessKeyId:     "60e043f8cd91b87d712b6365",
-		AccessKeySecret: "158c7679333bc196b524d78d745813e5",
+		AccessKeyId:     "6343b98b7cf019a9366e9b7c",
+		AccessKeySecret: "fb0cefa691df76920a1611b9dec38120",
+		Host:            "http://localhost:3000",
 	}
 	var err error
 	client, err = NewClient(&options)
 	if err != nil {
 		panic(err)
 	}
+}
+
+func TestClient_ListUsers(t *testing.T) {
+	request := dto.ListUsersRequestDto{
+		Options: dto.ListUsersOptionsDto{
+			Pagination: dto.PaginationDto{
+				Page:  2,
+				Limit: 10,
+			},
+		},
+	}
+	response := client.ListUsers(&request)
+	fmt.Println(response)
 }
 
 func TestClient_GetResource(t *testing.T) {
@@ -97,16 +111,6 @@ func TestClient_AuthorizeResources(t *testing.T) {
 
 }
 
-func TestClient_GetManagementToken(t *testing.T) {
-	request := dto.GetManagementAccessTokenDto{
-		AccessKeySecret: "accessKeySecret_7021",
-		AccessKeyId:     "accessKeyId_4717",
-	}
-	response := client.GetManagementToken(&request)
-	fmt.Println(response)
-
-}
-
 func TestClient_GetUser(t *testing.T) {
 	request := dto.GetUserDto{
 		UserId:            "611a149db64310ca4764ab15",
@@ -115,19 +119,6 @@ func TestClient_GetUser(t *testing.T) {
 		WithDepartmentIds: false,
 	}
 	response := client.GetUser(&request)
-	fmt.Println(response)
-
-}
-
-func TestClient_ListUsers(t *testing.T) {
-	request := dto.ListUsersDto{
-		Page:              1,
-		Limit:             10,
-		WithCustomData:    false,
-		WithIdentities:    true,
-		WithDepartmentIds: false,
-	}
-	response := client.ListUsers(&request)
 	fmt.Println(response)
 
 }
@@ -947,15 +938,15 @@ func TestClient_GetUserAuthorizedResources(t *testing.T) {
 
 }
 
-func TestClient_GetAuthorizedResources(t *testing.T) {
-	response := client.GetAuthorizedResources(&dto.GetAuthorizedResourcesDto{
-		TargetType:       "USER",
-		TargetIdentifier: "sdfs",
-		Namespace:        "default",
-		WithDenied:       false,
-	})
-	fmt.Println(response)
-}
+//func TestClient_GetAuthorizedResources(t *testing.T) {
+//	response := client.GetAuthorizedResources(&dto.GetAuthorizedResourcesDto{
+//		TargetType:       "USER",
+//		TargetIdentifier: "sdfs",
+//		Namespace:        "default",
+//		WithDenied:       false,
+//	})
+//	fmt.Println(response)
+//}
 
 func TestClient_GetPrincipalAuthenticationInfo(t *testing.T) {
 	request := dto.GetUserPrincipalAuthenticationInfoDto{

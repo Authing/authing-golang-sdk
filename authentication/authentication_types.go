@@ -7,19 +7,29 @@ import (
 )
 
 type AuthenticationClientOptions struct {
-	/** 应用 ID */
+	/**
+	应用 ID
+	*/
 	AppId string
 
-	/** 应用 Secret */
+	/**
+	应用 Secret
+	*/
 	AppSecret string
 
-	/** 应用对应的用户池域名，例如 pool.authing.cn */
-	Domain string
+	/**
+	应用域名，例如 pool.authing.cn
+	*/
+	AppHost string
 
-	/** 认证完成后的重定向目标 URL */
+	/**
+	认证完成后的重定向目标 URL
+	*/
 	RedirectUri string
 
-	/** 登出完成后的重定向目标 URL, 可选 */
+	/**
+	登出完成后的重定向目标 URL, 可选
+	*/
 	LogoutRedirectUri string
 
 	/**
@@ -36,9 +46,34 @@ type AuthenticationClientOptions struct {
 	Scope string
 
 	/**
-	 * 服务端的 JWKS 公钥，用于验证 Token 签名，默认会通过网络请求从服务端的 JWKS 端点自动获取
-	 */
-	// serverJWKS JWKSObject;
+	获取 token 端点认证方式
+	*/
+	TokenEndPointAuthMethod TokenAuthMethodEnum
+
+	/**
+	检测 token 端点认证方式
+	*/
+	IntrospectionEndPointAuthMethod TokenAuthMethodEnum
+
+	/**
+	撤销 token 端点认证方式
+	*/
+	RevocationEndPointAuthMethod TokenAuthMethodEnum
+
+	/**
+	协议类型，默认为 oidc
+	*/
+	Protocol ProtocolEnum
+
+	/**
+	请求超时时间
+	*/
+	Timeout int8
+
+	/**
+	是否拒绝非法的 HTTPS 请求，默认为 true；如果是私有化部署的场景且证书不被信任，可以设置为 false
+	*/
+	RejectUnauthorized bool
 }
 type AuthUrlResult struct {
 	Url   string
@@ -46,12 +81,24 @@ type AuthUrlResult struct {
 	Nonce string
 }
 
-type AuthURLParams struct {
+type OIDCAuthURLParams struct {
+	RedirectUri  string
+	State        string
+	Nonce        string
+	Scope        string
+	ResponseType string
+	ResponseMode string
+	Forced       bool
+}
+
+type OAuth2AuthURLParams struct {
 	RedirectUri string
 	State       string
-	Nonce       string
-	Scope       string
-	Forced      bool
+	/**
+	默认为 openid profile email phone address
+	*/
+	Scope        string
+	ResponseType string
 }
 
 type CodeToTokenParams struct {
@@ -69,7 +116,6 @@ type LoginState struct {
 	ParsedIDToken     *IDTokenClaims
 	ParsedAccessToken *AccessTokenClaims
 }
-
 
 type UserInfoCommon struct {
 	Name              string `json:"name,omitempty"`
@@ -89,7 +135,6 @@ type UserInfo struct { // TODO 允许扩展
 	UserInfoCommon
 }
 
-
 type IDTokenExtended struct {
 	Nonce  string `json:"nonce,omitempty"`
 	AtHash string `json:"at_hash,omitempty"`
@@ -105,7 +150,6 @@ type AccessTokenExtended struct {
 	Scope string `json:"scope,omitempty"`
 }
 
-
 type AccessTokenClaims struct {
 	jwt.StandardClaims
 	AccessTokenExtended
@@ -116,3 +160,30 @@ type LogoutURLParams struct {
 	IDTokenHint           string // 可选
 	State                 string // 可选
 }
+
+type ClientCredentialInput struct {
+	AccessKey string `json:"access_key"`
+	SecretKey string `json:"secret_key"`
+}
+
+type GetAccessTokenByClientCredentialsRequest struct {
+	Scope                 string                 `json:"scope"`
+	ClientCredentialInput *ClientCredentialInput `json:"client_credential_input"`
+}
+
+type TokenAuthMethodEnum string
+
+const (
+	ClientSecretPost  = "client_secret_post"
+	ClientSecretBasic = "client_secret_basic"
+	None              = "none"
+)
+
+type ProtocolEnum string
+
+const (
+	OAUTH ProtocolEnum = "oauth"
+	OIDC  ProtocolEnum = "oidc"
+	CAS   ProtocolEnum = "cas"
+	SAML  ProtocolEnum = "saml"
+)

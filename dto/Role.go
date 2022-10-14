@@ -1,4 +1,6 @@
 package dto
 
-type Role struct {
+
+type Role struct{
 }
+

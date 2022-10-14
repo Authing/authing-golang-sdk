@@ -1,8 +1,11 @@
 package dto
 
-type UserLoginHistoryPaginatedRespDto struct {
-	StatusCode int                       `json:"statusCode"`
-	Message    string                    `json:"message"`
-	ApiCode    int                       `json:"apiCode,omitempty"`
-	Data       UserLoginHistoryPagingDto `json:"data"`
+
+type UserLoginHistoryPaginatedRespDto struct{
+    StatusCode  int `json:"statusCode"`
+    Message  string `json:"message"`
+    ApiCode  int `json:"apiCode,omitempty"`
+    RequestId  string `json:"requestId,omitempty"`
+    Data  UserLoginHistoryPagingDto `json:"data"`
 }
+

@@ -1,5 +1,7 @@
 package dto
 
-type CreateRolesBatch struct {
-	List []RoleListItem `json:"list"`
+
+type CreateRolesBatch struct{
+    List  []RoleListItem `json:"list"`
 }
+

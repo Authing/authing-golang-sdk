@@ -1,8 +1,11 @@
 package dto
 
-type IsUserInDepartmentRespDto struct {
-	StatusCode int                       `json:"statusCode"`
-	Message    string                    `json:"message"`
-	ApiCode    int                       `json:"apiCode,omitempty"`
-	Data       IsUserInDepartmentDataDto `json:"data"`
+
+type IsUserInDepartmentRespDto struct{
+    StatusCode  int `json:"statusCode"`
+    Message  string `json:"message"`
+    ApiCode  int `json:"apiCode,omitempty"`
+    RequestId  string `json:"requestId,omitempty"`
+    Data  IsUserInDepartmentDataDto `json:"data"`
 }
+
