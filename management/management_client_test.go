@@ -16,7 +16,7 @@ func init() {
 		Host:            "http://localhost:3000",
 	}
 	var err error
-	client, err = NewClient(&options)
+	client, err = NewManagementClient(&options)
 	if err != nil {
 		panic(err)
 	}

@@ -83,7 +83,7 @@ func (client *AuthenticationClient) SendHttpRequest(url string, method string, r
 	defer fasthttp.ReleaseResponse(resp)
 
 	httpClient := &fasthttp.Client{
-		TLSConfig: &tls.Config{InsecureSkipVerify: true},
+		TLSConfig: &tls.Config{InsecureSkipVerify: client.options.InsecureSkipVerify},
 	}
 
 	httpClient.Do(req, resp)

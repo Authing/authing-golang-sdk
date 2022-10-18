@@ -25,7 +25,7 @@ type ClientOptions struct {
 	RejectUnauthorized bool
 }
 
-func NewClient(options *ClientOptions) (*ManagementClient, error) {
+func NewManagementClient(options *ClientOptions) (*ManagementClient, error) {
 	if options.Host == "" {
 		options.Host = constant.ApiServiceUrl
 	}
@@ -41,7 +41,7 @@ func NewClient(options *ClientOptions) (*ManagementClient, error) {
 		/*src := oauth2.StaticTokenSource(
 			&oauth2.Token{AccessToken: accessToken},
 		)
-		c.HttpClient = oauth2.NewClient(context.Background(), src)*/
+		c.HttpClient = oauth2.NewManagementClient(context.Background(), src)*/
 	}
 
 	if c.options.RejectUnauthorized == false {

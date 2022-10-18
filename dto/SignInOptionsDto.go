@@ -8,7 +8,7 @@ type SignInOptionsDto struct{
     TenantId  string `json:"tenantId,omitempty"`
     CustomData  interface{} `json:"customData,omitempty"`
     AutoRegister  bool `json:"autoRegister,omitempty"`
-    CaptchaCode  bool `json:"captchaCode,omitempty"`
+    CaptchaCode  string `json:"captchaCode,omitempty"`
     PasswordEncryptType  string  `json:"passwordEncryptType,omitempty"`
 }
 

@@ -2,7 +2,6 @@ package authentication
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"time"
 )
 
 type AuthenticationClientOptions struct {
@@ -75,9 +74,9 @@ type AuthenticationClientOptions struct {
 	Timeout int
 
 	/**
-	是否拒绝非法的 HTTPS 请求，默认为 true；如果是私有化部署的场景且证书不被信任，可以设置为 false
+	是否跳过 HTTPS 证书检测，默认为 false；如果是私有化部署的场景且证书不被信任，可以设置为 true
 	*/
-	RejectUnauthorized bool
+	InsecureSkipVerify bool
 }
 
 type AuthUrlResult struct {
@@ -112,14 +111,14 @@ type CodeToTokenParams struct {
 	Nonce       string
 }
 
-type LoginState struct {
-	AccessToken       string `json:"access_token"`
-	IDToken           string `json:"id_token"`
-	RefreshToken      string `json:"refresh_token"` //可选
-	ExpiresIn         uint64 `json:"expires_in"`
-	ExpireAt          time.Time
-	ParsedIDToken     *IDTokenClaims
-	ParsedAccessToken *AccessTokenClaims
+type OIDCTokenResponse struct {
+	AccessToken      string `json:"access_token,omitempty"`
+	IDToken          string `json:"id_token,omitempty"`
+	RefreshToken     string `json:"refresh_token,omitempty"` //可选
+	ExpiresIn        uint64 `json:"expires_in,omitempty"`
+	TokenType        string `json:"token_type,omitempty"`
+	Error            string `json:"error,omitempty"`
+	ErrorDescription string `json:"error_description,omitempty"`
 }
 
 type UserInfoCommon struct {

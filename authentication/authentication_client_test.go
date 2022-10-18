@@ -2,6 +2,7 @@ package authentication
 
 import (
 	"fmt"
+	"github.com/Authing/authing-golang-sdk/constant"
 	"github.com/Authing/authing-golang-sdk/dto"
 
 	// "fmt"
@@ -36,7 +37,7 @@ const idToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiO" +
 func init() {
 
 	var err error
-	authenticationClient, err = NewClient(&options)
+	authenticationClient, err = NewAuthenticationClient(&options)
 	if err != nil {
 		panic(err)
 	}
@@ -59,66 +60,66 @@ func getCookieStr(header *fasthttp.ResponseHeader) string {
 	return strings.Trim(cookieStr.String(), "; ")
 }
 
-//func TestAuthUrl(t *testing.T) {
-//	result, err := authenticationClient.BuildAuthorizeUrlByOidc(&OIDCAuthURLParams{
-//		Scope: "offline_access " + constant.DefaultScope,
-//	})
-//	if err != nil {
-//		t.Fatalf("构建授权url失败 %v", err)
-//		return
-//	}
-//	fmt.Println(result)
-//	res, err1 := util.SendRequest(&util.RequestOption{
-//		Url:    result.Url,
-//		Method: fasthttp.MethodGet,
-//	})
-//	if err1 != nil {
-//		t.Fatalf("请求授权url失败 %v", err1)
-//		return
-//	}
-//	if res.StatusCode >= 400 {
-//		t.Fatalf("请求授权时失败：[%d]", res.StatusCode)
-//		return
-//	}
-//	loginPath := res.Header.Peek("Location")
-//	urlEle := strings.Split(string(loginPath), "?")
-//	if len(urlEle) < 2 {
-//		t.Fatalf("授权地址格式错误 %s", loginPath)
-//		return
-//	}
-//	pathEle := strings.Split(urlEle[0], "/")
-//	uuid := pathEle[len(pathEle)-1]
-//	fmt.Println(uuid)
-//	cookieStr := getCookieStr(res.Header)
-//	headers := map[string]string{
-//		"cookie": cookieStr,
-//	}
-//	res, err1 = util.SendRequest(&util.RequestOption{
-//		Url:     getReqUrl(string(loginPath)),
-//		Headers: headers,
-//		Method:  fasthttp.MethodGet,
-//	})
-//	if err1 != nil {
-//		t.Fatalf("请求登录url失败 %v", err1)
-//		return
-//	}
-//	if res.StatusCode >= 400 {
-//		t.Fatalf("请求登录url时失败： %d", res.StatusCode)
-//		return
-//	}
-//
-//}
-
-func TestCode(t *testing.T) {
-	loginState, err := authenticationClient.GetLoginStateByAuthCode(&CodeToTokenParams{
-		Code: "g1FZq2O8y3NzHvn3YwtTW7dau6lJD9Icq2ZTUR88d_a",
+func TestAuthUrl(t *testing.T) {
+	result, err := authenticationClient.BuildAuthorizeUrlByOidc(&OIDCAuthURLParams{
+		Scope: "offline_access " + constant.DefaultScope,
 	})
 	if err != nil {
-		t.Fatalf("code校验失败, %v", err)
+		t.Fatalf("构建授权url失败 %v", err)
 		return
 	}
-	fmt.Println(loginState)
+	println(result.Url)
+	//fmt.Println(result)
+	//res, err1 := util.SendRequest(&util.RequestOption{
+	//	Url:    result.Url,
+	//	Method: fasthttp.MethodGet,
+	//})
+	//if err1 != nil {
+	//	t.Fatalf("请求授权url失败 %v", err1)
+	//	return
+	//}
+	//if res.StatusCode >= 400 {
+	//	t.Fatalf("请求授权时失败：[%d]", res.StatusCode)
+	//	return
+	//}
+	//loginPath := res.Header.Peek("Location")
+	//urlEle := strings.Split(string(loginPath), "?")
+	//if len(urlEle) < 2 {
+	//	t.Fatalf("授权地址格式错误 %s", loginPath)
+	//	return
+	//}
+	//pathEle := strings.Split(urlEle[0], "/")
+	//uuid := pathEle[len(pathEle)-1]
+	//fmt.Println(uuid)
+	//cookieStr := getCookieStr(res.Header)
+	//headers := map[string]string{
+	//	"cookie": cookieStr,
+	//}
+	//res, err1 = util.SendRequest(&util.RequestOption{
+	//	Url:     getReqUrl(string(loginPath)),
+	//	Headers: headers,
+	//	Method:  fasthttp.MethodGet,
+	//})
+	//if err1 != nil {
+	//	t.Fatalf("请求登录url失败 %v", err1)
+	//	return
+	//}
+	//if res.StatusCode >= 400 {
+	//	t.Fatalf("请求登录url时失败： %d", res.StatusCode)
+	//	return
+	//}
 }
+
+//func TestCode(t *testing.T) {
+//	loginState, err := authenticationClient.GetLoginStateByAuthCode(&CodeToTokenParams{
+//		Code: "g1FZq2O8y3NzHvn3YwtTW7dau6lJD9Icq2ZTUR88d_a",
+//	})
+//	if err != nil {
+//		t.Fatalf("code校验失败, %v", err)
+//		return
+//	}
+//	fmt.Println(loginState)
+//}
 
 func TestAccessToken(t *testing.T) {
 	accessToken := `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6I` +
@@ -133,7 +134,7 @@ func TestAccessToken(t *testing.T) {
 		`svZ5thY8w4iwFqZE3lZwKNPRdbaRnC5YyP6Y9M8xP9sQNiRTNxNGZPazCsj1RZWhK` +
 		`VP8a71QyTydSPccIi6s4-GzusO5iKC2bPEGtjwYaWlIK_C-cJtGhXwoYppbUP5sQV` +
 		`tVUPTVtbua_KYomBjsVIoGaeadV-cg1TA`
-	charim, err := authenticationClient.ParsedAccessToken(accessToken)
+	charim, err := authenticationClient.IntrospectAccessTokenOffline(accessToken)
 	if err != nil {
 		t.Fatalf("access token 校验失败, %v", err)
 		return
@@ -148,7 +149,7 @@ func TestAccessToken(t *testing.T) {
 
 func TestIDToken(t *testing.T) {
 
-	charim, err := authenticationClient.ParsedIDToken(idToken)
+	charim, err := authenticationClient.ParseIDToken(idToken)
 	if err != nil {
 		t.Fatalf("id token 校验失败, %v", err)
 		return
@@ -156,15 +157,15 @@ func TestIDToken(t *testing.T) {
 	fmt.Println(charim.IssuedAt)
 }
 
-func TestRreshToken(t *testing.T) {
-	refreshToken := "XbOJEYqDkKh71taxISZO-ICxQexljlTmXQGf6dZNVOs"
-	tokens, err := authenticationClient.RefreshLoginState(refreshToken)
-	if err != nil {
-		t.Fatalf("测试刷新token失败: %v", err)
-		return
-	}
-	fmt.Println(tokens)
-}
+//func TestRreshToken(t *testing.T) {
+//	refreshToken := "XbOJEYqDkKh71taxISZO-ICxQexljlTmXQGf6dZNVOs"
+//	tokens, err := authenticationClient.RefreshLoginState(refreshToken)
+//	if err != nil {
+//		t.Fatalf("测试刷新token失败: %v", err)
+//		return
+//	}
+//	fmt.Println(tokens)
+//}
 
 func TestLogout(t *testing.T) {
 	url, err := authenticationClient.BuildLogoutUrl(&LogoutURLParams{
@@ -181,7 +182,7 @@ func Test_SignInByUsernamePassword(t *testing.T) {
 		"test", "test", dto.SignInOptionsDto{})
 	println(resp.StatusCode, resp.RequestId, resp.Message)
 	println(resp.Data.AccessToken)
-	authenticationClient.setAccessToken(resp.Data.AccessToken)
+	authenticationClient.SetAccessToken(resp.Data.AccessToken)
 
 	profileResp := authenticationClient.GetProfile(&dto.GetProfileDto{})
 	println(profileResp.Data.UserId)

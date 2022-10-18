@@ -3,6 +3,7 @@ package dto
 
 type SignUpByPasswordDto struct{
     Password  string `json:"password"`
-    Email  string `json:"email"`
+    Username  string `json:"username,omitempty"`
+    Email  string `json:"email,omitempty"`
 }
 

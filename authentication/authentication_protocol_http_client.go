@@ -18,7 +18,7 @@ const (
 type ProtocolRequestOption struct {
 	Url         string
 	Method      string
-	ReqDto      interface{}
+	ReqDto      map[string]string
 	Headers     map[string]string
 	ContentType ContentType
 }
@@ -29,7 +29,7 @@ type ResponseData struct {
 	StatusCode int
 }
 
-func GenQueryString(variables map[string]interface{}) string {
+func GenQueryString(variables map[string]string) string {
 	params := url.Values{}
 	for key, value := range variables {
 		params.Add(key, fmt.Sprintf("%v", value))
@@ -38,7 +38,7 @@ func GenQueryString(variables map[string]interface{}) string {
 	return qs
 }
 
-func GenFormArgs(variables map[string]interface{}) *fasthttp.Args {
+func GenFormArgs(variables map[string]string) *fasthttp.Args {
 	args := &fasthttp.Args{}
 	for key, value := range variables {
 		args.Add(key, fmt.Sprintf("%v", value))
@@ -54,7 +54,7 @@ func (client AuthenticationClient) SendProtocolHttpRequest(option *ProtocolReque
 	reqDto := option.ReqDto
 	url := option.Url
 	if method == fasthttp.MethodGet && reqDto != nil {
-		variables := reqDto.(map[string]interface{})
+		variables := reqDto
 		qs := GenQueryString(variables)
 		if qs != "" {
 			url += "?" + qs
@@ -81,7 +81,7 @@ func (client AuthenticationClient) SendProtocolHttpRequest(option *ProtocolReque
 	} else if method == fasthttp.MethodPost {
 		req.Header.SetContentType("application/x-www-form-urlencoded; charset=UTF-8")
 		if reqDto != nil {
-			variables := reqDto.(map[string]interface{})
+			variables := reqDto
 			bytes := GenFormArgs(variables).QueryString()
 			req.SetBody(bytes)
 		}
@@ -91,10 +91,8 @@ func (client AuthenticationClient) SendProtocolHttpRequest(option *ProtocolReque
 		return nil, fmt.Errorf("不支持的请求类型")
 	}
 
-	var httpClient = &fasthttp.Client{
-		TLSConfig: &tls.Config{
-			InsecureSkipVerify: true,
-		},
+	httpClient := &fasthttp.Client{
+		TLSConfig: &tls.Config{InsecureSkipVerify: client.options.InsecureSkipVerify},
 	}
 	err := httpClient.Do(req, resp)
 	if err != nil {

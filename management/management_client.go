@@ -8,169 +8,296 @@ import (
 )
 
 /*
- * @summary 获取/搜索用户列表
- * @description
- * 此接口用于获取用户列表，支持模糊搜索，以及通过用户基础字段、用户自定义字段、用户所在部门、用户历史登录应用等维度筛选用户。
- *
- * ### 模糊搜素示例
- *
- * 模糊搜索默认会从 `phone`, `email`, `name`, `username`, `nickname` 五个字段对用户进行模糊搜索，你也可以通过设置 `options.fuzzySearchOn`
- * 决定模糊匹配的字段范围：
- *
- * ```json
- * {
-     * "query": "北京",
-     * "options": {
-         * "fuzzySearchOn": [
-             * "address"
-             * ]
-             * }
-             * }
-             * ```
-             *
-             * ### 高级搜索示例
-             *
-             * 你可以通过 `advancedFilter` 进行高级搜索，高级搜索支持通过用户的基础信息、自定义数据、所在部门、用户来源、登录应用、外部身份源信息等维度对用户进行筛选。
-             * **且这些筛选条件可以任意组合。**
-             *
-             * #### 筛选状态为禁用的用户
-             *
-             * 用户状态（`status`）为字符串类型，可选值为 `Activated` 和 `Suspended`：
-             *
-             * ```json
-             * {
-                 * "advancedFilter": [
-                     * {
-                         * "field": "status",
-                         * "operator": "EQUAL",
-                         * "value": "Suspended"
-                         * }
-                         * ]
-                         * }
-                         * ```
-                         *
-                         * #### 筛选邮箱中包含 `@example.com` 的用户
-                         *
-                         * 用户邮箱（`email`）为字符串类型，可以进行模糊搜索：
-                         *
-                         * ```json
-                         * {
-                             * "advancedFilter": [
-                                 * {
-                                     * "field": "email",
-                                     * "operator": "CONTAINS",
-                                     * "value": "@example.com"
-                                     * }
-                                     * ]
-                                     * }
-                                     * ```
-                                     *
-                                     * #### 根据用户登录次数筛选
-                                     *
-                                     * 筛选登录次数大于 10 的用户：
-                                     *
-                                     * ```json
-                                     * {
-                                         * "advancedFilter": [
-                                             * {
-                                                 * "field": "loginsCount",
-                                                 * "operator": "GREATER",
-                                                 * "value": 10
-                                                 * }
-                                                 * ]
-                                                 * }
-                                                 * ```
-                                                 *
-                                                 * 筛选登录次数在 10 - 100 次的用户：
-                                                 *
-                                                 * ```json
-                                                 * {
-                                                     * "advancedFilter": [
-                                                         * {
-                                                             * "field": "loginsCount",
-                                                             * "operator": "BETWEEN",
-                                                             * "value": [10, 100]
-                                                             * }
-                                                             * ]
-                                                             * }
-                                                             * ```
-                                                             *
-                                                             * #### 根据用户上次登录时间进行筛选
-                                                             *
-                                                             * 筛选最近 7 天内登录过的用户：
-                                                             *
-                                                             * ```json
-                                                             * {
-                                                                 * "advancedFilter": [
-                                                                     * {
-                                                                         * "field": "lastLoginTime",
-                                                                         * "operator": "GREATER",
-                                                                         * "value": new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-                                                                         * }
-                                                                         * ]
-                                                                         * }
-                                                                         * ```
-                                                                         *
-                                                                         * 筛选在某一段时间内登录过的用户：
-                                                                         *
-                                                                         * ```json
-                                                                         * {
-                                                                             * "advancedFilter": [
-                                                                                 * {
-                                                                                     * "field": "lastLoginTime",
-                                                                                     * "operator": "BETWEEN",
-                                                                                     * "value": [
-                                                                                         * new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
-                                                                                         * new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-                                                                                         * ]
-                                                                                         * }
-                                                                                         * ]
-                                                                                         * }
-                                                                                         * ```
-                                                                                         *
-                                                                                         * #### 根据用户曾经登录过的应用筛选
-                                                                                         *
-                                                                                         * 筛选出曾经登录过应用 `appId1` 或者 `appId2` 的用户：
-                                                                                         *
-                                                                                         * ```json
-                                                                                         * {
-                                                                                             * "advancedFilter": [
-                                                                                                 * {
-                                                                                                     * "field": "loggedInApps",
-                                                                                                     * "operator": "IN",
-                                                                                                     * "value": [
-                                                                                                         * "appId1",
-                                                                                                         * "appId2"
-                                                                                                         * ]
-                                                                                                         * }
-                                                                                                         * ]
-                                                                                                         * }
-                                                                                                         * ```
-                                                                                                         *
-                                                                                                         * #### 根据用户所在部门进行筛选
-                                                                                                         *
-                                                                                                         * ```json
-                                                                                                         * {
-                                                                                                             * "advancedFilter": [
-                                                                                                                 * {
-                                                                                                                     * "field": "department",
-                                                                                                                     * "operator": "IN",
-                                                                                                                     * "value": [
-                                                                                                                         * {
-                                                                                                                             * "organizationCode": "steamory",
-                                                                                                                             * "departmentId": "root",
-                                                                                                                             * "departmentIdType": "department_id",
-                                                                                                                             * "includeChildrenDepartments": true
-                                                                                                                             * }
-                                                                                                                             * ]
-                                                                                                                             * }
-                                                                                                                             * ]
-                                                                                                                             * }
-                                                                                                                             * ```
-                                                                                                                             *
-                                                                                                                             *
-                                                                                                                             * @param requestBody
-                                                                                                                             * @returns UserPaginatedRespDto
+* @summary 获取/搜索用户列表
+* @description
+* 此接口用于获取用户列表，支持模糊搜索，以及通过用户基础字段、用户自定义字段、用户所在部门、用户历史登录应用等维度筛选用户。
+*
+* ### 模糊搜素示例
+*
+* 模糊搜索默认会从 `phone`, `email`, `name`, `username`, `nickname` 五个字段对用户进行模糊搜索，你也可以通过设置 `options.fuzzySearchOn`
+* 决定模糊匹配的字段范围：
+*
+* ```json
+* {
+
+  - "query": "北京",
+
+  - "options": {
+
+  - "fuzzySearchOn": [
+
+  - "address"
+
+  - ]
+
+  - }
+
+  - }
+
+  - ```
+    *
+
+  - ### 高级搜索示例
+    *
+
+  - 你可以通过 `advancedFilter` 进行高级搜索，高级搜索支持通过用户的基础信息、自定义数据、所在部门、用户来源、登录应用、外部身份源信息等维度对用户进行筛选。
+
+  - **且这些筛选条件可以任意组合。**
+    *
+
+  - #### 筛选状态为禁用的用户
+    *
+
+  - 用户状态（`status`）为字符串类型，可选值为 `Activated` 和 `Suspended`：
+    *
+
+  - ```json
+
+  - {
+
+  - "advancedFilter": [
+
+  - {
+
+  - "field": "status",
+
+  - "operator": "EQUAL",
+
+  - "value": "Suspended"
+
+  - }
+
+  - ]
+
+  - }
+
+  - ```
+    *
+
+  - #### 筛选邮箱中包含 `@example.com` 的用户
+    *
+
+  - 用户邮箱（`email`）为字符串类型，可以进行模糊搜索：
+    *
+
+  - ```json
+
+  - {
+
+  - "advancedFilter": [
+
+  - {
+
+  - "field": "email",
+
+  - "operator": "CONTAINS",
+
+  - "value": "@example.com"
+
+  - }
+
+  - ]
+
+  - }
+
+  - ```
+    *
+
+  - #### 根据用户登录次数筛选
+    *
+
+  - 筛选登录次数大于 10 的用户：
+    *
+
+  - ```json
+
+  - {
+
+  - "advancedFilter": [
+
+  - {
+
+  - "field": "loginsCount",
+
+  - "operator": "GREATER",
+
+  - "value": 10
+
+  - }
+
+  - ]
+
+  - }
+
+  - ```
+    *
+
+  - 筛选登录次数在 10 - 100 次的用户：
+    *
+
+  - ```json
+
+  - {
+
+  - "advancedFilter": [
+
+  - {
+
+  - "field": "loginsCount",
+
+  - "operator": "BETWEEN",
+
+  - "value": [10, 100]
+
+  - }
+
+  - ]
+
+  - }
+
+  - ```
+    *
+
+  - #### 根据用户上次登录时间进行筛选
+    *
+
+  - 筛选最近 7 天内登录过的用户：
+    *
+
+  - ```json
+
+  - {
+
+  - "advancedFilter": [
+
+  - {
+
+  - "field": "lastLoginTime",
+
+  - "operator": "GREATER",
+
+  - "value": new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+
+  - }
+
+  - ]
+
+  - }
+
+  - ```
+    *
+
+  - 筛选在某一段时间内登录过的用户：
+    *
+
+  - ```json
+
+  - {
+
+  - "advancedFilter": [
+
+  - {
+
+  - "field": "lastLoginTime",
+
+  - "operator": "BETWEEN",
+
+  - "value": [
+
+  - new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
+
+  - new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+
+  - ]
+
+  - }
+
+  - ]
+
+  - }
+
+  - ```
+    *
+
+  - #### 根据用户曾经登录过的应用筛选
+    *
+
+  - 筛选出曾经登录过应用 `appId1` 或者 `appId2` 的用户：
+    *
+
+  - ```json
+
+  - {
+
+  - "advancedFilter": [
+
+  - {
+
+  - "field": "loggedInApps",
+
+  - "operator": "IN",
+
+  - "value": [
+
+  - "appId1",
+
+  - "appId2"
+
+  - ]
+
+  - }
+
+  - ]
+
+  - }
+
+  - ```
+    *
+
+  - #### 根据用户所在部门进行筛选
+    *
+
+  - ```json
+
+  - {
+
+  - "advancedFilter": [
+
+  - {
+
+  - "field": "department",
+
+  - "operator": "IN",
+
+  - "value": [
+
+  - {
+
+  - "organizationCode": "steamory",
+
+  - "departmentId": "root",
+
+  - "departmentIdType": "department_id",
+
+  - "includeChildrenDepartments": true
+
+  - }
+
+  - ]
+
+  - }
+
+  - ]
+
+  - }
+
+  - ```
+    *
+    *
+
+  - @param requestBody
+
+  - @returns UserPaginatedRespDto
 */
 func (client *ManagementClient) ListUsers(reqDto *dto.ListUsersRequestDto) *dto.UserPaginatedRespDto {
 	b, err := client.SendHttpRequest("/api/v3/list-users", fasthttp.MethodPost, reqDto)
@@ -672,7 +799,6 @@ func (client *ManagementClient) UpdateUserBatch(reqDto *dto.UpdateUserBatchReqDt
 		fmt.Println(err)
 		return nil
 	}
-
 	err = json.Unmarshal(b, &response)
 	if err != nil {
 		fmt.Println(err)
