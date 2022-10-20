@@ -1,18 +1,17 @@
 package management
 
 import (
-	"crypto/tls"
 	"github.com/Authing/authing-golang-sdk/constant"
 	"net/http"
 )
 
 type ManagementClient struct {
 	HttpClient *http.Client
-	options    *ClientOptions
+	options    *ManagementClientOptions
 	userPoolId string
 }
 
-type ClientOptions struct {
+type ManagementClientOptions struct {
 	AccessKeyId     string
 	AccessKeySecret string
 	TenantId        string
@@ -20,12 +19,12 @@ type ClientOptions struct {
 	Lang            string
 	Host            string
 	/**
-	是否拒绝非法的 HTTPS 请求，默认为 true；如果是私有化部署的场景且证书不被信任，可以设置为 false
+	是否跳过 HTTPS 证书检测，默认为 false；如果是私有化部署的场景且证书不被信任，可以设置为 true
 	*/
-	RejectUnauthorized bool
+	InsecureSkipVerify bool
 }
 
-func NewManagementClient(options *ClientOptions) (*ManagementClient, error) {
+func NewManagementClient(options *ManagementClientOptions) (*ManagementClient, error) {
 	if options.Host == "" {
 		options.Host = constant.ApiServiceUrl
 	}
@@ -43,10 +42,5 @@ func NewManagementClient(options *ClientOptions) (*ManagementClient, error) {
 		)
 		c.HttpClient = oauth2.NewManagementClient(context.Background(), src)*/
 	}
-
-	if c.options.RejectUnauthorized == false {
-		http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-	}
-
 	return c, nil
 }

@@ -10,7 +10,7 @@ import (
 var client *ManagementClient
 
 func init() {
-	options := ClientOptions{
+	options := ManagementClientOptions{
 		AccessKeyId:     "6343b98b7cf019a9366e9b7c",
 		AccessKeySecret: "fb0cefa691df76920a1611b9dec38120",
 		Host:            "http://localhost:3000",

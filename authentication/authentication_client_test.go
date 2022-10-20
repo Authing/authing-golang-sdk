@@ -18,7 +18,7 @@ var options = AuthenticationClientOptions{
 	AppSecret:          "2140f44a44fcf7684954e37c25d70ce4",
 	AppHost:            "https://sadsdd.cj.mereith.com",
 	RedirectUri:        "http://localhost:3003/callback",
-	RejectUnauthorized: false,
+	InsecureSkipVerify: true,
 }
 
 const idToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiO" +
