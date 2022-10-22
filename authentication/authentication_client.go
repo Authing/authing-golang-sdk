@@ -445,7 +445,7 @@ func (client *AuthenticationClient) getKeyCommon(token *jwt.Token) (interface{},
 	}
 	jwks, err := client.getJWKS()
 	if err != nil {
-		return nil, fmt.Errorf("获取 JWKS 失败 %v")
+		return nil, fmt.Errorf("获取 JWKS 失败 %v", err)
 	}
 	return jwks.KeyfuncLegacy(token)
 }
