@@ -779,11 +779,11 @@ func (client *AuthenticationClient) SignInByAD(sAMAccountName string, passCode s
 	return &response
 }
 
-func (client *AuthenticationClient) SignUpByEmailPassCode(email string, passCode string, options dto.SignupOptionsDto) *dto.UserSingleRespDto {
+func (client *AuthenticationClient) SignUpByEmailPassCode(email string, passCode string, options dto.SignUpOptionsDto) *dto.UserSingleRespDto {
 	body, err := client.SendHttpRequest(
 		"/api/v3/signup",
 		fasthttp.MethodPost,
-		&dto.SignupDto{
+		&dto.SignUpDto{
 			Connection: "PASSCODE",
 			PassCodePayload: dto.SignUpByPassCodeDto{
 				PassCode: passCode,
@@ -805,11 +805,11 @@ func (client *AuthenticationClient) SignUpByEmailPassCode(email string, passCode
 	return &response
 }
 
-func (client *AuthenticationClient) SignUpByPhonePassCode(phone string, passCode string, phoneCountryCode string, options dto.SignupOptionsDto) *dto.UserSingleRespDto {
+func (client *AuthenticationClient) SignUpByPhonePassCode(phone string, passCode string, phoneCountryCode string, options dto.SignUpOptionsDto) *dto.UserSingleRespDto {
 	body, err := client.SendHttpRequest(
 		"/api/v3/signup",
 		fasthttp.MethodPost,
-		&dto.SignupDto{
+		&dto.SignUpDto{
 			Connection: "PASSCODE",
 			PassCodePayload: dto.SignUpByPassCodeDto{
 				PassCode:         passCode,
@@ -832,11 +832,11 @@ func (client *AuthenticationClient) SignUpByPhonePassCode(phone string, passCode
 	return &response
 }
 
-func (client *AuthenticationClient) SignUpByEmailPassword(email string, password string, options dto.SignupOptionsDto) *dto.UserSingleRespDto {
+func (client *AuthenticationClient) SignUpByEmailPassword(email string, password string, options dto.SignUpOptionsDto) *dto.UserSingleRespDto {
 	body, err := client.SendHttpRequest(
 		"/api/v3/signup",
 		fasthttp.MethodPost,
-		&dto.SignupDto{
+		&dto.SignUpDto{
 			Connection: "PASSWORD",
 			PasswordPayload: dto.SignUpByPasswordDto{
 				Email:    email,
@@ -858,11 +858,11 @@ func (client *AuthenticationClient) SignUpByEmailPassword(email string, password
 	return &response
 }
 
-func (client *AuthenticationClient) SignUpByUsernamePassword(username string, password string, options dto.SignupOptionsDto) *dto.UserSingleRespDto {
+func (client *AuthenticationClient) SignUpByUsernamePassword(username string, password string, options dto.SignUpOptionsDto) *dto.UserSingleRespDto {
 	body, err := client.SendHttpRequest(
 		"/api/v3/signup",
 		fasthttp.MethodPost,
-		&dto.SignupDto{
+		&dto.SignUpDto{
 			Connection: "PASSWORD",
 			PasswordPayload: dto.SignUpByPasswordDto{
 				Username: username,
