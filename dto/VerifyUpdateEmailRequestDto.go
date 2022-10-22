@@ -2,7 +2,7 @@ package dto
 
 
 type VerifyUpdateEmailRequestDto struct{
-    EmailPasscodePayload  UpdateEmailByEmailPassCodeDto `json:"emailPasscodePayload"`
+    EmailPassCodePayload  UpdateEmailByEmailPassCodeDto `json:"emailPassCodePayload"`
     VerifyMethod  string  `json:"verifyMethod"`
 }
 

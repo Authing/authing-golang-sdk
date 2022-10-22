@@ -1,7 +1,7 @@
 package dto
 
 
-type SignupOptionsDto struct{
+type SignUpOptionsDto struct{
     ClientIp  string `json:"clientIp,omitempty"`
     PhonePassCodeForInformationCompletion  string `json:"phonePassCodeForInformationCompletion,omitempty"`
     EmailPassCodeForInformationCompletion  string `json:"emailPassCodeForInformationCompletion,omitempty"`

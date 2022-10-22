@@ -9,7 +9,7 @@ type SyncTaskDto struct{
     SyncTaskType  string  `json:"syncTaskType"`
     SyncFlow  string  `json:"syncFlow"`
     SyncTrigger  string  `json:"syncTrigger"`
-    LastSyncMessage  bool `json:"lastSyncMessage,omitempty"`
+    LastSyncMessage  string `json:"lastSyncMessage,omitempty"`
     LastSyncRate  int `json:"lastSyncRate,omitempty"`
     LastSyncStatus  string  `json:"lastSyncStatus,omitempty"`
     LastSyncTime  string `json:"lastSyncTime,omitempty"`

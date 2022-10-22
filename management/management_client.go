@@ -8,296 +8,183 @@ import (
 )
 
 /*
-* @summary 获取/搜索用户列表
-* @description
-* 此接口用于获取用户列表，支持模糊搜索，以及通过用户基础字段、用户自定义字段、用户所在部门、用户历史登录应用等维度筛选用户。
-*
-* ### 模糊搜素示例
-*
-* 模糊搜索默认会从 `phone`, `email`, `name`, `username`, `nickname` 五个字段对用户进行模糊搜索，你也可以通过设置 `options.fuzzySearchOn`
-* 决定模糊匹配的字段范围：
-*
-* ```json
-* {
-
-  - "query": "北京",
-
-  - "options": {
-
-  - "fuzzySearchOn": [
-
-  - "address"
-
-  - ]
-
-  - }
-
-  - }
-
-  - ```
-    *
-
-  - ### 高级搜索示例
-    *
-
-  - 你可以通过 `advancedFilter` 进行高级搜索，高级搜索支持通过用户的基础信息、自定义数据、所在部门、用户来源、登录应用、外部身份源信息等维度对用户进行筛选。
-
-  - **且这些筛选条件可以任意组合。**
-    *
-
-  - #### 筛选状态为禁用的用户
-    *
-
-  - 用户状态（`status`）为字符串类型，可选值为 `Activated` 和 `Suspended`：
-    *
-
-  - ```json
-
-  - {
-
-  - "advancedFilter": [
-
-  - {
-
-  - "field": "status",
-
-  - "operator": "EQUAL",
-
-  - "value": "Suspended"
-
-  - }
-
-  - ]
-
-  - }
-
-  - ```
-    *
-
-  - #### 筛选邮箱中包含 `@example.com` 的用户
-    *
-
-  - 用户邮箱（`email`）为字符串类型，可以进行模糊搜索：
-    *
-
-  - ```json
-
-  - {
-
-  - "advancedFilter": [
-
-  - {
-
-  - "field": "email",
-
-  - "operator": "CONTAINS",
-
-  - "value": "@example.com"
-
-  - }
-
-  - ]
-
-  - }
-
-  - ```
-    *
-
-  - #### 根据用户登录次数筛选
-    *
-
-  - 筛选登录次数大于 10 的用户：
-    *
-
-  - ```json
-
-  - {
-
-  - "advancedFilter": [
-
-  - {
-
-  - "field": "loginsCount",
-
-  - "operator": "GREATER",
-
-  - "value": 10
-
-  - }
-
-  - ]
-
-  - }
-
-  - ```
-    *
-
-  - 筛选登录次数在 10 - 100 次的用户：
-    *
-
-  - ```json
-
-  - {
-
-  - "advancedFilter": [
-
-  - {
-
-  - "field": "loginsCount",
-
-  - "operator": "BETWEEN",
-
-  - "value": [10, 100]
-
-  - }
-
-  - ]
-
-  - }
-
-  - ```
-    *
-
-  - #### 根据用户上次登录时间进行筛选
-    *
-
-  - 筛选最近 7 天内登录过的用户：
-    *
-
-  - ```json
-
-  - {
-
-  - "advancedFilter": [
-
-  - {
-
-  - "field": "lastLoginTime",
-
-  - "operator": "GREATER",
-
-  - "value": new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-
-  - }
-
-  - ]
-
-  - }
-
-  - ```
-    *
-
-  - 筛选在某一段时间内登录过的用户：
-    *
-
-  - ```json
-
-  - {
-
-  - "advancedFilter": [
-
-  - {
-
-  - "field": "lastLoginTime",
-
-  - "operator": "BETWEEN",
-
-  - "value": [
-
-  - new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
-
-  - new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-
-  - ]
-
-  - }
-
-  - ]
-
-  - }
-
-  - ```
-    *
-
-  - #### 根据用户曾经登录过的应用筛选
-    *
-
-  - 筛选出曾经登录过应用 `appId1` 或者 `appId2` 的用户：
-    *
-
-  - ```json
-
-  - {
-
-  - "advancedFilter": [
-
-  - {
-
-  - "field": "loggedInApps",
-
-  - "operator": "IN",
-
-  - "value": [
-
-  - "appId1",
-
-  - "appId2"
-
-  - ]
-
-  - }
-
-  - ]
-
-  - }
-
-  - ```
-    *
-
-  - #### 根据用户所在部门进行筛选
-    *
-
-  - ```json
-
-  - {
-
-  - "advancedFilter": [
-
-  - {
-
-  - "field": "department",
-
-  - "operator": "IN",
-
-  - "value": [
-
-  - {
-
-  - "organizationCode": "steamory",
-
-  - "departmentId": "root",
-
-  - "departmentIdType": "department_id",
-
-  - "includeChildrenDepartments": true
-
-  - }
-
-  - ]
-
-  - }
-
-  - ]
-
-  - }
-
-  - ```
-    *
-    *
-
-  - @param requestBody
-
-  - @returns UserPaginatedRespDto
+ * @summary 获取/搜索用户列表
+ * @description
+ * 此接口用于获取用户列表，支持模糊搜索，以及通过用户基础字段、用户自定义字段、用户所在部门、用户历史登录应用等维度筛选用户。
+ *
+ * ### 模糊搜素示例
+ *
+ * 模糊搜索默认会从 `phone`, `email`, `name`, `username`, `nickname` 五个字段对用户进行模糊搜索，你也可以通过设置 `options.fuzzySearchOn`
+ * 决定模糊匹配的字段范围：
+ *
+ * ```json
+ * {
+     * "query": "北京",
+     * "options": {
+         * "fuzzySearchOn": [
+             * "address"
+             * ]
+             * }
+             * }
+             * ```
+             *
+             * ### 高级搜索示例
+             *
+             * 你可以通过 `advancedFilter` 进行高级搜索，高级搜索支持通过用户的基础信息、自定义数据、所在部门、用户来源、登录应用、外部身份源信息等维度对用户进行筛选。
+             * **且这些筛选条件可以任意组合。**
+             *
+             * #### 筛选状态为禁用的用户
+             *
+             * 用户状态（`status`）为字符串类型，可选值为 `Activated` 和 `Suspended`：
+             *
+             * ```json
+             * {
+                 * "advancedFilter": [
+                     * {
+                         * "field": "status",
+                         * "operator": "EQUAL",
+                         * "value": "Suspended"
+                         * }
+                         * ]
+                         * }
+                         * ```
+                         *
+                         * #### 筛选邮箱中包含 `@example.com` 的用户
+                         *
+                         * 用户邮箱（`email`）为字符串类型，可以进行模糊搜索：
+                         *
+                         * ```json
+                         * {
+                             * "advancedFilter": [
+                                 * {
+                                     * "field": "email",
+                                     * "operator": "CONTAINS",
+                                     * "value": "@example.com"
+                                     * }
+                                     * ]
+                                     * }
+                                     * ```
+                                     *
+                                     * #### 根据用户的任意扩展字段进行搜索
+                                     *
+                                     * ```json
+                                     * {
+                                         * "advancedFilter": [
+                                             * {
+                                                 * "field": "some-custom-key",
+                                                 * "operator": "EQUAL",
+                                                 * "value": "some-value"
+                                                 * }
+                                                 * ]
+                                                 * }
+                                                 * ```
+                                                 *
+                                                 * #### 根据用户登录次数筛选
+                                                 *
+                                                 * 筛选登录次数大于 10 的用户：
+                                                 *
+                                                 * ```json
+                                                 * {
+                                                     * "advancedFilter": [
+                                                         * {
+                                                             * "field": "loginsCount",
+                                                             * "operator": "GREATER",
+                                                             * "value": 10
+                                                             * }
+                                                             * ]
+                                                             * }
+                                                             * ```
+                                                             *
+                                                             * 筛选登录次数在 10 - 100 次的用户：
+                                                             *
+                                                             * ```json
+                                                             * {
+                                                                 * "advancedFilter": [
+                                                                     * {
+                                                                         * "field": "loginsCount",
+                                                                         * "operator": "BETWEEN",
+                                                                         * "value": [10, 100]
+                                                                         * }
+                                                                         * ]
+                                                                         * }
+                                                                         * ```
+                                                                         *
+                                                                         * #### 根据用户上次登录时间进行筛选
+                                                                         *
+                                                                         * 筛选最近 7 天内登录过的用户：
+                                                                         *
+                                                                         * ```json
+                                                                         * {
+                                                                             * "advancedFilter": [
+                                                                                 * {
+                                                                                     * "field": "lastLoginTime",
+                                                                                     * "operator": "GREATER",
+                                                                                     * "value": new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+                                                                                     * }
+                                                                                     * ]
+                                                                                     * }
+                                                                                     * ```
+                                                                                     *
+                                                                                     * 筛选在某一段时间内登录过的用户：
+                                                                                     *
+                                                                                     * ```json
+                                                                                     * {
+                                                                                         * "advancedFilter": [
+                                                                                             * {
+                                                                                                 * "field": "lastLoginTime",
+                                                                                                 * "operator": "BETWEEN",
+                                                                                                 * "value": [
+                                                                                                     * new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
+                                                                                                     * new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+                                                                                                     * ]
+                                                                                                     * }
+                                                                                                     * ]
+                                                                                                     * }
+                                                                                                     * ```
+                                                                                                     *
+                                                                                                     * #### 根据用户曾经登录过的应用筛选
+                                                                                                     *
+                                                                                                     * 筛选出曾经登录过应用 `appId1` 或者 `appId2` 的用户：
+                                                                                                     *
+                                                                                                     * ```json
+                                                                                                     * {
+                                                                                                         * "advancedFilter": [
+                                                                                                             * {
+                                                                                                                 * "field": "loggedInApps",
+                                                                                                                 * "operator": "IN",
+                                                                                                                 * "value": [
+                                                                                                                     * "appId1",
+                                                                                                                     * "appId2"
+                                                                                                                     * ]
+                                                                                                                     * }
+                                                                                                                     * ]
+                                                                                                                     * }
+                                                                                                                     * ```
+                                                                                                                     *
+                                                                                                                     * #### 根据用户所在部门进行筛选
+                                                                                                                     *
+                                                                                                                     * ```json
+                                                                                                                     * {
+                                                                                                                         * "advancedFilter": [
+                                                                                                                             * {
+                                                                                                                                 * "field": "department",
+                                                                                                                                 * "operator": "IN",
+                                                                                                                                 * "value": [
+                                                                                                                                     * {
+                                                                                                                                         * "organizationCode": "steamory",
+                                                                                                                                         * "departmentId": "root",
+                                                                                                                                         * "departmentIdType": "department_id",
+                                                                                                                                         * "includeChildrenDepartments": true
+                                                                                                                                         * }
+                                                                                                                                         * ]
+                                                                                                                                         * }
+                                                                                                                                         * ]
+                                                                                                                                         * }
+                                                                                                                                         * ```
+                                                                                                                                         *
+                                                                                                                                         *
+                                                                                                                                         * @param requestBody
+                                                                                                                                         * @returns UserPaginatedRespDto
 */
 func (client *ManagementClient) ListUsers(reqDto *dto.ListUsersRequestDto) *dto.UserPaginatedRespDto {
 	b, err := client.SendHttpRequest("/api/v3/list-users", fasthttp.MethodPost, reqDto)
@@ -397,6 +284,111 @@ func (client *ManagementClient) GetUser(reqDto *dto.GetUserDto) *dto.UserSingleR
 func (client *ManagementClient) GetUserBatch(reqDto *dto.GetUserBatchDto) *dto.UserListRespDto {
 	b, err := client.SendHttpRequest("/api/v3/get-user-batch", fasthttp.MethodGet, reqDto)
 	var response dto.UserListRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 创建用户
+ * @description 创建用户，邮箱、手机号、用户名必须包含其中一个，邮箱、手机号、用户名、externalId 用户池内唯一，此接口将以管理员身份创建用户因此不需要进行手机号验证码检验等安全检测。
+ * @param requestBody
+ * @returns UserSingleRespDto
+ */
+func (client *ManagementClient) CreateUser(reqDto *dto.CreateUserReqDto) *dto.UserSingleRespDto {
+	b, err := client.SendHttpRequest("/api/v3/create-user", fasthttp.MethodPost, reqDto)
+	var response dto.UserSingleRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 批量创建用户
+ * @description 批量创建用户，邮箱、手机号、用户名必须包含其中一个，邮箱、手机号、用户名、externalId 用户池内唯一，此接口将以管理员身份创建用户因此不需要进行手机号验证码检验等安全检测。
+ * @param requestBody
+ * @returns UserListRespDto
+ */
+func (client *ManagementClient) CreateUsersBatch(reqDto *dto.CreateUserBatchReqDto) *dto.UserListRespDto {
+	b, err := client.SendHttpRequest("/api/v3/create-users-batch", fasthttp.MethodPost, reqDto)
+	var response dto.UserListRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 修改用户资料
+ * @description 通过用户 ID，修改用户资料，邮箱、手机号、用户名、externalId 用户池内唯一，此接口将以管理员身份修改用户资料因此不需要进行手机号验证码检验等安全检测。
+ * @param requestBody
+ * @returns UserSingleRespDto
+ */
+func (client *ManagementClient) UpdateUser(reqDto *dto.UpdateUserReqDto) *dto.UserSingleRespDto {
+	b, err := client.SendHttpRequest("/api/v3/update-user", fasthttp.MethodPost, reqDto)
+	var response dto.UserSingleRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 批量修改用户资料
+ * @description 批量修改用户资料，邮箱、手机号、用户名、externalId 用户池内唯一，此接口将以管理员身份修改用户资料因此不需要进行手机号验证码检验等安全检测。
+ * @param requestBody
+ * @returns UserListRespDto
+ */
+func (client *ManagementClient) UpdateUserBatch(reqDto *dto.UpdateUserBatchReqDto) *dto.UserListRespDto {
+	b, err := client.SendHttpRequest("/api/v3/update-user-batch", fasthttp.MethodPost, reqDto)
+	var response dto.UserListRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 删除用户
+ * @description 通过用户 ID 列表，删除用户，支持批量删除，可以选择指定用户 ID 类型等。
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) DeleteUsersBatch(reqDto *dto.DeleteUsersBatchDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/delete-users-batch", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -608,27 +600,6 @@ func (client *ManagementClient) GetUserGroups(reqDto *dto.GetUserGroupsDto) *dto
 }
 
 /*
- * @summary 删除用户
- * @description 通过用户 ID 列表，删除用户，支持批量删除，可以选择指定用户 ID 类型等。
- * @param requestBody
- * @returns IsSuccessRespDto
- */
-func (client *ManagementClient) DeleteUsersBatch(reqDto *dto.DeleteUsersBatchDto) *dto.IsSuccessRespDto {
-	b, err := client.SendHttpRequest("/api/v3/delete-users-batch", fasthttp.MethodPost, reqDto)
-	var response dto.IsSuccessRespDto
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	err = json.Unmarshal(b, &response)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	return &response
-}
-
-/*
  * @summary 获取用户 MFA 绑定信息
  * @description 通过用户 ID，获取用户 MFA 绑定信息，可以选择指定用户 ID 类型等。
  * @param userId 用户唯一标志，可以是用户 ID、用户名、邮箱、手机号、外部 ID、在外部身份源的 ID。
@@ -711,90 +682,6 @@ func (client *ManagementClient) KickUsers(reqDto *dto.KickUsersDto) *dto.IsSucce
 func (client *ManagementClient) IsUserExists(reqDto *dto.IsUserExistsReqDto) *dto.IsUserExistsRespDto {
 	b, err := client.SendHttpRequest("/api/v3/is-user-exists", fasthttp.MethodPost, reqDto)
 	var response dto.IsUserExistsRespDto
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	err = json.Unmarshal(b, &response)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	return &response
-}
-
-/*
- * @summary 创建用户
- * @description 创建用户，邮箱、手机号、用户名必须包含其中一个，邮箱、手机号、用户名、externalId 用户池内唯一，此接口将以管理员身份创建用户因此不需要进行手机号验证码检验等安全检测。
- * @param requestBody
- * @returns UserSingleRespDto
- */
-func (client *ManagementClient) CreateUser(reqDto *dto.CreateUserReqDto) *dto.UserSingleRespDto {
-	b, err := client.SendHttpRequest("/api/v3/create-user", fasthttp.MethodPost, reqDto)
-	var response dto.UserSingleRespDto
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	err = json.Unmarshal(b, &response)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	return &response
-}
-
-/*
- * @summary 批量创建用户
- * @description 批量创建用户，邮箱、手机号、用户名必须包含其中一个，邮箱、手机号、用户名、externalId 用户池内唯一，此接口将以管理员身份批量创建用户因此不需要进行手机号验证码检验等安全检测。
- * @param requestBody
- * @returns UserListRespDto
- */
-func (client *ManagementClient) CreateUsersBatch(reqDto *dto.CreateUserBatchReqDto) *dto.UserListRespDto {
-	b, err := client.SendHttpRequest("/api/v3/create-users-batch", fasthttp.MethodPost, reqDto)
-	var response dto.UserListRespDto
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	err = json.Unmarshal(b, &response)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	return &response
-}
-
-/*
- * @summary 修改用户资料
- * @description 通过用户 ID，修改用户资料，邮箱、手机号、用户名、externalId 用户池内唯一，此接口将以管理员身份修改用户资料因此不需要进行手机号验证码检验等安全检测。
- * @param requestBody
- * @returns UserSingleRespDto
- */
-func (client *ManagementClient) UpdateUser(reqDto *dto.UpdateUserReqDto) *dto.UserSingleRespDto {
-	b, err := client.SendHttpRequest("/api/v3/update-user", fasthttp.MethodPost, reqDto)
-	var response dto.UserSingleRespDto
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	err = json.Unmarshal(b, &response)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	return &response
-}
-
-/*
- * @summary 修改用户资料
- * @description 通过用户 ID，修改用户资料，邮箱、手机号、用户名、externalId 用户池内唯一，此接口将以管理员身份修改用户资料因此不需要进行手机号验证码检验等安全检测。
- * @param requestBody
- * @returns UserListRespDto
- */
-func (client *ManagementClient) UpdateUserBatch(reqDto *dto.UpdateUserBatchReqDto) *dto.UserListRespDto {
-	b, err := client.SendHttpRequest("/api/v3/update-user-batch", fasthttp.MethodPost, reqDto)
-	var response dto.UserListRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -1145,8 +1032,8 @@ func (client *ManagementClient) GetOrganizationsBatch(reqDto *dto.GetOrganizatio
 }
 
 /*
- * @summary 获取顶层组织机构列表
- * @description 获取顶层组织机构列表，支持分页。
+ * @summary 获取组织机构列表
+ * @description 获取组织机构列表，支持分页。
  * @param page 当前页数，从 1 开始
  * @param limit 每页数目，最大不能超过 50，默认为 10
  * @param fetchAll 拉取所有
@@ -1169,7 +1056,7 @@ func (client *ManagementClient) ListOrganizations(reqDto *dto.ListOrganizationsD
 }
 
 /*
- * @summary 创建顶层组织机构
+ * @summary 创建组织机构
  * @description 创建组织机构，会创建一个只有一个节点的组织机构，可以选择组织描述信息、根节点自定义 ID、多语言等。
  * @param requestBody
  * @returns OrganizationSingleRespDto
@@ -1190,8 +1077,8 @@ func (client *ManagementClient) CreateOrganization(reqDto *dto.CreateOrganizatio
 }
 
 /*
- * @summary 修改顶层组织机构
- * @description 通过组织 code，修改顶层组织机构，可以选择部门描述、新组织 code、组织名称等。
+ * @summary 修改组织机构
+ * @description 通过组织 code，修改组织机构，可以选择部门描述、新组织 code、组织名称等。
  * @param requestBody
  * @returns OrganizationSingleRespDto
  */
@@ -1232,8 +1119,8 @@ func (client *ManagementClient) DeleteOrganization(reqDto *dto.DeleteOrganizatio
 }
 
 /*
- * @summary 搜索顶层组织机构列表
- * @description 通过搜索关键词，搜索顶层组织机构列表，支持分页。
+ * @summary 搜索组织机构列表
+ * @description 通过搜索关键词，搜索组织机构列表，支持分页。
  * @param keywords 搜索关键词，如组织机构名称
  * @param page 当前页数，从 1 开始
  * @param limit 每页数目，最大不能超过 50，默认为 10
@@ -1946,7 +1833,7 @@ func (client *ManagementClient) CreateRole(reqDto *dto.CreateRoleDto) *dto.RoleS
 /*
  * @summary 获取角色列表
  * @description 获取角色列表，支持分页。
- * @param keywords 搜索角色 code
+ * @param keywords 用于根据角色的 code 进行模糊搜索，可选。
  * @param namespace 所属权限分组的 code
  * @param page 当前页数，从 1 开始
  * @param limit 每页数目，最大不能超过 50，默认为 10
@@ -2208,8 +2095,8 @@ func (client *ManagementClient) DeleteExtIdpConn(reqDto *dto.DeleteExtIdpConnDto
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (client *ManagementClient) ChangeConnState(reqDto *dto.EnableExtIdpConnDto) *dto.IsSuccessRespDto {
-	b, err := client.SendHttpRequest("/api/v3/enable-ext-idp-conn", fasthttp.MethodPost, reqDto)
+func (client *ManagementClient) ChangeExtIdpConnState(reqDto *dto.ChangeExtIdpConnStateDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/change-ext-idp-conn-state", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
 		fmt.Println(err)
@@ -2229,8 +2116,8 @@ func (client *ManagementClient) ChangeConnState(reqDto *dto.EnableExtIdpConnDto)
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (client *ManagementClient) ChangeAssociationState(reqDto *dto.AssociationExtIdpDto) *dto.IsSuccessRespDto {
-	b, err := client.SendHttpRequest("/api/v3/association-ext-idp", fasthttp.MethodPost, reqDto)
+func (client *ManagementClient) ChangeExtIdpConnAssociationState(reqDto *dto.ChangeExtIdpAssociationStateDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/change-ext-idp-conn-association-state", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
 		fmt.Println(err)
@@ -2250,8 +2137,8 @@ func (client *ManagementClient) ChangeAssociationState(reqDto *dto.AssociationEx
  * @param tenantId 租户 ID
  * @param appId 应用 ID
  * @param type 身份源类型
- * @param page 页码
- * @param limit 每页获取的数据量
+ * @param page 当前页数，从 1 开始
+ * @param limit 每页数目，最大不能超过 50，默认为 10
  * @returns ExtIdpListPaginatedRespDto
  */
 func (client *ManagementClient) ListTenantExtIdp(reqDto *dto.ListTenantExtIdpDto) *dto.ExtIdpListPaginatedRespDto {
@@ -2337,7 +2224,12 @@ func (client *ManagementClient) SetUserBaseFields(reqDto *dto.SetUserBaseFieldsR
 /*
  * @summary 获取自定义字段列表
  * @description 通过主体类型，获取用户、部门或角色的自定义字段列表。
- * @param targetType 主体类型，目前支持用户、角色、分组、部门
+ * @param targetType 目标对象类型：
+ * - `USER`: 用户
+ * - `ROLE`: 角色
+ * - `GROUP`: 分组
+ * - `DEPARTMENT`: 部门
+ *
  * @returns CustomFieldListRespDto
  */
 func (client *ManagementClient) GetCustomFields(reqDto *dto.GetCustomFieldsDto) *dto.CustomFieldListRespDto {
@@ -2400,14 +2292,218 @@ func (client *ManagementClient) SetCustomData(reqDto *dto.SetCustomDataReqDto) *
 /*
  * @summary 获取用户、分组、角色、组织机构的自定义字段值
  * @description 通过筛选条件，获取用户、分组、角色、组织机构的自定义字段值。
- * @param targetType 主体类型，目前支持用户、角色、分组、部门
- * @param targetIdentifier 目标对象唯一标志符
+ * @param targetType 目标对象类型：
+ * - `USER`: 用户
+ * - `ROLE`: 角色
+ * - `GROUP`: 分组
+ * - `DEPARTMENT`: 部门
+ *
+ * @param targetIdentifier 目标对象的唯一标志符：
+ * - 如果是用户，为用户的 ID，如 `6343b98b7cfxxx9366e9b7c`
+ * - 如果是角色，为角色的 code，如 `admin`
+ * - 如果是分组，为分组的 code，如 `developer`
+ * - 如果是部门，为部门的 ID，如 `6343bafc019xxxx889206c4c`
+ *
  * @param namespace 所属权限分组的 code，当 targetType 为角色的时候需要填写，否则可以忽略
  * @returns GetCustomDataRespDto
  */
 func (client *ManagementClient) GetCustomData(reqDto *dto.GetCustomDataDto) *dto.GetCustomDataRespDto {
 	b, err := client.SendHttpRequest("/api/v3/get-custom-data", fasthttp.MethodGet, reqDto)
 	var response dto.GetCustomDataRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 创建资源
+ * @description 创建资源，可以设置资源的描述、定义的操作类型、URL 标识等。
+ * @param requestBody
+ * @returns ResourceRespDto
+ */
+func (client *ManagementClient) CreateResource(reqDto *dto.CreateResourceDto) *dto.ResourceRespDto {
+	b, err := client.SendHttpRequest("/api/v3/create-resource", fasthttp.MethodPost, reqDto)
+	var response dto.ResourceRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 批量创建资源
+ * @description 批量创建资源，可以设置资源的描述、定义的操作类型、URL 标识等。
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) CreateResourcesBatch(reqDto *dto.CreateResourcesBatchDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/create-resources-batch", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 获取资源详情
+ * @description 根据筛选条件，获取资源详情。
+ * @param code 资源唯一标志符
+ * @param namespace 所属权限分组的 code
+ * @returns ResourceRespDto
+ */
+func (client *ManagementClient) GetResource(reqDto *dto.GetResourceDto) *dto.ResourceRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-resource", fasthttp.MethodGet, reqDto)
+	var response dto.ResourceRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 批量获取资源详情
+ * @description 根据筛选条件，批量获取资源详情。
+ * @param codeList 资源 code 列表，批量可以使用逗号分隔
+ * @param namespace 所属权限分组的 code
+ * @returns ResourceListRespDto
+ */
+func (client *ManagementClient) GetResourcesBatch(reqDto *dto.GetResourcesBatchDto) *dto.ResourceListRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-resources-batch", fasthttp.MethodGet, reqDto)
+	var response dto.ResourceListRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 分页获取资源列表
+ * @description 根据筛选条件，分页获取资源详情列表。
+ * @param namespace 所属权限分组的 code
+ * @param type 资源类型
+ * @param page 当前页数，从 1 开始
+ * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @returns ResourcePaginatedRespDto
+ */
+func (client *ManagementClient) ListResources(reqDto *dto.ListResourcesDto) *dto.ResourcePaginatedRespDto {
+	b, err := client.SendHttpRequest("/api/v3/list-resources", fasthttp.MethodGet, reqDto)
+	var response dto.ResourcePaginatedRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 修改资源
+ * @description 修改资源，可以设置资源的描述、定义的操作类型、URL 标识等。
+ * @param requestBody
+ * @returns ResourceRespDto
+ */
+func (client *ManagementClient) UpdateResource(reqDto *dto.UpdateResourceDto) *dto.ResourceRespDto {
+	b, err := client.SendHttpRequest("/api/v3/update-resource", fasthttp.MethodPost, reqDto)
+	var response dto.ResourceRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 删除资源
+ * @description 通过资源唯一标志符以及所属权限分组，删除资源。
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) DeleteResource(reqDto *dto.DeleteResourceDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/delete-resource", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 批量删除资源
+ * @description 通过资源唯一标志符以及所属权限分组，批量删除资源
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) DeleteResourcesBatch(reqDto *dto.DeleteResourcesBatchDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/delete-resources-batch", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 关联/取消关联应用资源到租户
+ * @description 通过资源唯一标识以及权限分组，关联或取消关联资源到租户
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) AssociateTenantResource(reqDto *dto.AssociateTenantResourceDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/associate-tenant-resource", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -2591,8 +2687,18 @@ func (client *ManagementClient) AuthorizeResources(reqDto *dto.AuthorizeResource
 /*
  * @summary 获取某个主体被授权的资源列表
  * @description 根据筛选条件，获取某个主体被授权的资源列表。
- * @param targetType 目标对象类型
- * @param targetIdentifier 目标对象唯一标志符
+ * @param targetType 目标对象类型：
+ * - `USER`: 用户
+ * - `ROLE`: 角色
+ * - `GROUP`: 分组
+ * - `DEPARTMENT`: 部门
+ *
+ * @param targetIdentifier 目标对象的唯一标志符：
+ * - 如果是用户，为用户的 ID，如 `6343b98b7cfxxx9366e9b7c`
+ * - 如果是角色，为角色的 code，如 `admin`
+ * - 如果是分组，为分组的 code，如 `developer`
+ * - 如果是部门，为部门的 ID，如 `6343bafc019xxxx889206c4c`
+ *
  * @param namespace 所属权限分组的 code
  * @param resourceType 限定资源类型，如数据、API、按钮、菜单
  * @param resourceList 限定查询的资源列表，如果指定，只会返回所指定的资源列表。
@@ -2639,11 +2745,11 @@ func (client *ManagementClient) IsActionAllowed(reqDto *dto.IsActionAllowedDto) 
  * @summary 获取资源被授权的主体
  * @description 获取资源被授权的主体
  * @param requestBody
- * @returns GetAuthorizedTargetRespDto
+ * @returns GetResourceAuthorizedTargetRespDto
  */
-func (client *ManagementClient) GetAuthorizedTargets(reqDto *dto.GetAuthorizedTargetsDto) *dto.GetAuthorizedTargetRespDto {
-	b, err := client.SendHttpRequest("/api/v3/get-authorized-targets", fasthttp.MethodPost, reqDto)
-	var response dto.GetAuthorizedTargetRespDto
+func (client *ManagementClient) GetResourceAuthorizedTargets(reqDto *dto.GetResourceAuthorizedTargetsDto) *dto.GetResourceAuthorizedTargetRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-resource-authorized-targets", fasthttp.MethodPost, reqDto)
+	var response dto.GetResourceAuthorizedTargetRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -3032,11 +3138,11 @@ func (client *ManagementClient) PreviewEmailTemplate(reqDto *dto.PreviewEmailTem
 /*
  * @summary 获取第三方邮件服务配置
  * @description 获取第三方邮件服务配置
- * @returns EmailProviderDto
+ * @returns EmailProviderRespDto
  */
-func (client *ManagementClient) GetEmailProvider() *dto.EmailProviderDto {
-	b, err := client.SendHttpRequest("/api/v3/get-email-provier", fasthttp.MethodGet, nil)
-	var response dto.EmailProviderDto
+func (client *ManagementClient) GetEmailProvider() *dto.EmailProviderRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-email-provider", fasthttp.MethodGet, nil)
+	var response dto.EmailProviderRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -3053,11 +3159,11 @@ func (client *ManagementClient) GetEmailProvider() *dto.EmailProviderDto {
  * @summary 配置第三方邮件服务
  * @description 配置第三方邮件服务
  * @param requestBody
- * @returns EmailProviderDto
+ * @returns EmailProviderRespDto
  */
-func (client *ManagementClient) ConfigEmailProvider(reqDto *dto.ConfigEmailProviderDto) *dto.EmailProviderDto {
+func (client *ManagementClient) ConfigEmailProvider(reqDto *dto.ConfigEmailProviderDto) *dto.EmailProviderRespDto {
 	b, err := client.SendHttpRequest("/api/v3/config-email-provier", fasthttp.MethodPost, reqDto)
-	var response dto.EmailProviderDto
+	var response dto.EmailProviderRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -3147,11 +3253,11 @@ func (client *ManagementClient) GetApplicationSimpleInfo(reqDto *dto.GetApplicat
  * @param isSelfBuiltApp 是否为自建应用
  * @param ssoEnabled 是否开启单点登录
  * @param keyword 模糊搜索字符串
- * @returns ApplicationSimpleInfoSingleRespDto
+ * @returns ApplicationSimpleInfoPaginatedRespDto
  */
-func (client *ManagementClient) ListApplicationSimpleInfo(reqDto *dto.ListApplicationSimpleInfoDto) *dto.ApplicationSimpleInfoSingleRespDto {
+func (client *ManagementClient) ListApplicationSimpleInfo(reqDto *dto.ListApplicationSimpleInfoDto) *dto.ApplicationSimpleInfoPaginatedRespDto {
 	b, err := client.SendHttpRequest("/api/v3/list-application-simple-info", fasthttp.MethodGet, reqDto)
-	var response dto.ApplicationSimpleInfoSingleRespDto
+	var response dto.ApplicationSimpleInfoPaginatedRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -3317,8 +3423,8 @@ func (client *ManagementClient) UpdateApplicationPermissionStrategy(reqDto *dto.
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (client *ManagementClient) AuthorizeApplicationAccess(reqDto *dto.AddApplicationPermissionRecord) *dto.IsSuccessRespDto {
-	b, err := client.SendHttpRequest("/api/v3/add-application-permission-record", fasthttp.MethodPost, reqDto)
+func (client *ManagementClient) AuthorizeApplicationAccess(reqDto *dto.AuthorizeApplicationAccessDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/authorize-application-access", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
 		fmt.Println(err)
@@ -3338,8 +3444,8 @@ func (client *ManagementClient) AuthorizeApplicationAccess(reqDto *dto.AddApplic
  * @param requestBody
  * @returns IsSuccessRespDto
  */
-func (client *ManagementClient) RevokeApplicationAccess(reqDto *dto.DeleteApplicationPermissionRecord) *dto.IsSuccessRespDto {
-	b, err := client.SendHttpRequest("/api/v3/delete-application-permission-record", fasthttp.MethodPost, reqDto)
+func (client *ManagementClient) RevokeApplicationAccess(reqDto *dto.RevokeApplicationAccessDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/revoke-application-access", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
 		fmt.Println(err)
@@ -3380,7 +3486,7 @@ func (client *ManagementClient) CheckDomainAvailable(reqDto *dto.CheckDomainAvai
  * @returns SecuritySettingsRespDto
  */
 func (client *ManagementClient) GetSecuritySettings() *dto.SecuritySettingsRespDto {
-	b, err := client.SendHttpRequest("/api/v3/update-security-settings", fasthttp.MethodGet, nil)
+	b, err := client.SendHttpRequest("/api/v3/get-security-settings", fasthttp.MethodGet, nil)
 	var response dto.SecuritySettingsRespDto
 	if err != nil {
 		fmt.Println(err)
@@ -3457,14 +3563,13 @@ func (client *ManagementClient) UpdateGlobalMfaSettings(reqDto *dto.MFASettingsD
 }
 
 /*
- * @summary 创建资源
- * @description 创建资源，可以设置资源的描述、定义的操作类型、URL 标识等。
- * @param requestBody
- * @returns ResourceRespDto
+ * @summary 获取套餐详情
+ * @description 获取当前用户池套餐详情。
+ * @returns CostGetCurrentPackageRespDto
  */
-func (client *ManagementClient) CreateResource(reqDto *dto.CreateResourceDto) *dto.ResourceRespDto {
-	b, err := client.SendHttpRequest("/api/v3/create-resource", fasthttp.MethodPost, reqDto)
-	var response dto.ResourceRespDto
+func (client *ManagementClient) GetCurrentPackageInfo() *dto.CostGetCurrentPackageRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-current-package-info", fasthttp.MethodGet, nil)
+	var response dto.CostGetCurrentPackageRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -3478,14 +3583,13 @@ func (client *ManagementClient) CreateResource(reqDto *dto.CreateResourceDto) *d
 }
 
 /*
- * @summary 批量创建资源
- * @description 批量创建资源，可以设置资源的描述、定义的操作类型、URL 标识等。
- * @param requestBody
- * @returns IsSuccessRespDto
+ * @summary 获取用量详情
+ * @description 获取当前用户池用量详情。
+ * @returns CostGetCurrentUsageRespDto
  */
-func (client *ManagementClient) CreateResourcesBatch(reqDto *dto.CreateResourcesBatchDto) *dto.IsSuccessRespDto {
-	b, err := client.SendHttpRequest("/api/v3/create-resources-batch", fasthttp.MethodPost, reqDto)
-	var response dto.IsSuccessRespDto
+func (client *ManagementClient) GetUsageInfo() *dto.CostGetCurrentUsageRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-usage-info", fasthttp.MethodGet, nil)
+	var response dto.CostGetCurrentUsageRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -3499,15 +3603,15 @@ func (client *ManagementClient) CreateResourcesBatch(reqDto *dto.CreateResources
 }
 
 /*
- * @summary 获取资源详情
- * @description 根据筛选条件，获取资源详情。
- * @param code 资源唯一标志符
- * @param namespace 所属权限分组的 code
- * @returns ResourceRespDto
+ * @summary 获取 MAU 使用记录
+ * @description 获取当前用户池 MAU 使用记录
+ * @param startTime 起始时间（年月日）
+ * @param endTime 截止时间（年月日）
+ * @returns CostGetMauPeriodUsageHistoryRespDto
  */
-func (client *ManagementClient) GetResource(reqDto *dto.GetResourceDto) *dto.ResourceRespDto {
-	b, err := client.SendHttpRequest("/api/v3/get-resource", fasthttp.MethodGet, reqDto)
-	var response dto.ResourceRespDto
+func (client *ManagementClient) GetMauPeriodUsageHistory(reqDto *dto.GetMauPeriodUsageHistoryDto) *dto.CostGetMauPeriodUsageHistoryRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-mau-period-usage-history", fasthttp.MethodGet, reqDto)
+	var response dto.CostGetMauPeriodUsageHistoryRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -3521,15 +3625,13 @@ func (client *ManagementClient) GetResource(reqDto *dto.GetResourceDto) *dto.Res
 }
 
 /*
- * @summary 批量获取资源详情
- * @description 根据筛选条件，批量获取资源详情。
- * @param codeList 资源 code 列表，批量可以使用逗号分隔
- * @param namespace 所属权限分组的 code
- * @returns ResourceListRespDto
+ * @summary 获取所有权益
+ * @description 获取当前用户池所有权益
+ * @returns CostGetAllRightItemRespDto
  */
-func (client *ManagementClient) GetResourcesBatch(reqDto *dto.GetResourcesBatchDto) *dto.ResourceListRespDto {
-	b, err := client.SendHttpRequest("/api/v3/get-resources-batch", fasthttp.MethodGet, reqDto)
-	var response dto.ResourceListRespDto
+func (client *ManagementClient) GetAllRightsItem() *dto.CostGetAllRightItemRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-all-rights-items", fasthttp.MethodGet, nil)
+	var response dto.CostGetAllRightItemRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -3543,17 +3645,15 @@ func (client *ManagementClient) GetResourcesBatch(reqDto *dto.GetResourcesBatchD
 }
 
 /*
- * @summary 分页获取资源列表
- * @description 根据筛选条件，分页获取资源详情列表。
- * @param namespace 所属权限分组的 code
- * @param type 资源类型
+ * @summary 获取订单列表
+ * @description 获取当前用户池订单列表
  * @param page 当前页数，从 1 开始
  * @param limit 每页数目，最大不能超过 50，默认为 10
- * @returns ResourcePaginatedRespDto
+ * @returns CostGetOrdersRespDto
  */
-func (client *ManagementClient) ListResources(reqDto *dto.ListResourcesDto) *dto.ResourcePaginatedRespDto {
-	b, err := client.SendHttpRequest("/api/v3/list-resources", fasthttp.MethodGet, reqDto)
-	var response dto.ResourcePaginatedRespDto
+func (client *ManagementClient) GetOrders(reqDto *dto.GetOrdersDto) *dto.CostGetOrdersRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-orders", fasthttp.MethodGet, reqDto)
+	var response dto.CostGetOrdersRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -3567,14 +3667,14 @@ func (client *ManagementClient) ListResources(reqDto *dto.ListResourcesDto) *dto
 }
 
 /*
- * @summary 修改资源
- * @description 修改资源，可以设置资源的描述、定义的操作类型、URL 标识等。
- * @param requestBody
- * @returns ResourceRespDto
+ * @summary 获取订单详情
+ * @description 获取当前用户池订单详情
+ * @param orderNo 订单号
+ * @returns CostGetOrderDetailRespDto
  */
-func (client *ManagementClient) UpdateResource(reqDto *dto.UpdateResourceDto) *dto.ResourceRespDto {
-	b, err := client.SendHttpRequest("/api/v3/update-resource", fasthttp.MethodPost, reqDto)
-	var response dto.ResourceRespDto
+func (client *ManagementClient) GetOrderDetail(reqDto *dto.GetOrderDetailDto) *dto.CostGetOrderDetailRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-order-detail", fasthttp.MethodGet, reqDto)
+	var response dto.CostGetOrderDetailRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -3588,56 +3688,14 @@ func (client *ManagementClient) UpdateResource(reqDto *dto.UpdateResourceDto) *d
 }
 
 /*
- * @summary 删除资源
- * @description 通过资源唯一标志符以及所属权限分组，删除资源。
- * @param requestBody
- * @returns IsSuccessRespDto
+ * @summary 获取订单支付明细
+ * @description 获取当前用户池订单支付明细
+ * @param orderNo 订单号
+ * @returns CostGetOrderPayDetailRespDto
  */
-func (client *ManagementClient) DeleteResource(reqDto *dto.DeleteResourceDto) *dto.IsSuccessRespDto {
-	b, err := client.SendHttpRequest("/api/v3/delete-resource", fasthttp.MethodPost, reqDto)
-	var response dto.IsSuccessRespDto
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	err = json.Unmarshal(b, &response)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	return &response
-}
-
-/*
- * @summary 批量删除资源
- * @description 通过资源唯一标志符以及所属权限分组，批量删除资源
- * @param requestBody
- * @returns IsSuccessRespDto
- */
-func (client *ManagementClient) DeleteResourcesBatch(reqDto *dto.DeleteResourcesBatchDto) *dto.IsSuccessRespDto {
-	b, err := client.SendHttpRequest("/api/v3/delete-resources-batch", fasthttp.MethodPost, reqDto)
-	var response dto.IsSuccessRespDto
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	err = json.Unmarshal(b, &response)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	return &response
-}
-
-/*
- * @summary 关联/取消关联应用资源到租户
- * @description 通过资源唯一标识以及权限分组，关联或取消关联资源到租户
- * @param requestBody
- * @returns IsSuccessRespDto
- */
-func (client *ManagementClient) AssociationResources(reqDto *dto.AssociationResourceDto) *dto.IsSuccessRespDto {
-	b, err := client.SendHttpRequest("/api/v3/associate-tenant-resource", fasthttp.MethodPost, reqDto)
-	var response dto.IsSuccessRespDto
+func (client *ManagementClient) GetOrderPayDetail(reqDto *dto.GetOrderPayDetailDto) *dto.CostGetOrderPayDetailRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-order-pay-detail", fasthttp.MethodGet, reqDto)
+	var response dto.CostGetOrderPayDetailRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -3790,8 +3848,8 @@ func (client *ManagementClient) DeletePipelineFunction(reqDto *dto.DeletePipelin
  *
  * @returns PipelineFunctionPaginatedRespDto
  */
-func (client *ManagementClient) ListPipelineFunctions(reqDto *dto.ListPipelineFunctionDto) *dto.PipelineFunctionPaginatedRespDto {
-	b, err := client.SendHttpRequest("/api/v3/list-pipeline-function", fasthttp.MethodGet, reqDto)
+func (client *ManagementClient) ListPipelineFunctions(reqDto *dto.ListPipelineFunctionsDto) *dto.PipelineFunctionPaginatedRespDto {
+	b, err := client.SendHttpRequest("/api/v3/list-pipeline-functions", fasthttp.MethodGet, reqDto)
 	var response dto.PipelineFunctionPaginatedRespDto
 	if err != nil {
 		fmt.Println(err)

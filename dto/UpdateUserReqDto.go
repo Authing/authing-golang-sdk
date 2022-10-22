@@ -20,7 +20,6 @@ type UpdateUserReqDto struct{
     PostalCode  string `json:"postalCode,omitempty"`
     Gender  string  `json:"gender,omitempty"`
     Username  string `json:"username,omitempty"`
-    PasswordEncryptType  string  `json:"passwordEncryptType,omitempty"`
     Email  string `json:"email,omitempty"`
     Phone  string `json:"phone,omitempty"`
     Password  string `json:"password,omitempty"`

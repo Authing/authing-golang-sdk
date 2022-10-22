@@ -7,5 +7,6 @@ type CreateUserOptionsDto struct{
     ResetPasswordOnFirstLogin  bool `json:"resetPasswordOnFirstLogin,omitempty"`
     DepartmentIdType  string  `json:"departmentIdType,omitempty"`
     SendNotification  SendCreateAccountNotificationDto `json:"sendNotification,omitempty"`
+    PasswordEncryptType  string  `json:"passwordEncryptType,omitempty"`
 }
 

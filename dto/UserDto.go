@@ -6,6 +6,7 @@ type UserDto struct{
     CreatedAt  string `json:"createdAt"`
     UpdatedAt  string `json:"updatedAt"`
     Status  string  `json:"status"`
+    WorkStatus  string  `json:"workStatus"`
     ExternalId  string `json:"externalId,omitempty"`
     Email  string `json:"email,omitempty"`
     Phone  string `json:"phone,omitempty"`

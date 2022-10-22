@@ -1,7 +1,7 @@
 package dto
 
 
-type SignupProfileDto struct{
+type SignUpProfileDto struct{
     Nickname  string `json:"nickname,omitempty"`
     Company  string `json:"company,omitempty"`
     Photo  string `json:"photo,omitempty"`

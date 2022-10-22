@@ -13,6 +13,6 @@ type ApplicationBrandingConfig struct{
     ShowEnterpriseConnections  bool `json:"showEnterpriseConnections"`
     ShowSocialConnections  bool `json:"showSocialConnections"`
     ShowAgreement  bool `json:"showAgreement"`
-    Agreements  ApplicationAgreementDto `json:"agreements"`
+    Agreements  []ApplicationAgreementDto `json:"agreements"`
 }
 

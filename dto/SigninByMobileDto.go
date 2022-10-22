@@ -5,8 +5,9 @@ type SigninByMobileDto struct{
     ExtIdpConnidentifier  string `json:"extIdpConnidentifier"`
     Connection  string  `json:"connection"`
     WechatPayload  SignInByWechatPayloadDto `json:"wechatPayload,omitempty"`
+    ApplePayload  SignInByApplePayloadDto `json:"applePayload,omitempty"`
     AlipayPayload  SignInByAlipayPayloadDto `json:"alipayPayload,omitempty"`
-    WechatworkPayload  AuthenticateByWechatworkDto `json:"wechatworkPayload,omitempty"`
+    WechatworkPayload  SignInByWechatworkDto `json:"wechatworkPayload,omitempty"`
     WechatworkAgencyPayload  SignInByWechatworkAgencyPayloadDto `json:"wechatworkAgencyPayload,omitempty"`
     LarkPublicPayload  SignInByLarkPublicPayloadDto `json:"larkPublicPayload,omitempty"`
     LarkInternalPayload  SignInByLarkInternalPayloadDto `json:"larkInternalPayload,omitempty"`

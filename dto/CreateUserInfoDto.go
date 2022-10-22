@@ -4,7 +4,6 @@ package dto
 type CreateUserInfoDto struct{
     Status  string  `json:"status,omitempty"`
     Email  string `json:"email,omitempty"`
-    PasswordEncryptType  string  `json:"passwordEncryptType,omitempty"`
     Phone  string `json:"phone,omitempty"`
     PhoneCountryCode  string `json:"phoneCountryCode,omitempty"`
     Username  string `json:"username,omitempty"`
@@ -35,12 +34,12 @@ type CreateUserInfoDto struct{
     Locale  string `json:"locale,omitempty"`
     Formatted  string `json:"formatted,omitempty"`
     Region  string `json:"region,omitempty"`
-    DepartmentIds  []string `json:"departmentIds,omitempty"`
-    CustomData  interface{} `json:"customData,omitempty"`
     Password  string `json:"password,omitempty"`
     Salt  string `json:"salt,omitempty"`
     TenantIds  []string `json:"tenantIds,omitempty"`
     Otp  CreateUserOtpDto `json:"otp,omitempty"`
+    DepartmentIds  []string `json:"departmentIds,omitempty"`
+    CustomData  interface{} `json:"customData,omitempty"`
     Identities  []CreateIdentityDto `json:"identities,omitempty"`
 }
 
