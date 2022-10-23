@@ -666,7 +666,7 @@ func (client *AuthenticationClient) SignInByAccountPassword(account string, pass
 	return &response
 }
 
-func (client *AuthenticationClient) SignInByPhonePassCord(phone string, passCode string, phoneCountryCode string, options dto.SignInOptionsDto) *dto.LoginTokenRespDto {
+func (client *AuthenticationClient) SignInByPhonePassCode(phone string, passCode string, phoneCountryCode string, options dto.SignInOptionsDto) *dto.LoginTokenRespDto {
 	body, err := client.SendHttpRequest(
 		"/api/v3/signin",
 		fasthttp.MethodPost,
@@ -695,7 +695,7 @@ func (client *AuthenticationClient) SignInByPhonePassCord(phone string, passCode
 	return &response
 }
 
-func (client *AuthenticationClient) SignInByEmailPassCord(email string, passCode string, options dto.SignInOptionsDto) *dto.LoginTokenRespDto {
+func (client *AuthenticationClient) SignInByEmailPassCode(email string, passCode string, options dto.SignInOptionsDto) *dto.LoginTokenRespDto {
 	body, err := client.SendHttpRequest(
 		"/api/v3/signin",
 		fasthttp.MethodPost,
