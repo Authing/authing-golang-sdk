@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Authing/authing-golang-sdk/dto"
+	"github.com/Authing/authing-golang-sdk/v3/dto"
 )
 
 var client *ManagementClient

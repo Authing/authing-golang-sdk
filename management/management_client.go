@@ -3,7 +3,7 @@ package management
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Authing/authing-golang-sdk/dto"
+	"github.com/Authing/authing-golang-sdk/v3/dto"
 	"github.com/valyala/fasthttp"
 )
 

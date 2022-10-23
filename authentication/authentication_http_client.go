@@ -6,8 +6,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/Authing/authing-golang-sdk/constant"
-	"github.com/Authing/authing-golang-sdk/util"
+	"github.com/Authing/authing-golang-sdk/v3/constant"
+	"github.com/Authing/authing-golang-sdk/v3/util"
 	"github.com/valyala/fasthttp"
 	"strings"
 )

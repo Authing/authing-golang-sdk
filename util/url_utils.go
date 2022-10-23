@@ -1,7 +1,7 @@
 package util
 
 import (
-	"github.com/Authing/authing-golang-sdk/constant"
+	"github.com/Authing/authing-golang-sdk/v3/constant"
 	"net/url"
 )
 

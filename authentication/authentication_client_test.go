@@ -2,8 +2,8 @@ package authentication
 
 import (
 	"fmt"
-	"github.com/Authing/authing-golang-sdk/constant"
-	"github.com/Authing/authing-golang-sdk/dto"
+	"github.com/Authing/authing-golang-sdk/v3/constant"
+	"github.com/Authing/authing-golang-sdk/v3/dto"
 
 	// "fmt"
 	"strings"

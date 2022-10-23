@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/Authing/authing-golang-sdk/constant"
-	"github.com/Authing/authing-golang-sdk/dto"
-	"github.com/Authing/authing-golang-sdk/util"
+	"github.com/Authing/authing-golang-sdk/v3/constant"
+	"github.com/Authing/authing-golang-sdk/v3/dto"
+	"github.com/Authing/authing-golang-sdk/v3/util"
 	"strings"
 
 	keyfunc "github.com/MicahParks/compatibility-keyfunc"
