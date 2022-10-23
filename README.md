@@ -1,58 +1,43 @@
-# authing-golang-sdk
-
 <div align=center>
   <img width="250" src="https://files.authing.co/authing-console/authing-logo-new-20210924.svg" />
 </div>
-
 <div align="center">
-    <a href="https://forum.authing.cn/" target="_blank"><img src="https://img.shields.io/badge/chat-forum-blue" /></a>
-    <a href="https://opensource.org/licenses/MIT" target="_blank"><img src="https://img.shields.io/badge/License-MIT-success" alt="License"></a>
+  <a href="javascript:;"><img src="https://img.shields.io/badge/test-passing-brightgreen" /></a>
+  <a href="https://forum.authing.cn/" target="_blank"><img src="https://img.shields.io/badge/chat-forum-blue" /></a>
+  <a href="https://console.authing.cn/openapi/" target="_blank"><img src="https://img.shields.io/badge/docs-passing-brightgreen" /></a>
+  <a href="javascript:;"><img src="https://img.shields.io/badge/License-MIT-success" alt="License"></a>
 </div>
 
-**English** | [简体中文](./README-zh_CN.md)
+English | [简体中文](./README-zh_CN.md)
 
-## Introduction
+You can use the Authing Golang SDK to quickly integrate authentication capabilities for new or existing Back End applications.
 
-[Authing](https://authing.cn) Identity Cloud `Go` Language Client, Contains the [Authing Open API](https://api.authing.cn/openapi/) request method for all Management APIs.
 
-This module is generally used in the back-end server environment and is requested as an Administrator (Admin) to manage Authing users, roles, groups, organizations, and other resources; in general, all the operations you can do in the Authing Console can be done with this module.
+## 📚 Documentation
 
-If you need to log in, register, log out, etc. as an End User, please use the [Guard](https://www.authing.cn/learn/guard) .
+To check out documentation, please refers to [docs](https://docs.authing.cn/v3/reference/sdk/go/install.html).
 
-## Documentation
-- [Authing - Golang](https://docs.authing.cn/v2/reference-new/sdk-v5/go/install.html)
+This SDK is built upon [Authing Management API(v3)](https://api.authing.cn/openapi/v3/management/) and [Authing Authentication API(v3)](https://api.authing.cn/openapi/v3/authentication/), for older version, please refers to [older version docs](https://docs.authing.cn/v2/reference/sdk-for-go/).
 
-## Install
 
-```shell
-go get -u github.com/Authing/authing-golang-sdk
-```
-## Resources
-
-- [Official Website](https://authing.cn)
-- [Developer Documentation](https://docs.authing.cn/)
-- [Authing Open API](https://api.authing.cn/openapi/)
-- [SDK Documentation](https://docs.authing.cn/v2/reference-new/sdk-v5/go/install.html)
-- [Forum Community](https://forum.authing.cn/)
-
-## Questions
+## ❓ Questions
 
 For questions and support please use the [official forum](https://forum.authing.cn/). The issue list of this repo is exclusively for bug reports and feature requests.
 
-## Contribution
+## 🤝 Contribution
 
 - Fork it
 - Create your feature branch (git checkout -b my-new-feature)
 - Commit your changes (git commit -am 'Add some feature')
 - Push to the branch (git push -u origin my-new-feature)
 - Create new Pull Request
-## Contribute
 
-https://github.com/Authing/.github/blob/main/CONTRIBUTING.md#English
+Thank you to all the people who already contributed to Golang SDK !
 
+[Contributing to Authing Open Source Repos](https://github.com/Authing/.github/blob/main/CONTRIBUTING.md#English)
 
-## License
+## 🎁 License
 
 [MIT](https://opensource.org/licenses/MIT)
 
-Copyright (c) 2019-present, Authing
+Copyright (c) 2019 Authing
