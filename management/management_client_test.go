@@ -11,8 +11,8 @@ var client *ManagementClient
 
 func init() {
 	options := ManagementClientOptions{
-		AccessKeyId:     "6343b98b7cf019a9366e9b7c",
-		AccessKeySecret: "fb0cefa691df76920a1611b9dec38120",
+		AccessKeyId:     "635124373e1cd646feecbeb9",
+		AccessKeySecret: "c3eaf45f7b467003158fd8615367ba6e",
 		Host:            "http://localhost:3000",
 	}
 	var err error
@@ -177,13 +177,13 @@ func TestClient_DeleteOrganization(t *testing.T) {
 }
 
 func TestClient_ChangeConnState(t *testing.T) {
-	request := dto.EnableExtIdpConnDto{
+	request := dto.ChangeExtIdpConnStateDto{
 		AppId:    "appId_8921",
 		Enabled:  false,
 		Id:       "id_2921",
 		TenantId: "tenantId_7497",
 	}
-	response := client.ChangeConnState(&request)
+	response := client.ChangeExtIdpConnState(&request)
 	fmt.Println(response)
 
 }
@@ -391,10 +391,8 @@ func TestClient_DeleteRolesBatch(t *testing.T) {
 
 func TestClient_CreateUser(t *testing.T) {
 	request := dto.CreateUserReqDto{
-		Status:              "",
-		Email:               "email_5835@wm.com",
-		PasswordEncryptType: "",
-
+		Status:           "",
+		Email:            "email_5835@wm.com",
 		Phone:            "18310641125",
 		PhoneCountryCode: "phoneCountryCode_6088",
 		Username:         "username_3276",
@@ -1096,6 +1094,13 @@ func TestClient_DeleteNamespacesBatch(t *testing.T) {
 		CodeList: nil,
 	}
 	response := client.DeleteNamespacesBatch(&request)
+	fmt.Println(response)
+
+}
+
+func TestClient_ListTenants(t *testing.T) {
+	request := dto.ListTenantsDto{}
+	response := client.ListTenants(&request)
 	fmt.Println(response)
 
 }

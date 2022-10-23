@@ -2,7 +2,7 @@ package dto
 
 
 type ListUsersRequestDto struct{
-    Query  string `json:"query,omitempty"`
+    Keywords  string `json:"keywords,omitempty"`
     AdvancedFilter  []ListUsersAdvancedFilterItemDto `json:"advancedFilter,omitempty"`
     Options  ListUsersOptionsDto `json:"options,omitempty"`
 }

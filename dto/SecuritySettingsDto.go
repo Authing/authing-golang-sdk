@@ -2,7 +2,7 @@ package dto
 
 
 type SecuritySettingsDto struct{
-    AllowedOrigins  []string `json:"allowedOrigins,omitempty"`
+    AllowedOrigins  string `json:"allowedOrigins,omitempty"`
     AuthingTokenExpiresIn  int `json:"authingTokenExpiresIn"`
     VerifyCodeLength  int `json:"verifyCodeLength"`
     VerifyCodeMaxAttempts  int `json:"verifyCodeMaxAttempts"`

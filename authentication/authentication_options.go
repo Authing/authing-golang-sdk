@@ -159,7 +159,7 @@ type AccessTokenClaims struct {
 	AccessTokenExtended
 }
 
-type LogoutURLParams struct {
+type BuildLogoutURLParams struct {
 	PostLogoutRedirectUri string // 可选
 	IDTokenHint           string // 可选
 	State                 string // 可选

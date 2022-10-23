@@ -14,9 +14,9 @@ import (
 
 var authenticationClient *AuthenticationClient
 var options = AuthenticationClientOptions{
-	AppId:              "6343b99bd968375153712c3c",
-	AppSecret:          "2140f44a44fcf7684954e37c25d70ce4",
-	AppHost:            "https://sadsdd.cj.mereith.com",
+	AppId:              "635143ae10d1c1b9afb54c39",
+	AppSecret:          "441d87d04bc22a0ac3fc5d7c0736278a",
+	AppHost:            "http://localhost:3000",
 	RedirectUri:        "http://localhost:3003/callback",
 	InsecureSkipVerify: true,
 }
@@ -110,16 +110,14 @@ func TestAuthUrl(t *testing.T) {
 	//}
 }
 
-//func TestCode(t *testing.T) {
-//	loginState, err := authenticationClient.GetLoginStateByAuthCode(&CodeToTokenParams{
-//		Code: "g1FZq2O8y3NzHvn3YwtTW7dau6lJD9Icq2ZTUR88d_a",
-//	})
-//	if err != nil {
-//		t.Fatalf("code校验失败, %v", err)
-//		return
-//	}
-//	fmt.Println(loginState)
-//}
+func TestCode(t *testing.T) {
+	tokenResponse, err := authenticationClient.GetAccessTokenByCode("g1FZq2O8y3NzHvn3YwtTW7dau6lJD9Icq2ZTUR88d_a")
+	if err != nil {
+		t.Fatalf("code校验失败, %v", err)
+		return
+	}
+	fmt.Println(tokenResponse)
+}
 
 func TestAccessToken(t *testing.T) {
 	accessToken := `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6I` +
@@ -168,7 +166,7 @@ func TestIDToken(t *testing.T) {
 //}
 
 func TestLogout(t *testing.T) {
-	url, err := authenticationClient.BuildLogoutUrl(&LogoutURLParams{
+	url, err := authenticationClient.BuildLogoutUrl(&BuildLogoutURLParams{
 		IDTokenHint: idToken,
 	})
 	if err != nil {
@@ -178,12 +176,15 @@ func TestLogout(t *testing.T) {
 }
 
 func Test_SignInByUsernamePassword(t *testing.T) {
-	resp := authenticationClient.SignInByUsernamePassword(
-		"test", "test", dto.SignInOptionsDto{})
-	println(resp.StatusCode, resp.RequestId, resp.Message)
-	println(resp.Data.AccessToken)
+	resp := authenticationClient.SignInByEmailPassword(
+		"test@example.com", "test", dto.SignInOptionsDto{})
+	fmt.Println(resp.StatusCode, resp.RequestId, resp.Message)
+	fmt.Println(resp.Data.AccessToken)
 	authenticationClient.SetAccessToken(resp.Data.AccessToken)
 
-	profileResp := authenticationClient.GetProfile(&dto.GetProfileDto{})
-	println(profileResp.Data.UserId)
+	profileResp, err := authenticationClient.RevokeToken(resp.Data.AccessToken)
+	fmt.Println(profileResp, err)
+
+	//str, err := authenticationClient.BuildLogoutUrl(resp.Data.AccessToken)
+	//fmt.Println(str, err)
 }

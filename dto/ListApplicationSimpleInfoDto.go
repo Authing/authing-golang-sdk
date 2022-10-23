@@ -7,6 +7,6 @@ type ListApplicationSimpleInfoDto struct{
     IsIntegrateApp bool `json:"isIntegrateApp,omitempty"`
     IsSelfBuiltApp bool `json:"isSelfBuiltApp,omitempty"`
     SsoEnabled bool `json:"ssoEnabled,omitempty"`
-    Keyword string `json:"keyword,omitempty"`
+    Keywords string `json:"keywords,omitempty"`
 }
 
