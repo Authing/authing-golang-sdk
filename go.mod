@@ -1,4 +1,4 @@
-module github.com/Authing/authing-golang-sdk
+module github.com/Authing/authing-golang-sdk/v3
 
 go 1.8
 
