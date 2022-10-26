@@ -14,10 +14,10 @@ import (
 
 var authenticationClient *AuthenticationClient
 var options = AuthenticationClientOptions{
-	AppId:              "635143ae10d1c1b9afb54c39",
-	AppSecret:          "441d87d04bc22a0ac3fc5d7c0736278a",
-	AppHost:            "http://localhost:3000",
-	RedirectUri:        "http://localhost:3003/callback",
+	AppId:              "",
+	AppSecret:          "",
+	AppHost:            "",
+	RedirectUri:        "http://localhost:8989",
 	InsecureSkipVerify: true,
 }
 
@@ -65,7 +65,7 @@ func TestAuthUrl(t *testing.T) {
 		Scope: "offline_access " + constant.DefaultScope,
 	})
 	if err != nil {
-		t.Fatalf("构建授权url失败 %v", err)
+		panic(err)
 		return
 	}
 	println(result.Url)
@@ -111,7 +111,7 @@ func TestAuthUrl(t *testing.T) {
 }
 
 func TestCode(t *testing.T) {
-	tokenResponse, err := authenticationClient.GetAccessTokenByCode("g1FZq2O8y3NzHvn3YwtTW7dau6lJD9Icq2ZTUR88d_a")
+	tokenResponse, err := authenticationClient.GetAccessTokenByCode("BP7D0_o3Ya0TudEP3VolHVVywFDo_e3DFm-19koxQwy")
 	if err != nil {
 		t.Fatalf("code校验失败, %v", err)
 		return
@@ -119,30 +119,24 @@ func TestCode(t *testing.T) {
 	fmt.Println(tokenResponse)
 }
 
-func TestAccessToken(t *testing.T) {
-	accessToken := `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6I` +
-		`jROVS13OVZIcmVjU1BuT20zNzJubVF4V0ROV1hQbUQxbDdBckNseXhyVTAifQ.eyJ` +
-		`qdGkiOiJWeFdMRVJPY0FjSy0xR240Y0M3UGciLCJzdWIiOiI2MjkwNzU3ODliNDI0` +
-		`M2E1MGY2YzA0NTYiLCJpYXQiOjE2NTUyOTgxNzMsImV4cCI6MTY1NjUwNzc3Mywic` +
-		`2NvcGUiOiJvcGVuaWQgcHJvZmlsZSIsImlzcyI6Imh0dHBzOi8vbG9jYWx0ZXN0Ln` +
-		`Rlc3QyLmF1dGhpbmctaW5jLmNvL29pZGMiLCJhdWQiOiI2MmE4NTcwYTg1ODU5ZTI` +
-		`zOTBlZjM4OGYifQ.c64QBODEI_u1KQJaTi_00kz-zquXBwndwvKSRRc2N0LQBX9Ki` +
-		`mObyLBLEodkdZH61k-JVtI1IFlyupYB1QxejyxpfsbKMCokJ7JaM4J9l1I4Sre9RZ` +
-		`5CFrP3I03p0eEGiPSfLx3zBswfTz__b9ClnxyAGy3vqj69j3BZxK139ocnG39LHqg` +
-		`svZ5thY8w4iwFqZE3lZwKNPRdbaRnC5YyP6Y9M8xP9sQNiRTNxNGZPazCsj1RZWhK` +
-		`VP8a71QyTydSPccIi6s4-GzusO5iKC2bPEGtjwYaWlIK_C-cJtGhXwoYppbUP5sQV` +
-		`tVUPTVtbua_KYomBjsVIoGaeadV-cg1TA`
-	charim, err := authenticationClient.IntrospectAccessTokenOffline(accessToken)
-	if err != nil {
-		t.Fatalf("access token 校验失败, %v", err)
-		return
-	}
-	fmt.Println(charim)
-	user, err1 := authenticationClient.GetUserInfo(accessToken)
-	if err1 != nil {
-		t.Fatalf("获取用户信息失败，%v", err1)
-	}
-	fmt.Println(user)
+func TestIntrospectToken(t *testing.T) {
+	code := "e1I4h2L-9-BaaL87YKtZgjKxsUHppaPW2jsLCsEokuL"
+	tokenResponse, _ := authenticationClient.GetAccessTokenByCode(code)
+	resp1, _ := authenticationClient.IntrospectAccessTokenOffline(tokenResponse.AccessToken)
+	fmt.Printf("%+v\n", resp1.Id)
+	resp2, _ := authenticationClient.IntrospectAccessTokenOffline(tokenResponse.RefreshToken)
+	resp3, _ := authenticationClient.IntrospectAccessTokenOffline(tokenResponse.IDToken)
+	fmt.Printf("%+v\n", resp1)
+	fmt.Printf("%+v\n", resp2)
+	fmt.Printf("%+v\n", resp3)
+	result1, _ := authenticationClient.IntrospectToken(tokenResponse.AccessToken)
+	result2, _ := authenticationClient.IntrospectToken(tokenResponse.RefreshToken)
+	result3, _ := authenticationClient.IntrospectToken(tokenResponse.IDToken)
+	fmt.Printf("%+v\n", result1)
+	fmt.Printf("%+v\n", result2)
+	fmt.Printf("%+v\n", result3)
+	result4, _ := authenticationClient.RevokeToken(tokenResponse.AccessToken)
+	fmt.Printf("%+v\n", result4)
 }
 
 func TestIDToken(t *testing.T) {

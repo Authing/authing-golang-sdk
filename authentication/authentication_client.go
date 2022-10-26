@@ -332,7 +332,7 @@ func (client *AuthenticationClient) GetNewAccessTokenByRefreshToken(refreshToken
 	return string(resp.Body), err
 }
 
-func (client *AuthenticationClient) IntrospectToken(token string) (string, error) {
+func (client *AuthenticationClient) IntrospectToken(token string) (*dto.IntrospectTokenResult, error) {
 	url := client.options.AppHost + fmt.Sprintf("/%s/token/introspection", client.options.Protocol)
 	header := map[string]string{
 		"Content-Type": "application/x-www-form-urlencoded",
@@ -356,17 +356,26 @@ func (client *AuthenticationClient) IntrospectToken(token string) (string, error
 		Headers: client.getReqHeaders(header),
 		ReqDto:  body,
 	})
-	return string(resp.Body), err
+	println(string(resp.Body))
+	var response dto.IntrospectTokenResult
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(resp.Body, &response)
+	if err != nil {
+		return nil, err
+	}
+	return &response, err
 }
 
 // RevokeToken
 // 撤回 Access token 或 Refresh token
-func (client *AuthenticationClient) RevokeToken(token string) (string, error) {
+func (client *AuthenticationClient) RevokeToken(token string) (bool, error) {
 	if client.options.Protocol != OIDC && client.options.Protocol != OAUTH {
-		return constant.StringEmpty, errors.New("初始化 AuthenticationClient 时传入的 protocol 参数必须为 ProtocolEnum.OAUTH 或 ProtocolEnum.OIDC，请检查参数")
+		return false, errors.New("初始化 AuthenticationClient 时传入的 protocol 参数必须为 ProtocolEnum.OAUTH 或 ProtocolEnum.OIDC，请检查参数")
 	}
 	if client.options.AppSecret == "" && client.options.TokenEndPointAuthMethod != constant.None {
-		return constant.StringEmpty, errors.New("请在初始化 AuthenticationClient 时传入 Secret")
+		return false, errors.New("请在初始化 AuthenticationClient 时传入 Secret")
 	}
 
 	url := client.options.AppHost + fmt.Sprintf("/%s/token/revocation", client.options.Protocol)
@@ -390,13 +399,13 @@ func (client *AuthenticationClient) RevokeToken(token string) (string, error) {
 	default:
 		body["client_id"] = client.options.AppId
 	}
-	resp, err := client.SendProtocolHttpRequest(&ProtocolRequestOption{
+	_, err := client.SendProtocolHttpRequest(&ProtocolRequestOption{
 		Url:     url,
 		Method:  fasthttp.MethodPost,
 		Headers: client.getReqHeaders(header),
 		ReqDto:  body,
 	})
-	return string(resp.Body), err
+	return true, err
 }
 
 // 拼接登出 URL
