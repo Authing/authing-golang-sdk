@@ -3,6 +3,8 @@ package management
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
+
 	"github.com/Authing/authing-golang-sdk/v3/dto"
 	"github.com/valyala/fasthttp"
 )
@@ -249,6 +251,7 @@ func (client *ManagementClient) ListUsersLegacy(reqDto *dto.ListUsersDto) *dto.U
  * @returns UserSingleRespDto
  */
 func (client *ManagementClient) GetUser(reqDto *dto.GetUserDto) *dto.UserSingleRespDto {
+	reqDto.UserId = url.QueryEscape(reqDto.UserId)
 	b, err := client.SendHttpRequest("/api/v3/get-user", fasthttp.MethodGet, reqDto)
 	var response dto.UserSingleRespDto
 	if err != nil {
