@@ -1,11 +1,11 @@
 package dto
 
 
-type UpdateRoleDto struct{
+type PermissionNamespaceRolesListRespDto struct{
     Name  string `json:"name"`
-    NewCode  string `json:"newCode"`
     Code  string `json:"code"`
-    Namespace  string `json:"namespace,omitempty"`
     Description  string `json:"description,omitempty"`
+    Namespace  string `json:"namespace"`
+    UpdatedAt  string `json:"updatedAt"`
 }
 
