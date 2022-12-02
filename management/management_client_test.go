@@ -11,9 +11,9 @@ var client *ManagementClient
 
 func init() {
 	options := ManagementClientOptions{
-		AccessKeyId:     "635124373e1cd646feecbeb9",
-		AccessKeySecret: "c3eaf45f7b467003158fd8615367ba6e",
-		Host:            "http://localhost:3000",
+		AccessKeyId:     "YOUR_ACCESS_KEY_ID",
+		AccessKeySecret: "YOUR_ACCESS_KEY_SECRET",
+		Host:            "YOUR_HOST",
 	}
 	var err error
 	client, err = NewManagementClient(&options)
@@ -1103,4 +1103,185 @@ func TestClient_ListTenants(t *testing.T) {
 	response := client.ListTenants(&request)
 	fmt.Println(response)
 
+}
+
+func TestClient_CreatePermissionNamespace(t *testing.T) {
+	request := dto.CreatePermissionNamespaceDto{
+		Name:        "示例权限空间",
+		Code:        "examplePermissionNamespace",
+		Description: "示例权限空间描述",
+	}
+	response := client.CreatePermissionNamespace(&request)
+	fmt.Println(response)
+}
+
+func TestClient_DeletePermissionNamespace(t *testing.T) {
+	request := dto.DeletePermissionNamespaceDto{
+		Code: "examplePermissionNamespace",
+	}
+	response := client.DeletePermissionNamespace(&request)
+	fmt.Println(response)
+}
+
+func TestClient_CreatePermissionNamespacesBatch(t *testing.T) {
+	request := dto.CreatePermissionNamespacesBatchDto{
+		List: []dto.CreatePermissionNamespacesBatchItemDto{
+			{
+				Name:        "示例权限空间1",
+				Code:        "examplePermissionNamespace1",
+				Description: "示例权限空间1描述",
+			},
+			{
+				Name:        "示例权限空间2",
+				Code:        "examplePermissionNamespace2",
+				Description: "示例权限空间1描述",
+			},
+		},
+	}
+	response := client.CreatePermissionNamespacesBatch(&request)
+	fmt.Println(response)
+}
+
+func TestClient_DeletePermissionNamespacesBatch(t *testing.T) {
+	request := dto.DeletePermissionNamespacesBatchDto{
+		Codes: []string{
+			"examplePermissionNamespace1",
+			"examplePermissionNamespace2",
+		},
+	}
+	response := client.DeletePermissionNamespacesBatch(&request)
+	fmt.Println(response)
+}
+
+func TestClient_GetPermissionNamespace(t *testing.T) {
+	request := dto.GetPermissionNamespaceDto{
+		Code: "examplePermissionNamespace",
+	}
+	response := client.GetPermissionNamespace(&request)
+	fmt.Println(response)
+}
+
+func TestClient_GetPermissionNamespacesBatch(t *testing.T) {
+	request := dto.GetPermissionNamespacesBatchDto{
+		Codes: "code1,code2",
+	}
+	response := client.GetPermissionNamespacesBatch(&request)
+	fmt.Println(response)
+}
+
+func TestClient_UpdatePermissionNamespace(t *testing.T) {
+	request := dto.UpdatePermissionNamespaceDto{
+		Code:        "examplePermissionNamespace",
+		Name:        "示例新权限空间名称",
+		Description: "示例新权限空间描述",
+		NewCode:     "exampleNewPermissionNamespace",
+	}
+	response := client.UpdatePermissionNamespace(&request)
+	fmt.Println(response)
+}
+
+func TestClient_ListPermissionNamespaces(t *testing.T) {
+	request := dto.ListPermissionNamespacesDto{
+		Page:  1,
+		Limit: 10,
+		Query: "示例权限空间",
+	}
+	response := client.ListPermissionNamespaces(&request)
+	fmt.Println(response)
+}
+
+func TestClient_CheckPermissionNamespaceExists(t *testing.T) {
+	request := dto.CheckPermissionNamespaceExistsDto{
+		Code: "examplePermissionNamespace",
+	}
+	response := client.CheckPermissionNamespaceExists(&request)
+	fmt.Println(response)
+
+	request1 := dto.CheckPermissionNamespaceExistsDto{
+		Name: "示例权限空间名称",
+	}
+	response1 := client.CheckPermissionNamespaceExists(&request1)
+	fmt.Println(response1)
+}
+
+func TestClient_ListPermissionNamespaceRoles(t *testing.T) {
+	request := dto.ListPermissionNamespaceRolesDto{
+		Page:  1,
+		Limit: 10,
+		Query: "exampleRole",
+		Code:  "examplePermissionNamespace",
+	}
+	response := client.ListPermissionNamespaceRoles(&request)
+	fmt.Println(response)
+}
+
+func TestClient_CreateDataResource(t *testing.T) {
+	request := dto.CreateDataResourceDto{
+		Actions:       []string{"read", "get"},
+		Struct:        "test",
+		Type:          "STRING",
+		ResourceCode:  "stringResourceCode",
+		ResourceName:  "示例字符串数据资源",
+		NamespaceCode: "examplePermissionNamespace",
+		Description:   "示例字符串数据资源描述",
+	}
+	response := client.CreateDataResource(&request)
+	fmt.Println(response)
+}
+
+func TestClient_DeleteDataResource(t *testing.T) {
+	request := dto.DeleteDataResourceDto{
+		ResourceCode:  "resourceCode",
+		NamespaceCode: "examplePermissionNamespace",
+	}
+	response := client.DeleteDataResource(&request)
+	fmt.Println(response)
+}
+
+func TestClient_UpdateDataResource(t *testing.T) {
+	request := dto.UpdateDataResourceDto{
+		ResourceCode:  "stringResourceCode",
+		ResourceName:  "示例新字符串数据资源",
+		NamespaceCode: "examplePermissionNamespace",
+		Description:   "示例数据资源新描述",
+		Actions:       []string{"read", "get", "update"},
+		Struct:        "test",
+	}
+	response := client.UpdateDataResource(&request)
+	fmt.Println(response)
+}
+
+func TestClient_GetDataResource(t *testing.T) {
+	request := dto.GetDataResourceDto{
+		ResourceCode:  "resourceCode",
+		NamespaceCode: "examplePermissionNamespace",
+	}
+	response := client.GetDataResource(&request)
+	fmt.Println(response)
+}
+
+func TestClient_ListDataResources(t *testing.T) {
+	request := dto.ListDataResourcesDto{
+		Page:  1,
+		Limit: 10,
+		Query: "examplePermissionNamespace1,examplePermissionNamespace2",
+	}
+	response := client.ListDataResources(&request)
+	fmt.Println(response)
+}
+
+func TestClient_CheckDataResourceExists(t *testing.T) {
+	request := dto.CheckDataResourceExistsDto{
+		NamespaceCode: "examplePermissionNamespace",
+		ResourceName:  "示例字符串数据资源名称",
+	}
+	response := client.CheckDataResourceExists(&request)
+	fmt.Println(response)
+
+	request1 := dto.CheckDataResourceExistsDto{
+		NamespaceCode: "examplePermissionNamespace",
+		ResourceCode:  "stringResourceCode",
+	}
+	response1 := client.CheckDataResourceExists(&request1)
+	fmt.Println(response1)
 }
