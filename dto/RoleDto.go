@@ -7,5 +7,6 @@ type RoleDto struct{
     Description  string `json:"description"`
     Namespace  string `json:"namespace"`
     NamespaceName  string `json:"namespaceName"`
+    Status  string `json:"status,omitempty"`
 }
 

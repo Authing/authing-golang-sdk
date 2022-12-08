@@ -2,8 +2,9 @@ package dto
 
 
 type SearchDepartmentsReqDto struct{
-    Keywords  string `json:"keywords"`
     OrganizationCode  string `json:"organizationCode"`
+    Keywords  string `json:"keywords"`
     WithCustomData  bool `json:"withCustomData,omitempty"`
+    Limit  int `json:"limit,omitempty"`
 }
 

@@ -15,6 +15,7 @@ type UpdateUserProfileDto struct{
     PostalCode  string `json:"postalCode,omitempty"`
     Gender  string  `json:"gender,omitempty"`
     Username  string `json:"username,omitempty"`
+    Company  string `json:"company,omitempty"`
     CustomData  interface{} `json:"customData,omitempty"`
 }
 

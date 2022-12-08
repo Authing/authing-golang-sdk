@@ -10,5 +10,6 @@ type ApplicationEnabledExtIdpConnDto struct{
     ExtIdpConnIdentifier  string `json:"extIdpConnIdentifier"`
     ExtIdpConnDisplayName  string `json:"extIdpConnDisplayName"`
     ExtIdpConnLogo  string `json:"extIdpConnLogo"`
+    Enabled  bool `json:"enabled,omitempty"`
 }
 

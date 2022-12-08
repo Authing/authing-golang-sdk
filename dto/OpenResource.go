@@ -1,6 +1,8 @@
 package dto
 
-type OpenResource struct {
-	ResourceCode string      `json:"resourceCode"`
-	Authorize    interface{} `json:"authorize"`
+
+type OpenResource struct{
+    ResourceCode  string `json:"resourceCode"`
+    Authorize  (TreeAuthorize | ArrayAuthorize | StrAuthorize) `json:"authorize"`
 }
+
