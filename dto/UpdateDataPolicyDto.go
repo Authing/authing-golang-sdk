@@ -2,8 +2,8 @@ package dto
 
 
 type UpdateDataPolicyDto struct{
-    PolicyName  string `json:"policyName"`
     PolicyId  string `json:"policyId"`
+    PolicyName  string `json:"policyName,omitempty"`
     Description  string `json:"description,omitempty"`
     StatementList  []DataStatementPermissionDto `json:"statementList,omitempty"`
 }

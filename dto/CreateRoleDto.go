@@ -6,5 +6,6 @@ type CreateRoleDto struct{
     Name  string `json:"name,omitempty"`
     Namespace  string `json:"namespace,omitempty"`
     Description  string `json:"description,omitempty"`
+    DisableTime  string `json:"disableTime,omitempty"`
 }
 

@@ -8,5 +8,6 @@ type UpdateRoleDto struct{
     Namespace  string `json:"namespace,omitempty"`
     Description  string `json:"description,omitempty"`
     Status  string `json:"status,omitempty"`
+    DisableTime  string `json:"disableTime,omitempty"`
 }
 
