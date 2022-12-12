@@ -1285,3 +1285,223 @@ func TestClient_CheckDataResourceExists(t *testing.T) {
 	response1 := client.CheckDataResourceExists(&request1)
 	fmt.Println(response1)
 }
+
+func TestClient_CreateDataResourceByString(t *testing.T) {
+	request := dto.CreateStringDataResourceDto{
+		NamespaceCode: "examplePermissionNamespace",
+		ResourceCode:  "stringResourceCode",
+		ResourceName:  "示例字符串数据资源",
+		Struct:        "exampleStringStruct",
+		Description:   "示例字符串数据资源描述",
+		Actions:       []string{"get", "read"},
+	}
+	response := client.CreateDataResourceByString(&request)
+	fmt.Println(response)
+}
+
+func TestClient_CreateDataResourceByArray(t *testing.T) {
+	request := dto.CreateArrayDataResourceDto{
+		NamespaceCode: "examplePermissionNamespace",
+		ResourceCode:  "arrayResourceCode",
+		ResourceName:  "示例数组数据资源",
+		Struct:        []string{"exampleArrayStruct1", "exampleArrayStruct2"},
+		Description:   "示例数组数据资源描述",
+		Actions:       []string{"get", "read"},
+	}
+	response := client.CreateDataResourceByArray(&request)
+	fmt.Println(response)
+}
+
+func TestClient_CreateDataResourceByTree(t *testing.T) {
+	request := dto.CreateTreeDataResourceDto{
+		NamespaceCode: "examplePermissionNamespace",
+		ResourceCode:  "treeResourceCode",
+		ResourceName:  "示例树数据资源",
+		Struct: []dto.DataResourceTreeStructs{
+			{
+				Code:  "tree1",
+				Name:  "树节点1",
+				Value: "树节点1描述",
+				Children: []dto.DataResourceTreeStructs{
+					{
+						Code:  "tree11",
+						Name:  "树节点11",
+						Value: "树节点11描述",
+					},
+				},
+			},
+			{
+				Code:  "tree2",
+				Name:  "树节点2",
+				Value: "树节点2描述",
+			},
+		},
+		Description: "示例树数据资源描述",
+		Actions:     []string{"get", "read"},
+	}
+	response := client.CreateDataResourceByTree(&request)
+	fmt.Println(response)
+}
+
+func TestClient_CreateDataPolicy(t *testing.T) {
+	request := dto.CreateDataPolicyDto{
+		PolicyName: "示例数据策略名称",
+		StatementList: []dto.DataStatementPermissionDto{
+			{
+				Effect:      "ALLOW",
+				Permissions: []string{"namespaceCode/treeResourceCode/path/action"},
+			},
+		},
+		Description: "示例数据策略描述",
+	}
+	response := client.CreateDataPolicy(&request)
+	fmt.Println(response)
+}
+
+func TestClient_ListDataPolicies(t *testing.T) {
+	request := dto.ListDataPoliciesDto{
+		Page:  1,
+		Limit: 10,
+		Query: "examplePolicyName",
+	}
+	response := client.ListDataPolices(&request)
+	fmt.Println(response)
+}
+
+func TestClient_ListSimpleDataPolicies(t *testing.T) {
+	request := dto.ListSimpleDataPoliciesDto{
+		Page:  1,
+		Limit: 10,
+		Query: "examplePolicyName",
+	}
+	response := client.ListSimpleDataPolices(&request)
+	fmt.Println(response)
+}
+
+func TestClient_GetDataPolicy(t *testing.T) {
+	request := dto.GetDataPolicyDto{
+		PolicyId: "60b49xxxxxxxxxxxxxxx6e68",
+	}
+	response := client.GetDataPolicy(&request)
+	fmt.Println(response)
+}
+
+func TestClient_UpdateDataPolicy(t *testing.T) {
+	request := dto.UpdateDataPolicyDto{
+		PolicyId:    "60b49xxxxxxxxxxxxxxx6e68",
+		PolicyName:  "示例数据策略名称",
+		Description: "示例数据策略描述",
+		StatementList: []dto.DataStatementPermissionDto{
+			{
+				Effect:      "ALLOW",
+				Permissions: []string{"namespaceCode/treeResourceCode/path/action"},
+			},
+		},
+	}
+	response := client.UpdateDataPolicy(&request)
+	fmt.Println(response)
+}
+
+func TestClient_DeleteDataPolicy(t *testing.T) {
+	request := dto.DeleteDataPolicyDto{
+		PolicyId: "60b49xxxxxxxxxxxxxxx6e68",
+	}
+	response := client.DeleteDataPolicy(&request)
+	fmt.Println(response)
+}
+
+func TestClient_CheckDataPolicyExists(t *testing.T) {
+	request := dto.CheckDataPolicyExistsDto{
+		PolicyName: "示例数据策略名称",
+	}
+	response := client.CheckDataPolicyExists(&request)
+	fmt.Println(response)
+}
+
+func TestClient_ListDataPolicyTargets(t *testing.T) {
+	request := dto.ListDataPolicyTargetsDto{
+		PolicyId:   "60b49xxxxxxxxxxxxxxx6e68",
+		Page:       1,
+		Limit:      10,
+		Query:      "主体名称",
+		TargetType: "USER",
+	}
+	response := client.ListDataPolicyTargets(&request)
+	fmt.Println(response)
+}
+
+func TestClient_AuthorizeDataPolicies(t *testing.T) {
+	request := dto.CreateAuthorizeDataPolicyDto{
+		PolicyIds: []string{"6301cexxxxxxxxxx27478", "63123cexxxxxxxxxx2123101"},
+		TargetList: []dto.SubjectDto{
+			{
+				Id:   "6301cexxxxxxxxxxxxxxxxx78",
+				Type: "USER",
+				Name: "用户名称",
+			},
+		},
+	}
+	response := client.AuthorizeDataPolicies(&request)
+	fmt.Println(response)
+}
+
+func TestClient_RevokeDataPolicy(t *testing.T) {
+	request := dto.DeleteAuthorizeDataPolicyDto{
+		PolicyId:         "60b49xxxxxxxxxxxxxxx6e68",
+		TargetIdentifier: "6301cexxxxxxxxxxxxxxxxx78",
+		TargetType:       "USER",
+	}
+	response := client.RevokeDataPolicy(&request)
+	fmt.Println(response)
+}
+
+func TestClient_GetUserPermissionList(t *testing.T) {
+	request := dto.GetUserPermissionListDto{
+		UserIds:        []string{"6229ffaxxxxxxxxcade3e3d9", "6229ffaxxxxxxxxcade3e3d9"},
+		NamespaceCodes: []string{"examplePermissionNamespace1", "examplePermissionNamespace2"},
+	}
+	response := client.GetUserPermissionList(&request)
+	fmt.Println(response)
+}
+
+func TestClient_CheckPermission(t *testing.T) {
+	request := dto.CheckPermissionDto{
+		NamespaceCode: "examplePermissionNamespace",
+		UserId:        "63721xxxxxxxxxxxxdde14a3",
+		Action:        "read",
+		Resources:     []string{"strResourceCode", "arrayResourceCode", "/treeResourceCode/structCode/resourceStructChildrenCode"},
+	}
+	response := client.CheckPermission(&request)
+	fmt.Println(response)
+}
+
+func TestClient_GetUserResourcePermissionList(t *testing.T) {
+	request := dto.GetUserResourcePermissionListDto{
+		NamespaceCode: "examplePermissionNamespace",
+		UserId:        "63721xxxxxxxxxxxxdde14",
+		Resources:     []string{"strResourceCode", "arrayResourceCode", "/treeResourceCode/structCode/resourceStructChildrenCode"},
+	}
+	response := client.GetUserResourcePermissionList(&request)
+	fmt.Println(response)
+}
+
+func TestClient_ListResourceTargets(t *testing.T) {
+	request := dto.ListResourceTargetsDto{
+		NamespaceCode: "examplePermissionNamespace",
+		Actions:       []string{"read", "get"},
+		Resources:     []string{"strResourceCode", "arrayResourceCode", "/treeResourceCode/structCode/resourceStructChildrenCode"},
+	}
+	response := client.ListResourceTargets(&request)
+	fmt.Println(response)
+}
+
+func TestClient_CheckUserSameLevelPermission(t *testing.T) {
+	request := dto.CheckUserSameLevelPermissionDto{
+		NamespaceCode: "examplePermissionNamespace",
+		UserId:        "63721xxxxxxxxxxxxdde14a3",
+		Action:        "get",
+		Resource:      "strResourceCode",
+	}
+	response := client.CheckUserSameLevelPermission(&request)
+	fmt.Println(response)
+}
