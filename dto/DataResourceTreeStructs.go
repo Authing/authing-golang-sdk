@@ -5,6 +5,6 @@ type DataResourceTreeStructs struct{
     Code  string `json:"code"`
     Name  string `json:"name"`
     Value  string `json:"value,omitempty"`
-    Children  []DataResourceTreeStructs `json:"children,omitempty"`
+    Children  []interface{} `json:"children,omitempty"`
 }
 
