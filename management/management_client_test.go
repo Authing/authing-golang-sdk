@@ -2,24 +2,28 @@ package management
 
 import (
 	"fmt"
-	"testing"
-
 	"github.com/Authing/authing-golang-sdk/v3/dto"
+	"testing"
 )
 
 var client *ManagementClient
 
 func init() {
 	options := ManagementClientOptions{
-		AccessKeyId:     "YOUR_ACCESS_KEY_ID",
-		AccessKeySecret: "YOUR_ACCESS_KEY_SECRET",
-		Host:            "YOUR_HOST",
+		//AccessKeyId:     "YOUR_ACCESS_KEY_ID",
+		//AccessKeySecret: "YOUR_ACCESS_KEY_SECRET",
+		//Host:            "YOUR_HOST",
+		AccessKeyId:     "63a3f1c38f7593d460057436",
+		AccessKeySecret: "d70365bf03d334b95133fd27cdb1346f",
+		Host:            "https://console.authing.cn",
 	}
 	var err error
 	client, err = NewManagementClient(&options)
+	print(client)
 	if err != nil {
-		panic(err)
+		print(err)
 	}
+
 }
 
 func TestClient_ListUsers(t *testing.T) {
@@ -1098,13 +1102,6 @@ func TestClient_DeleteNamespacesBatch(t *testing.T) {
 
 }
 
-func TestClient_ListTenants(t *testing.T) {
-	request := dto.ListTenantsDto{}
-	response := client.ListTenants(&request)
-	fmt.Println(response)
-
-}
-
 func TestClient_CreatePermissionNamespace(t *testing.T) {
 	request := dto.CreatePermissionNamespaceDto{
 		Name:        "示例权限空间",
@@ -1312,36 +1309,36 @@ func TestClient_CreateDataResourceByArray(t *testing.T) {
 	fmt.Println(response)
 }
 
-func TestClient_CreateDataResourceByTree(t *testing.T) {
-	request := dto.CreateTreeDataResourceDto{
-		NamespaceCode: "examplePermissionNamespace",
-		ResourceCode:  "treeResourceCode",
-		ResourceName:  "示例树数据资源",
-		Struct: []dto.DataResourceTreeStructs{
-			{
-				Code:  "tree1",
-				Name:  "树节点1",
-				Value: "树节点1描述",
-				Children: []dto.DataResourceTreeStructs{
-					{
-						Code:  "tree11",
-						Name:  "树节点11",
-						Value: "树节点11描述",
-					},
-				},
-			},
-			{
-				Code:  "tree2",
-				Name:  "树节点2",
-				Value: "树节点2描述",
-			},
-		},
-		Description: "示例树数据资源描述",
-		Actions:     []string{"get", "read"},
-	}
-	response := client.CreateDataResourceByTree(&request)
-	fmt.Println(response)
-}
+//func TestClient_CreateDataResourceByTree(t *testing.T) {
+//	request := dto.CreateTreeDataResourceDto{
+//		NamespaceCode: "examplePermissionNamespace",
+//		ResourceCode:  "treeResourceCode",
+//		ResourceName:  "示例树数据资源",
+//		Struct: []dto.DataResourceTreeStructs{
+//			{
+//				Code:  "tree1",
+//				Name:  "树节点1",
+//				Value: "树节点1描述",
+//				Children: []dto.DataResourceTreeStructs{
+//					{
+//						Code:  "tree11",
+//						Name:  "树节点11",
+//						Value: "树节点11描述",
+//					},
+//				},
+//			},
+//			{
+//				Code:  "tree2",
+//				Name:  "树节点2",
+//				Value: "树节点2描述",
+//			},
+//		},
+//		Description: "示例树数据资源描述",
+//		Actions:     []string{"get", "read"},
+//	}
+//	response := client.CreateDataResourceByTree(&request)
+//	fmt.Println(response)
+//}
 
 func TestClient_CreateDataPolicy(t *testing.T) {
 	request := dto.CreateDataPolicyDto{
@@ -1485,15 +1482,15 @@ func TestClient_GetUserResourcePermissionList(t *testing.T) {
 	fmt.Println(response)
 }
 
-func TestClient_ListResourceTargets(t *testing.T) {
-	request := dto.ListResourceTargetsDto{
-		NamespaceCode: "examplePermissionNamespace",
-		Actions:       []string{"read", "get"},
-		Resources:     []string{"strResourceCode", "arrayResourceCode", "/treeResourceCode/structCode/resourceStructChildrenCode"},
-	}
-	response := client.ListResourceTargets(&request)
-	fmt.Println(response)
-}
+//func TestClient_ListResourceTargets(t *testing.T) {
+//	request := dto.ListResourceTargetsDto{
+//		NamespaceCode: "examplePermissionNamespace",
+//		Actions:       []string{"read", "get"},
+//		Resources:     []string{"strResourceCode", "arrayResourceCode", "/treeResourceCode/structCode/resourceStructChildrenCode"},
+//	}
+//	response := client.ListResourceTargets(&request)
+//	fmt.Println(response)
+//}
 
 func TestClient_CheckUserSameLevelPermission(t *testing.T) {
 	request := dto.CheckUserSameLevelPermissionDto{
