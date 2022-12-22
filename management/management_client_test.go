@@ -1605,7 +1605,7 @@ func TestClient_ListResourceTargets(t *testing.T) {
 	request := dto.ListResourceTargetsDto{
 		NamespaceCode: "examplePermissionNamespace",
 		Actions:       []string{"read", "get"},
-		Resources:     []string{"strResourceCode", "arrayResourceCode", "/treeResourceCode/structCode/resourceStructChildrenCode"},
+		Resources:     []string{"stringResourceCode", "arrayResourceCode", "/treeResourceCode/structCode/resourceStructChildrenCode"},
 	}
 	response := client.ListResourceTargets(&request)
 	fmt.Println(response)

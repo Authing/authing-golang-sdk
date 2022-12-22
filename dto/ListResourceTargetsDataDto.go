@@ -1,7 +1,5 @@
 package dto
 
-
-type ListResourceTargetsDataDto struct{
-    AuthUserList  []ListResourceTargetsDto `json:"authUserList"`
+type ListResourceTargetsDataDto struct {
+	AuthUserList []ListResourceTargetsDtoResp `json:"authUserList"`
 }
-

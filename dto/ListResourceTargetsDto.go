@@ -1,8 +1,7 @@
 package dto
 
-
-type ListResourceTargetsDto struct{
-    Resource  string `json:"resource"`
-    ActionAuthList  []ActionAuth `json:"actionAuthList"`
+type ListResourceTargetsDto struct {
+	Resources     []string `json:"resources"`
+	Actions       []string `json:"actions"`
+	NamespaceCode string   `json:"namespaceCode"`
 }
-
