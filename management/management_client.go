@@ -1497,6 +1497,27 @@ func (client *ManagementClient) GetDepartmentById(reqDto *dto.GetDepartmentByIdD
 }
 
 /*
+ * @summary 根据组织树批量创建部门
+ * @description 根据组织树批量创建部门，部门名称不存在时会自动创建
+ * @param requestBody
+ * @returns CreateDepartmentTreeRespDto
+ */
+func (client *ManagementClient) CreateDepartmentTree(reqDto *dto.CreateDepartmentTreeReqDto) *dto.CreateDepartmentTreeRespDto {
+	b, err := client.SendHttpRequest("/api/v3/create-department-tree", fasthttp.MethodPost, reqDto)
+	var response dto.CreateDepartmentTreeRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
  * @summary 获取分组详情
  * @description 通过分组 code，获取分组详情。
  * @param code 分组 code
@@ -2009,20 +2030,20 @@ func (client *ManagementClient) CheckParamsNamespace(reqDto *dto.CheckRoleParams
  * @param requestBody
  * @returns RoleListPageRespDto
  */
-func (client *ManagementClient) ListRoleAssignments(reqDto *dto.ListRoleAssignmentsDto) *dto.RoleListPageRespDto {
-	b, err := client.SendHttpRequest("/api/v3/list-role-assignments", fasthttp.MethodGet, reqDto)
-	var response dto.RoleListPageRespDto
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	err = json.Unmarshal(b, &response)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	return &response
-}
+//func (client *ManagementClient) ListRoleAssignments(reqDto *dto.ListRoleAssignmentsDto) *dto.RoleListPageRespDto {
+//	b, err := client.SendHttpRequest("/api/v3/list-role-assignments", fasthttp.MethodGet, reqDto)
+//	var response dto.RoleListPageRespDto
+//	if err != nil {
+//		fmt.Println(err)
+//		return nil
+//	}
+//	err = json.Unmarshal(b, &response)
+//	if err != nil {
+//		fmt.Println(err)
+//		return nil
+//	}
+//	return &response
+//}
 
 /*
  * @summary 获取身份源列表
@@ -5167,6 +5188,27 @@ func (client *ManagementClient) CheckPermission(reqDto *dto.CheckPermissionDto) 
 }
 
 /*
+ * @summary 判断外部用户权限
+ * @description 判断外部用户权限
+ * @param requestBody
+ * @returns CheckExternalUserPermissionRespDto
+ */
+func (client *ManagementClient) CheckExternalUserPermission(reqDto *dto.CheckExternalUserPermissionDto) *dto.CheckExternalUserPermissionRespDto {
+	b, err := client.SendHttpRequest("/api/v3/check-external-user-permission", fasthttp.MethodPost, reqDto)
+	var response dto.CheckExternalUserPermissionRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
    * @summary 获取用户指定资源权限列表
    * @description 该接口主要用于获取用户指定资源的权限列表,通过权限空间 Code、用户 ID 以及资源列表查询所有权限。
    *
@@ -5360,7 +5402,7 @@ func (client *ManagementClient) GetUserResourcePermissionList(reqDto *dto.GetUse
                                                                                            * @param requestBody
                                                                                            * @returns ListResourceTargetsRespDto
 */
-func (client *ManagementClient) ListResourceTargets(reqDto *dto.ListResourceTargets) *dto.ListResourceTargetsRespDto {
+func (client *ManagementClient) ListResourceTargets(reqDto *dto.ListResourceTargetsDto) *dto.ListResourceTargetsRespDto {
 	b, err := client.SendHttpRequest("/api/v3/list-resource-targets", fasthttp.MethodPost, reqDto)
 	var response dto.ListResourceTargetsRespDto
 	if err != nil {

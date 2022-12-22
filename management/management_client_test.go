@@ -21,7 +21,7 @@ func init() {
 	client, err = NewManagementClient(&options)
 	print(client)
 	if err != nil {
-		print(err)
+		panic(err)
 	}
 
 }
@@ -1102,6 +1102,7 @@ func TestClient_DeleteNamespacesBatch(t *testing.T) {
 
 }
 
+// 创建权限空间
 func TestClient_CreatePermissionNamespace(t *testing.T) {
 	request := dto.CreatePermissionNamespaceDto{
 		Name:        "示例权限空间",
@@ -1112,6 +1113,7 @@ func TestClient_CreatePermissionNamespace(t *testing.T) {
 	fmt.Println(response)
 }
 
+// 删除权限空间
 func TestClient_DeletePermissionNamespace(t *testing.T) {
 	request := dto.DeletePermissionNamespaceDto{
 		Code: "examplePermissionNamespace",
@@ -1120,6 +1122,7 @@ func TestClient_DeletePermissionNamespace(t *testing.T) {
 	fmt.Println(response)
 }
 
+// 批量创建权限空间
 func TestClient_CreatePermissionNamespacesBatch(t *testing.T) {
 	request := dto.CreatePermissionNamespacesBatchDto{
 		List: []dto.CreatePermissionNamespacesBatchItemDto{
@@ -1131,7 +1134,7 @@ func TestClient_CreatePermissionNamespacesBatch(t *testing.T) {
 			{
 				Name:        "示例权限空间2",
 				Code:        "examplePermissionNamespace2",
-				Description: "示例权限空间1描述",
+				Description: "示例权限空间2描述",
 			},
 		},
 	}
@@ -1139,6 +1142,7 @@ func TestClient_CreatePermissionNamespacesBatch(t *testing.T) {
 	fmt.Println(response)
 }
 
+// 批量删除权限空间
 func TestClient_DeletePermissionNamespacesBatch(t *testing.T) {
 	request := dto.DeletePermissionNamespacesBatchDto{
 		Codes: []string{
@@ -1150,6 +1154,7 @@ func TestClient_DeletePermissionNamespacesBatch(t *testing.T) {
 	fmt.Println(response)
 }
 
+// 获取权限空间详情
 func TestClient_GetPermissionNamespace(t *testing.T) {
 	request := dto.GetPermissionNamespaceDto{
 		Code: "examplePermissionNamespace",
@@ -1158,14 +1163,16 @@ func TestClient_GetPermissionNamespace(t *testing.T) {
 	fmt.Println(response)
 }
 
+// 批量获取权限空间详情
 func TestClient_GetPermissionNamespacesBatch(t *testing.T) {
 	request := dto.GetPermissionNamespacesBatchDto{
-		Codes: "code1,code2",
+		Codes: "examplePermissionNamespace1,examplePermissionNamespace2",
 	}
 	response := client.GetPermissionNamespacesBatch(&request)
 	fmt.Println(response)
 }
 
+// 更新权限空间
 func TestClient_UpdatePermissionNamespace(t *testing.T) {
 	request := dto.UpdatePermissionNamespaceDto{
 		Code:        "examplePermissionNamespace",
@@ -1177,16 +1184,18 @@ func TestClient_UpdatePermissionNamespace(t *testing.T) {
 	fmt.Println(response)
 }
 
+// 获取权限空间列表
 func TestClient_ListPermissionNamespaces(t *testing.T) {
 	request := dto.ListPermissionNamespacesDto{
 		Page:  1,
 		Limit: 10,
-		Query: "示例权限空间",
+		Query: "权限",
 	}
 	response := client.ListPermissionNamespaces(&request)
 	fmt.Println(response)
 }
 
+// 校验权限空间 Code 是否可用
 func TestClient_CheckPermissionNamespaceExists(t *testing.T) {
 	request := dto.CheckPermissionNamespaceExistsDto{
 		Code: "examplePermissionNamespace",
@@ -1199,90 +1208,106 @@ func TestClient_CheckPermissionNamespaceExists(t *testing.T) {
 	}
 	response1 := client.CheckPermissionNamespaceExists(&request1)
 	fmt.Println(response1)
+
+	request2 := dto.CheckPermissionNamespaceExistsDto{
+		Name: "示例权限空间1",
+	}
+	response2 := client.CheckPermissionNamespaceExists(&request2)
+	fmt.Println(response2)
 }
 
+// 获取权限空间下所有的角色列表
 func TestClient_ListPermissionNamespaceRoles(t *testing.T) {
 	request := dto.ListPermissionNamespaceRolesDto{
 		Page:  1,
 		Limit: 10,
-		Query: "exampleRole",
-		Code:  "examplePermissionNamespace",
+		Query: "exampleRoleCodeOrName",
+		Code:  "exampleNewPermissionNamespace",
 	}
 	response := client.ListPermissionNamespaceRoles(&request)
 	fmt.Println(response)
 }
 
-func TestClient_CreateDataResource(t *testing.T) {
+// 创建字符串数据资源
+func TestClient_CreateStringDataResource(t *testing.T) {
 	request := dto.CreateDataResourceDto{
 		Actions:       []string{"read", "get"},
 		Struct:        "test",
 		Type:          "STRING",
 		ResourceCode:  "stringResourceCode",
 		ResourceName:  "示例字符串数据资源",
-		NamespaceCode: "examplePermissionNamespace",
+		NamespaceCode: "exampleNewPermissionNamespace",
 		Description:   "示例字符串数据资源描述",
 	}
 	response := client.CreateDataResource(&request)
 	fmt.Println(response)
 }
 
-func TestClient_DeleteDataResource(t *testing.T) {
-	request := dto.DeleteDataResourceDto{
-		ResourceCode:  "resourceCode",
+// 创建数组数据资源
+func TestClient_CreateArrayDataResource(t *testing.T) {
+	request := dto.CreateDataResourceDto{
+		Actions:       []string{"read", "get"},
+		Struct:        []string{"exampleArrayStruct1", "exampleArrayStruct2"},
+		Type:          "ARRAY",
+		ResourceCode:  "arrayResourceCode1",
+		ResourceName:  "示例数组数据资源1",
 		NamespaceCode: "examplePermissionNamespace",
+		Description:   "示例数组数据资源描述",
 	}
-	response := client.DeleteDataResource(&request)
+	response := client.CreateDataResource(&request)
 	fmt.Println(response)
 }
 
-func TestClient_UpdateDataResource(t *testing.T) {
-	request := dto.UpdateDataResourceDto{
-		ResourceCode:  "stringResourceCode",
-		ResourceName:  "示例新字符串数据资源",
+// 创建数数据资源
+func TestClient_CreateTreeDataResource(t *testing.T) {
+	request := dto.CreateTreeDataResourceDto{
 		NamespaceCode: "examplePermissionNamespace",
-		Description:   "示例数据资源新描述",
-		Actions:       []string{"read", "get", "update"},
-		Struct:        "test",
+		ResourceCode:  "treeResourceCode3",
+		ResourceName:  "示例树数据资源3",
+		Struct: []dto.DataResourceTreeStructs{
+			{
+				Code:  "tree1",
+				Name:  "树节点1",
+				Value: "树节点1描述",
+				Children: []any{
+					dto.DataResourceTreeStructs{
+						Code:  "tree11",
+						Name:  "树节点11",
+						Value: "树节点11描述",
+						Children: []any{
+							dto.DataResourceTreeStructs{
+								Code:  "tree111",
+								Name:  "树节点111",
+								Value: "树节点111描述",
+							},
+							dto.DataResourceTreeStructs{
+								Code:  "tree112",
+								Name:  "树节点112",
+								Value: "树节点112描述",
+							},
+						},
+					},
+					dto.DataResourceTreeStructs{
+						Code:  "tree12",
+						Name:  "树节点12",
+						Value: "树节点12描述",
+					},
+				},
+			},
+			{
+				Code:  "tree2",
+				Name:  "树节点2",
+				Value: "树节点2描述",
+			},
+		},
+		Description: "示例树数据资源描述",
+		Actions:     []string{"get", "read"},
 	}
-	response := client.UpdateDataResource(&request)
+	response := client.CreateDataResourceByTree(&request)
 	fmt.Println(response)
 }
 
-func TestClient_GetDataResource(t *testing.T) {
-	request := dto.GetDataResourceDto{
-		ResourceCode:  "resourceCode",
-		NamespaceCode: "examplePermissionNamespace",
-	}
-	response := client.GetDataResource(&request)
-	fmt.Println(response)
-}
-
-func TestClient_ListDataResources(t *testing.T) {
-	request := dto.ListDataResourcesDto{
-		Page:  1,
-		Limit: 10,
-		Query: "examplePermissionNamespace1,examplePermissionNamespace2",
-	}
-	response := client.ListDataResources(&request)
-	fmt.Println(response)
-}
-
-func TestClient_CheckDataResourceExists(t *testing.T) {
-	request := dto.CheckDataResourceExistsDto{
-		NamespaceCode: "examplePermissionNamespace",
-		ResourceName:  "示例字符串数据资源名称",
-	}
-	response := client.CheckDataResourceExists(&request)
-	fmt.Println(response)
-
-	request1 := dto.CheckDataResourceExistsDto{
-		NamespaceCode: "examplePermissionNamespace",
-		ResourceCode:  "stringResourceCode",
-	}
-	response1 := client.CheckDataResourceExists(&request1)
-	fmt.Println(response1)
-}
-
+// 创建字符串数据资源
 func TestClient_CreateDataResourceByString(t *testing.T) {
 	request := dto.CreateStringDataResourceDto{
 		NamespaceCode: "examplePermissionNamespace",
@@ -1296,6 +1321,7 @@ func TestClient_CreateDataResourceByString(t *testing.T) {
 	fmt.Println(response)
 }
 
+// 创建数组数据资源
 func TestClient_CreateDataResourceByArray(t *testing.T) {
 	request := dto.CreateArrayDataResourceDto{
 		NamespaceCode: "examplePermissionNamespace",
@@ -1309,44 +1335,120 @@ func TestClient_CreateDataResourceByArray(t *testing.T) {
 	fmt.Println(response)
 }
 
-//func TestClient_CreateDataResourceByTree(t *testing.T) {
-//	request := dto.CreateTreeDataResourceDto{
-//		NamespaceCode: "examplePermissionNamespace",
-//		ResourceCode:  "treeResourceCode",
-//		ResourceName:  "示例树数据资源",
-//		Struct: []dto.DataResourceTreeStructs{
-//			{
-//				Code:  "tree1",
-//				Name:  "树节点1",
-//				Value: "树节点1描述",
-//				Children: []dto.DataResourceTreeStructs{
-//					{
-//						Code:  "tree11",
-//						Name:  "树节点11",
-//						Value: "树节点11描述",
-//					},
-//				},
-//			},
-//			{
-//				Code:  "tree2",
-//				Name:  "树节点2",
-//				Value: "树节点2描述",
-//			},
-//		},
-//		Description: "示例树数据资源描述",
-//		Actions:     []string{"get", "read"},
-//	}
-//	response := client.CreateDataResourceByTree(&request)
-//	fmt.Println(response)
-//}
+// 创建数数据资源
+func TestClient_CreateDataResourceByTree(t *testing.T) {
+	request := dto.CreateTreeDataResourceDto{
+		NamespaceCode: "examplePermissionNamespace",
+		ResourceCode:  "treeResourceCode2",
+		ResourceName:  "示例树数据资源2",
+		Struct: []dto.DataResourceTreeStructs{
+			{
+				Code:  "tree1",
+				Name:  "树节点1",
+				Value: "树节点1描述",
+				Children: []any{
+					dto.DataResourceTreeStructs{
+						Code:  "tree11",
+						Name:  "树节点11",
+						Value: "树节点11描述",
+					},
+				},
+			},
+			{
+				Code:  "tree2",
+				Name:  "树节点2",
+				Value: "树节点2描述",
+			},
+		},
+		Description: "示例树数据资源描述",
+		Actions:     []string{"get", "read"},
+	}
+	response := client.CreateDataResourceByTree(&request)
+	fmt.Println(response)
+}
 
+// 删除数据资源
+func TestClient_DeleteDataResource(t *testing.T) {
+	request := dto.DeleteDataResourceDto{
+		ResourceCode:  "arrayResourceCode",
+		NamespaceCode: "examplePermissionNamespace",
+	}
+	response := client.DeleteDataResource(&request)
+	fmt.Println(response)
+}
+
+// 更新数据资源
+func TestClient_UpdateDataResource(t *testing.T) {
+	request := dto.UpdateDataResourceDto{
+		ResourceCode:  "stringResourceCode",
+		ResourceName:  "示例新字符串数据资源",
+		NamespaceCode: "examplePermissionNamespace",
+		Description:   "示例数据资源新描述",
+		Actions:       []string{"read", "get", "update"},
+		Struct:        "test",
+	}
+	response := client.UpdateDataResource(&request)
+	fmt.Println(response)
+}
+
+// 获取数据资源详情
+func TestClient_GetDataResource(t *testing.T) {
+	request := dto.GetDataResourceDto{
+		ResourceCode:  "stringResourceCode",
+		NamespaceCode: "examplePermissionNamespace",
+	}
+	response := client.GetDataResource(&request)
+	fmt.Println(response)
+}
+
+// 数据资源列表
+func TestClient_ListDataResources(t *testing.T) {
+	request := dto.ListDataResourcesDto{
+		Page:           1,
+		Limit:          10,
+		Query:          "stringResourceCode",
+		NamespaceCodes: "examplePermissionNamespace,exampleNewPermissionNamespace",
+	}
+	response := client.ListDataResources(&request)
+	fmt.Println(response)
+}
+
+// 校验数据资源名称或者 code 是否有效
+func TestClient_CheckDataResourceExists(t *testing.T) {
+	request := dto.CheckDataResourceExistsDto{
+		NamespaceCode: "examplePermissionNamespace",
+		ResourceName:  "示例字符串数据资源名称",
+	}
+	response := client.CheckDataResourceExists(&request)
+	fmt.Println(response)
+
+	request1 := dto.CheckDataResourceExistsDto{
+		NamespaceCode: "examplePermissionNamespace",
+		ResourceCode:  "stringResourceCode2",
+	}
+	response1 := client.CheckDataResourceExists(&request1)
+	fmt.Println(response1)
+
+	request2 := dto.CheckDataResourceExistsDto{
+		NamespaceCode: "examplePermissionNamespace",
+		ResourceCode:  "stringResourceCode",
+	}
+	response2 := client.CheckDataResourceExists(&request2)
+	fmt.Println(response2)
+}
+
+// 创建数据策略
 func TestClient_CreateDataPolicy(t *testing.T) {
 	request := dto.CreateDataPolicyDto{
-		PolicyName: "示例数据策略名称",
+		PolicyName: "示例数据策略名称1",
 		StatementList: []dto.DataStatementPermissionDto{
 			{
 				Effect:      "ALLOW",
-				Permissions: []string{"namespaceCode/treeResourceCode/path/action"},
+				Permissions: []string{"examplePermissionNamespace/stringResourceCode/*"},
+			},
+			{
+				Effect:      "ALLOW",
+				Permissions: []string{"examplePermissionNamespace/treeResourceCode2/tree1/*"},
 			},
 		},
 		Description: "示例数据策略描述",
@@ -1355,43 +1457,47 @@ func TestClient_CreateDataPolicy(t *testing.T) {
 	fmt.Println(response)
 }
 
+// 数据策略列表
 func TestClient_ListDataPolicies(t *testing.T) {
 	request := dto.ListDataPoliciesDto{
 		Page:  1,
 		Limit: 10,
-		Query: "examplePolicyName",
+		Query: "示例数据策略名称",
 	}
 	response := client.ListDataPolices(&request)
 	fmt.Println(response)
 }
 
+// 获取数据策略名称
 func TestClient_ListSimpleDataPolicies(t *testing.T) {
 	request := dto.ListSimpleDataPoliciesDto{
 		Page:  1,
 		Limit: 10,
-		Query: "examplePolicyName",
+		//Query: "examplePolicyName",
 	}
 	response := client.ListSimpleDataPolices(&request)
 	fmt.Println(response)
 }
 
+// 获取数据策略详情
 func TestClient_GetDataPolicy(t *testing.T) {
 	request := dto.GetDataPolicyDto{
-		PolicyId: "60b49xxxxxxxxxxxxxxx6e68",
+		PolicyId: "63a421384c2a336a51f1eecb",
 	}
 	response := client.GetDataPolicy(&request)
 	fmt.Println(response)
 }
 
+// 修改数据策略
 func TestClient_UpdateDataPolicy(t *testing.T) {
 	request := dto.UpdateDataPolicyDto{
-		PolicyId:    "60b49xxxxxxxxxxxxxxx6e68",
-		PolicyName:  "示例数据策略名称",
+		PolicyId:    "63a421384c2a336a51f1eecb",
+		PolicyName:  "示例数据策略名称1",
 		Description: "示例数据策略描述",
 		StatementList: []dto.DataStatementPermissionDto{
 			{
 				Effect:      "ALLOW",
-				Permissions: []string{"namespaceCode/treeResourceCode/path/action"},
+				Permissions: []string{"examplePermissionNamespace/stringResourceCode/*"},
 			},
 		},
 	}
@@ -1399,14 +1505,16 @@ func TestClient_UpdateDataPolicy(t *testing.T) {
 	fmt.Println(response)
 }
 
+// 删除数据策略
 func TestClient_DeleteDataPolicy(t *testing.T) {
 	request := dto.DeleteDataPolicyDto{
-		PolicyId: "60b49xxxxxxxxxxxxxxx6e68",
+		PolicyId: "63a421384c2a336a51f1eecb",
 	}
 	response := client.DeleteDataPolicy(&request)
 	fmt.Println(response)
 }
 
+// 校验数据策略名称是否可用
 func TestClient_CheckDataPolicyExists(t *testing.T) {
 	request := dto.CheckDataPolicyExistsDto{
 		PolicyName: "示例数据策略名称",
@@ -1415,26 +1523,33 @@ func TestClient_CheckDataPolicyExists(t *testing.T) {
 	fmt.Println(response)
 }
 
+// 获取数据策略下所有的授权主体的信息
 func TestClient_ListDataPolicyTargets(t *testing.T) {
 	request := dto.ListDataPolicyTargetsDto{
-		PolicyId:   "60b49xxxxxxxxxxxxxxx6e68",
-		Page:       1,
-		Limit:      10,
-		Query:      "主体名称",
-		TargetType: "USER",
+		PolicyId: "63a4202d66a7d2af872d0536",
+		Page:     1,
+		Limit:    10,
+		Query:    "4",
+		//TargetType: "ROLE",
 	}
 	response := client.ListDataPolicyTargets(&request)
 	fmt.Println(response)
 }
 
+// 授权
 func TestClient_AuthorizeDataPolicies(t *testing.T) {
 	request := dto.CreateAuthorizeDataPolicyDto{
-		PolicyIds: []string{"6301cexxxxxxxxxx27478", "63123cexxxxxxxxxx2123101"},
+		PolicyIds: []string{"63a4202d66a7d2af872d0536"},
 		TargetList: []dto.SubjectDto{
 			{
-				Id:   "6301cexxxxxxxxxxxxxxxxx78",
+				Id:   "63a43e34dbb5beb923b93ea0",
 				Type: "USER",
-				Name: "用户名称",
+				Name: "4",
+			},
+			{
+				Id:   "63a43e2f0a6392fc1b4ad325",
+				Type: "USER",
+				Name: "3",
 			},
 		},
 	}
@@ -1442,31 +1557,34 @@ func TestClient_AuthorizeDataPolicies(t *testing.T) {
 	fmt.Println(response)
 }
 
+// 取消授权
 func TestClient_RevokeDataPolicy(t *testing.T) {
 	request := dto.DeleteAuthorizeDataPolicyDto{
-		PolicyId:         "60b49xxxxxxxxxxxxxxx6e68",
-		TargetIdentifier: "6301cexxxxxxxxxxxxxxxxx78",
+		PolicyId:         "63a4202d66a7d2af872d0536",
+		TargetIdentifier: "63a43e2f0a6392fc1b4ad325",
 		TargetType:       "USER",
 	}
 	response := client.RevokeDataPolicy(&request)
 	fmt.Println(response)
 }
 
+// 获取用户的权限
 func TestClient_GetUserPermissionList(t *testing.T) {
 	request := dto.GetUserPermissionListDto{
-		UserIds:        []string{"6229ffaxxxxxxxxcade3e3d9", "6229ffaxxxxxxxxcade3e3d9"},
-		NamespaceCodes: []string{"examplePermissionNamespace1", "examplePermissionNamespace2"},
+		UserIds: []string{"63a43e34dbb5beb923b93ea0"},
+		//NamespaceCodes: []string{"examplePermissionNamespace1", "examplePermissionNamespace2"},
 	}
 	response := client.GetUserPermissionList(&request)
 	fmt.Println(response)
 }
 
+// 鉴权
 func TestClient_CheckPermission(t *testing.T) {
 	request := dto.CheckPermissionDto{
 		NamespaceCode: "examplePermissionNamespace",
-		UserId:        "63721xxxxxxxxxxxxdde14a3",
+		UserId:        "63a43e34dbb5beb923b93ea0",
 		Action:        "read",
-		Resources:     []string{"strResourceCode", "arrayResourceCode", "/treeResourceCode/structCode/resourceStructChildrenCode"},
+		Resources:     []string{"stringResourceCode", "arrayResourceCode1", "/treeResourceCode3/tree1111/resourceStructChildrenCode"},
 	}
 	response := client.CheckPermission(&request)
 	fmt.Println(response)
@@ -1475,29 +1593,30 @@ func TestClient_CheckPermission(t *testing.T) {
 func TestClient_GetUserResourcePermissionList(t *testing.T) {
 	request := dto.GetUserResourcePermissionListDto{
 		NamespaceCode: "examplePermissionNamespace",
-		UserId:        "63721xxxxxxxxxxxxdde14",
-		Resources:     []string{"strResourceCode", "arrayResourceCode", "/treeResourceCode/structCode/resourceStructChildrenCode"},
+		UserId:        "63a43e34dbb5beb923b93ea0",
+		//Resources:     []string{"strResourceCode", "arrayResourceCode", "/treeResourceCode/structCode/resourceStructChildrenCode"},
+		Resources: []string{"stringResourceCode"},
 	}
 	response := client.GetUserResourcePermissionList(&request)
 	fmt.Println(response)
 }
 
-//func TestClient_ListResourceTargets(t *testing.T) {
-//	request := dto.ListResourceTargetsDto{
-//		NamespaceCode: "examplePermissionNamespace",
-//		Actions:       []string{"read", "get"},
-//		Resources:     []string{"strResourceCode", "arrayResourceCode", "/treeResourceCode/structCode/resourceStructChildrenCode"},
-//	}
-//	response := client.ListResourceTargets(&request)
-//	fmt.Println(response)
-//}
+func TestClient_ListResourceTargets(t *testing.T) {
+	request := dto.ListResourceTargetsDto{
+		NamespaceCode: "examplePermissionNamespace",
+		Actions:       []string{"read", "get"},
+		Resources:     []string{"strResourceCode", "arrayResourceCode", "/treeResourceCode/structCode/resourceStructChildrenCode"},
+	}
+	response := client.ListResourceTargets(&request)
+	fmt.Println(response)
+}
 
 func TestClient_CheckUserSameLevelPermission(t *testing.T) {
 	request := dto.CheckUserSameLevelPermissionDto{
 		NamespaceCode: "examplePermissionNamespace",
-		UserId:        "63721xxxxxxxxxxxxdde14a3",
-		Action:        "get",
-		Resource:      "strResourceCode",
+		UserId:        "63a43e34dbb5beb923b93ea0",
+		Action:        "geta",
+		Resource:      "stringResourceCode",
 	}
 	response := client.CheckUserSameLevelPermission(&request)
 	fmt.Println(response)

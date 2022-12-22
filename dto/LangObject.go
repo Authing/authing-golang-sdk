@@ -1,10 +1,8 @@
 package dto
 
-
-type LangObject struct{
-    'zh-CN'  LangUnit `json:"'zh-CN'"`
-    'en-US'  LangUnit `json:"'en-US'"`
-    'zh-TW'  LangUnit `json:"'zh-TW'"`
-    'ja-JP'  LangUnit `json:"'ja-JP'"`
+type LangObject struct {
+	zhCN LangUnit `json:"zh-CN"`
+	enUS LangUnit `json:"en-US"`
+	zhTW LangUnit `json:"zh-TW"`
+	jaJP LangUnit `json:"ja-JP"`
 }
-
