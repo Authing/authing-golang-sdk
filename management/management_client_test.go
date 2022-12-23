@@ -13,9 +13,9 @@ func init() {
 		//AccessKeyId:     "YOUR_ACCESS_KEY_ID",
 		//AccessKeySecret: "YOUR_ACCESS_KEY_SECRET",
 		//Host:            "YOUR_HOST",
-		AccessKeyId:     "63a3f1c38f7593d460057436",
-		AccessKeySecret: "d70365bf03d334b95133fd27cdb1346f",
-		Host:            "https://console.authing.cn",
+		AccessKeyId:     "63a517e42e4a0aa457cd0b2d",
+		AccessKeySecret: "1b4ee0b200838618d30d4f385c8c3836",
+		Host:            "http://127.0.0.1:3000",
 	}
 	var err error
 	client, err = NewManagementClient(&options)
@@ -1269,12 +1269,12 @@ func TestClient_CreateTreeDataResource(t *testing.T) {
 				Code:  "tree1",
 				Name:  "树节点1",
 				Value: "树节点1描述",
-				Children: []any{
+				Children: []interface{}{
 					dto.DataResourceTreeStructs{
 						Code:  "tree11",
 						Name:  "树节点11",
 						Value: "树节点11描述",
-						Children: []any{
+						Children: []interface{}{
 							dto.DataResourceTreeStructs{
 								Code:  "tree111",
 								Name:  "树节点111",
@@ -1346,7 +1346,7 @@ func TestClient_CreateDataResourceByTree(t *testing.T) {
 				Code:  "tree1",
 				Name:  "树节点1",
 				Value: "树节点1描述",
-				Children: []any{
+				Children: []interface{}{
 					dto.DataResourceTreeStructs{
 						Code:  "tree11",
 						Name:  "树节点11",
