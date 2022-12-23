@@ -3,8 +3,6 @@ package management
 import (
 	"encoding/json"
 	"fmt"
-	"net/url"
-
 	"github.com/Authing/authing-golang-sdk/v3/dto"
 	"github.com/valyala/fasthttp"
 )
@@ -251,7 +249,6 @@ func (client *ManagementClient) ListUsersLegacy(reqDto *dto.ListUsersDto) *dto.U
  * @returns UserSingleRespDto
  */
 func (client *ManagementClient) GetUser(reqDto *dto.GetUserDto) *dto.UserSingleRespDto {
-	reqDto.UserId = url.QueryEscape(reqDto.UserId)
 	b, err := client.SendHttpRequest("/api/v3/get-user", fasthttp.MethodGet, reqDto)
 	var response dto.UserSingleRespDto
 	if err != nil {
@@ -447,7 +444,7 @@ func (client *ManagementClient) GetUserIdentities(reqDto *dto.GetUserIdentitiesD
  * - `identity`: 用户的外部身份源信息，格式为 `<extIdpId>:<userIdInIdp>`，其中 `<extIdpId>` 为 Authing 身份源的 ID，`<userIdInIdp>` 为用户在外部身份源的 ID。
  * 示例值：`62f20932716fbcc10d966ee5:ou_8bae746eac07cd2564654140d2a9ac61`。
  *
- * @param namespace 所属权限分组的 code
+ * @param namespace 所属权限分组(权限空间)的 Code
  * @returns RolePaginatedRespDto
  */
 func (client *ManagementClient) GetUserRoles(reqDto *dto.GetUserRolesDto) *dto.RolePaginatedRespDto {
@@ -532,6 +529,7 @@ func (client *ManagementClient) ResetUserPrincipalAuthenticationInfo(reqDto *dto
  * @param page 当前页数，从 1 开始
  * @param limit 每页数目，最大不能超过 50，默认为 10
  * @param withCustomData 是否获取自定义数据
+ * @param withDepartmentPaths 是否获取部门路径
  * @param sortBy 排序依据，如 部门创建时间、加入部门时间、部门名称、部门标志符
  * @param orderBy 增序或降序
  * @returns UserDepartmentPaginatedRespDto
@@ -929,7 +927,7 @@ func (client *ManagementClient) ResignUserBatch(reqDto *dto.ResignUserBatchReqDt
  * - `identity`: 用户的外部身份源信息，格式为 `<extIdpId>:<userIdInIdp>`，其中 `<extIdpId>` 为 Authing 身份源的 ID，`<userIdInIdp>` 为用户在外部身份源的 ID。
  * 示例值：`62f20932716fbcc10d966ee5:ou_8bae746eac07cd2564654140d2a9ac61`。
  *
- * @param namespace 所属权限分组的 code
+ * @param namespace 所属权限分组(权限空间)的 Code
  * @param resourceType 资源类型，如 数据、API、菜单、按钮
  * @returns AuthorizedResourcePaginatedRespDto
  */
@@ -1234,6 +1232,7 @@ func (client *ManagementClient) DeleteDepartment(reqDto *dto.DeleteDepartmentReq
 }
 
 /*
+ * @deprecated
  * @summary 搜索部门
  * @description 通过组织 code、搜索关键词，搜索部门，可以搜索组织名称等。
  * @param requestBody
@@ -1241,6 +1240,27 @@ func (client *ManagementClient) DeleteDepartment(reqDto *dto.DeleteDepartmentReq
  */
 func (client *ManagementClient) SearchDepartments(reqDto *dto.SearchDepartmentsReqDto) *dto.DepartmentListRespDto {
 	b, err := client.SendHttpRequest("/api/v3/search-departments", fasthttp.MethodPost, reqDto)
+	var response dto.DepartmentListRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 搜索部门
+ * @description 通过组织 code、搜索关键词，搜索部门，可以搜索组织名称等。
+ * @param requestBody
+ * @returns DepartmentListRespDto
+ */
+func (client *ManagementClient) SearchDepartmentsList(reqDto *dto.SearchDepartmentsListReqDto) *dto.DepartmentListRespDto {
+	b, err := client.SendHttpRequest("/api/v3/search-departments-list", fasthttp.MethodPost, reqDto)
 	var response dto.DepartmentListRespDto
 	if err != nil {
 		fmt.Println(err)
@@ -1456,6 +1476,48 @@ func (client *ManagementClient) IsUserInDepartment(reqDto *dto.IsUserInDepartmen
 }
 
 /*
+ * @summary 根据部门id查询部门
+ * @description 根据部门id查询部门
+ * @param departmentId 部门 ID
+ * @returns DepartmentSingleRespDto
+ */
+func (client *ManagementClient) GetDepartmentById(reqDto *dto.GetDepartmentByIdDto) *dto.DepartmentSingleRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-department-by-id", fasthttp.MethodGet, reqDto)
+	var response dto.DepartmentSingleRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 根据组织树批量创建部门
+ * @description 根据组织树批量创建部门，部门名称不存在时会自动创建
+ * @param requestBody
+ * @returns CreateDepartmentTreeRespDto
+ */
+func (client *ManagementClient) CreateDepartmentTree(reqDto *dto.CreateDepartmentTreeReqDto) *dto.CreateDepartmentTreeRespDto {
+	b, err := client.SendHttpRequest("/api/v3/create-department-tree", fasthttp.MethodPost, reqDto)
+	var response dto.CreateDepartmentTreeRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
  * @summary 获取分组详情
  * @description 通过分组 code，获取分组详情。
  * @param code 分组 code
@@ -1655,7 +1717,7 @@ func (client *ManagementClient) ListGroupMembers(reqDto *dto.ListGroupMembersDto
  * @summary 获取分组被授权的资源列表
  * @description 通过分组 code，获取分组被授权的资源列表，可以通过资源类型、权限分组 code 筛选。
  * @param code 分组 code
- * @param namespace 所属权限分组的 code
+ * @param namespace 所属权限分组(权限空间)的 Code
  * @param resourceType 资源类型
  * @returns AuthorizedResourceListRespDto
  */
@@ -1677,8 +1739,8 @@ func (client *ManagementClient) GetGroupAuthorizedResources(reqDto *dto.GetGroup
 /*
  * @summary 获取角色详情
  * @description 通过权限分组内角色 code，获取角色详情。
- * @param code 权限分组内角色的唯一标识符
- * @param namespace 所属权限分组的 code
+ * @param code 权限分组(权限空间)内角色的唯一标识符
+ * @param namespace 所属权限分组(权限空间)的 Code
  * @returns RoleSingleRespDto
  */
 func (client *ManagementClient) GetRole(reqDto *dto.GetRoleDto) *dto.RoleSingleRespDto {
@@ -1814,7 +1876,7 @@ func (client *ManagementClient) ListRoleDepartments(reqDto *dto.ListRoleDepartme
 
 /*
  * @summary 创建角色
- * @description 通过权限分组内角色 code，创建角色，可以选择权限分组、角色描述等。
+ * @description 通过权限分组（权限空间）内角色 code，创建角色，可以选择权限分组、角色描述、角色名称等。
  * @param requestBody
  * @returns RoleSingleRespDto
  */
@@ -1835,11 +1897,11 @@ func (client *ManagementClient) CreateRole(reqDto *dto.CreateRoleDto) *dto.RoleS
 
 /*
  * @summary 获取角色列表
- * @description 获取角色列表，支持分页。
- * @param keywords 用于根据角色的 code 进行模糊搜索，可选。
- * @param namespace 所属权限分组的 code
+ * @description 获取角色列表，支持分页、支持根据权限分组（权限空间）筛选
  * @param page 当前页数，从 1 开始
  * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @param keywords 用于根据角色的 code 或者名称进行模糊搜索，可选。
+ * @param namespace 所属权限分组(权限空间)的 code
  * @returns RolePaginatedRespDto
  */
 func (client *ManagementClient) ListRoles(reqDto *dto.ListRolesDto) *dto.RolePaginatedRespDto {
@@ -1858,8 +1920,8 @@ func (client *ManagementClient) ListRoles(reqDto *dto.ListRolesDto) *dto.RolePag
 }
 
 /*
- * @summary 删除角色
- * @description 删除角色，可以批量删除。
+ * @summary 单个权限分组（权限空间）内删除角色
+ * @description 单个权限分组（权限空间）内删除角色，可以批量删除。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1901,7 +1963,7 @@ func (client *ManagementClient) CreateRolesBatch(reqDto *dto.CreateRolesBatch) *
 
 /*
  * @summary 修改角色
- * @description 通过权限分组内角色新旧 code，修改角色，可以选择角色描述等。
+ * @description 通过权限分组(权限空间）内角色新旧 Code，修改角色，可以选择角色名称、角色描述等。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -1919,6 +1981,69 @@ func (client *ManagementClient) UpdateRole(reqDto *dto.UpdateRoleDto) *dto.IsSuc
 	}
 	return &response
 }
+
+/*
+ * @summary 跨权限分组（空间）删除角色
+ * @description 跨权限分组（空间）删除角色，可以批量删除。
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) DeleteRoles(reqDto *dto.DeleteRoleBatchDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/multiple-namespace-delete-roles-batch", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 校验角色 Code 或者名称是否可用
+ * @description 通过用户池 ID、权限空间 Code和角色 Code,或者用户池 ID、权限空间名称和角色名称查询是否可用。
+ * @param requestBody
+ * @returns RoleCheckParamsRespDto
+ */
+func (client *ManagementClient) CheckParamsNamespace(reqDto *dto.CheckRoleParamsDto) *dto.RoleCheckParamsRespDto {
+	b, err := client.SendHttpRequest("/api/v3/check-role-params", fasthttp.MethodPost, reqDto)
+	var response dto.RoleCheckParamsRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 获取角色授权列表
+ * @description 获取角色授权列表。
+ * @param requestBody
+ * @returns RoleListPageRespDto
+ */
+//func (client *ManagementClient) ListRoleAssignments(reqDto *dto.ListRoleAssignmentsDto) *dto.RoleListPageRespDto {
+//	b, err := client.SendHttpRequest("/api/v3/list-role-assignments", fasthttp.MethodGet, reqDto)
+//	var response dto.RoleListPageRespDto
+//	if err != nil {
+//		fmt.Println(err)
+//		return nil
+//	}
+//	err = json.Unmarshal(b, &response)
+//	if err != nil {
+//		fmt.Println(err)
+//		return nil
+//	}
+//	return &response
+//}
 
 /*
  * @summary 获取身份源列表
@@ -2371,7 +2496,7 @@ func (client *ManagementClient) CreateResourcesBatch(reqDto *dto.CreateResources
  * @summary 获取资源详情
  * @description 根据筛选条件，获取资源详情。
  * @param code 资源唯一标志符
- * @param namespace 所属权限分组的 code
+ * @param namespace 所属权限分组(权限空间)的 Code
  * @returns ResourceRespDto
  */
 func (client *ManagementClient) GetResource(reqDto *dto.GetResourceDto) *dto.ResourceRespDto {
@@ -2393,7 +2518,7 @@ func (client *ManagementClient) GetResource(reqDto *dto.GetResourceDto) *dto.Res
  * @summary 批量获取资源详情
  * @description 根据筛选条件，批量获取资源详情。
  * @param codeList 资源 code 列表，批量可以使用逗号分隔
- * @param namespace 所属权限分组的 code
+ * @param namespace 所属权限分组(权限空间)的 Code
  * @returns ResourceListRespDto
  */
 func (client *ManagementClient) GetResourcesBatch(reqDto *dto.GetResourcesBatchDto) *dto.ResourceListRespDto {
@@ -2412,9 +2537,33 @@ func (client *ManagementClient) GetResourcesBatch(reqDto *dto.GetResourcesBatchD
 }
 
 /*
+ * @summary 分页获取常规资源列表
+ * @description 根据筛选条件，分页获取常规资源详情列表。
+ * @param page 当前页数，从 1 开始
+ * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @param keyword 查询条件
+ * @param namespaceCodeList 权限空间列表
+ * @returns CommonResourcePaginatedRespDto
+ */
+func (client *ManagementClient) ListCommonResource(reqDto *dto.ListCommonResourceDto) *dto.CommonResourcePaginatedRespDto {
+	b, err := client.SendHttpRequest("/api/v3/list-common-resource", fasthttp.MethodGet, reqDto)
+	var response dto.CommonResourcePaginatedRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
  * @summary 分页获取资源列表
  * @description 根据筛选条件，分页获取资源详情列表。
- * @param namespace 所属权限分组的 code
+ * @param namespace 所属权限分组(权限空间)的 Code
  * @param type 资源类型
  * @param page 当前页数，从 1 开始
  * @param limit 每页数目，最大不能超过 50，默认为 10
@@ -2479,12 +2628,34 @@ func (client *ManagementClient) DeleteResource(reqDto *dto.DeleteResourceDto) *d
 
 /*
  * @summary 批量删除资源
- * @description 通过资源唯一标志符以及所属权限分组，批量删除资源
+ * @description 批量删除资源，允许通过资源 Id 列表进行批量删除，同时允许权限空间加资源 Code 列表进行批量删除，资源 Id 列表和资源 Code 列表同时必须存在一个，如果两个都存在，则以资源 Id 列表为主
  * @param requestBody
  * @returns IsSuccessRespDto
  */
 func (client *ManagementClient) DeleteResourcesBatch(reqDto *dto.DeleteResourcesBatchDto) *dto.IsSuccessRespDto {
 	b, err := client.SendHttpRequest("/api/v3/delete-resources-batch", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @deprecated
+ * @summary 批量删除资源
+ * @description 批量删除资源，通过资源 Id 进行批量删除。
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) DeleteResourcesByIdBatch(reqDto *dto.DeleteCommonResourcesBatchDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/delete-common-resources-batch", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
 	if err != nil {
 		fmt.Println(err)
@@ -2521,7 +2692,7 @@ func (client *ManagementClient) AssociateTenantResource(reqDto *dto.AssociateTen
 
 /*
  * @summary 创建权限分组
- * @description 创建权限分组，可以设置分组名称与描述信息。
+ * @description 创建权限分组，可以设置权限分组名称、Code 和描述信息。
  * @param requestBody
  * @returns NamespaceRespDto
  */
@@ -2542,7 +2713,7 @@ func (client *ManagementClient) CreateNamespace(reqDto *dto.CreateNamespaceDto) 
 
 /*
  * @summary 批量创建权限分组
- * @description 批量创建权限分组，可以分别设置分组名称与描述信息。
+ * @description 批量创建权限分组，可以分别设置权限分组名称、Code 和描述信息。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -2563,7 +2734,7 @@ func (client *ManagementClient) CreateNamespacesBatch(reqDto *dto.CreateNamespac
 
 /*
  * @summary 获取权限分组详情
- * @description 通过权限分组唯一标志符，获取权限分组详情。
+ * @description 通过权限分组唯一标志符(Code)，获取权限分组详情。
  * @param code 权限分组唯一标志符
  * @returns NamespaceRespDto
  */
@@ -2584,8 +2755,8 @@ func (client *ManagementClient) GetNamespace(reqDto *dto.GetNamespaceDto) *dto.N
 
 /*
  * @summary 批量获取权限分组详情
- * @description 分别通过权限分组唯一标志符，批量获取权限分组详情。
- * @param codeList 资源 code 列表，批量可以使用逗号分隔
+ * @description 分别通过权限分组唯一标志符(Code)，批量获取权限分组详情。
+ * @param codeList 权限分组 code 列表，批量可以使用逗号分隔
  * @returns NamespaceListRespDto
  */
 func (client *ManagementClient) GetNamespacesBatch(reqDto *dto.GetNamespacesBatchDto) *dto.NamespaceListRespDto {
@@ -2605,7 +2776,7 @@ func (client *ManagementClient) GetNamespacesBatch(reqDto *dto.GetNamespacesBatc
 
 /*
  * @summary 修改权限分组信息
- * @description 修改权限分组信息，可以修改名称、描述信息以及新的唯一标志符。
+ * @description 修改权限分组信息，可以修改名称、描述信息以及新的唯一标志符(NewCode)。
  * @param requestBody
  * @returns UpdateNamespaceRespDto
  */
@@ -2626,7 +2797,7 @@ func (client *ManagementClient) UpdateNamespace(reqDto *dto.UpdateNamespaceDto) 
 
 /*
  * @summary 删除权限分组信息
- * @description 通过权限分组唯一标志符，删除权限分组信息。
+ * @description 通过权限分组唯一标志符(Code)，删除权限分组信息。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
@@ -2647,13 +2818,60 @@ func (client *ManagementClient) DeleteNamespace(reqDto *dto.DeleteNamespaceDto) 
 
 /*
  * @summary 批量删除权限分组
- * @description 分别通过权限分组唯一标志符，批量删除权限分组。
+ * @description 分别通过权限分组唯一标志符(Code)，批量删除权限分组。
  * @param requestBody
  * @returns IsSuccessRespDto
  */
 func (client *ManagementClient) DeleteNamespacesBatch(reqDto *dto.DeleteNamespacesBatchDto) *dto.IsSuccessRespDto {
 	b, err := client.SendHttpRequest("/api/v3/delete-namespaces-batch", fasthttp.MethodPost, reqDto)
 	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 分页获取权限分组列表
+ * @description 根据筛选条件，分页获取权限分组列表。
+ * @param page 当前页数，从 1 开始
+ * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @param keywords 搜索权限分组 Code
+ * @returns NamespaceListPaginatedRespDto
+ */
+func (client *ManagementClient) ListNamespaces(reqDto *dto.ListNamespacesDto) *dto.NamespaceListPaginatedRespDto {
+	b, err := client.SendHttpRequest("/api/v3/list-namespaces", fasthttp.MethodGet, reqDto)
+	var response dto.NamespaceListPaginatedRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 分页权限分组下所有的角色列表
+ * @description 根据筛选条件，分页获取权限分组下所有的角色列表。
+ * @param code 权限分组唯一标志符
+ * @param page 当前页数，从 1 开始
+ * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @param keywords 角色 Code 或者名称
+ * @returns NamespaceRolesListPaginatedRespDto
+ */
+func (client *ManagementClient) ListNamespaceRoles(reqDto *dto.ListNamespaceRolesDto) *dto.NamespaceRolesListPaginatedRespDto {
+	b, err := client.SendHttpRequest("/api/v3/list-namespace-roles", fasthttp.MethodGet, reqDto)
+	var response dto.NamespaceRolesListPaginatedRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -2702,7 +2920,7 @@ func (client *ManagementClient) AuthorizeResources(reqDto *dto.AuthorizeResource
  * - 如果是分组，为分组的 code，如 `developer`
  * - 如果是部门，为部门的 ID，如 `6343bafc019xxxx889206c4c`
  *
- * @param namespace 所属权限分组的 code
+ * @param namespace 所属权限分组(权限空间)的 Code
  * @param resourceType 限定资源类型，如数据、API、按钮、菜单
  * @param resourceList 限定查询的资源列表，如果指定，只会返回所指定的资源列表。
  * @param withDenied 是否获取被拒绝的资源
@@ -3036,7 +3254,7 @@ func (client *ManagementClient) CancelSyncRiskOperation(reqDto *dto.CancelSyncRi
 
 /*
  * @summary 获取用户行为日志
- * @description 可以选择请求 ID、客户端 IP、用户 ID、应用 ID、开始时间戳、请求是否成功、分页参数去获取用户行为日志
+ * @description 可以选择请求 ID、客户端 IP、用户 ID、应用 ID、开始时间戳、请求是否成功、分页参数来获取用户行为日志
  * @param requestBody
  * @returns UserActionLogRespDto
  */
@@ -3484,6 +3702,276 @@ func (client *ManagementClient) CheckDomainAvailable(reqDto *dto.CheckDomainAvai
 }
 
 /*
+ * @summary 创建 ASA 账号
+ * @description 在某一应用下创建 ASA 账号
+ * @param requestBody
+ * @returns AsaAccountSingleRespDto
+ */
+func (client *ManagementClient) CreateAsaAccount(reqDto *dto.CreateAsaAccountDto) *dto.AsaAccountSingleRespDto {
+	b, err := client.SendHttpRequest("/api/v3/create-asa-account", fasthttp.MethodPost, reqDto)
+	var response dto.AsaAccountSingleRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 批量创建 ASA 账号
+ * @description 在某一应用下批量创建 ASA 账号
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) CreateAsaAccountBatch(reqDto *dto.CreateAsaAccountsBatchDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/create-asa-accounts-batch", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 更新 ASA 账号
+ * @description 更新某个 ASA 账号信息
+ * @param requestBody
+ * @returns AsaAccountSingleRespDto
+ */
+func (client *ManagementClient) UpdateAsaAccount(reqDto *dto.UpdateAsaAccountDto) *dto.AsaAccountSingleRespDto {
+	b, err := client.SendHttpRequest("/api/v3/update-asa-account", fasthttp.MethodPost, reqDto)
+	var response dto.AsaAccountSingleRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 获取 ASA 账号列表
+ * @description 分页获取某一应用下的 ASA 账号列表
+ * @param appId 所属应用 ID
+ * @param page 当前页数，从 1 开始
+ * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @returns AsaAccountPaginatedRespDto
+ */
+func (client *ManagementClient) ListAsaAccount(reqDto *dto.ListAsaAccountsDto) *dto.AsaAccountPaginatedRespDto {
+	b, err := client.SendHttpRequest("/api/v3/list-asa-accounts", fasthttp.MethodGet, reqDto)
+	var response dto.AsaAccountPaginatedRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 获取 ASA 账号
+ * @description 根据 ASA 账号 ID 获取账号详细信息
+ * @param appId 所属应用 ID
+ * @param accountId ASA 账号 ID
+ * @returns AsaAccountSingleRespDto
+ */
+func (client *ManagementClient) GetAsaAccount(reqDto *dto.GetAsaAccountDto) *dto.AsaAccountSingleRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-asa-account", fasthttp.MethodGet, reqDto)
+	var response dto.AsaAccountSingleRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 批量获取 ASA 账号
+ * @description 根据 ASA 账号 ID 列表批量获取账号详细信息
+ * @param requestBody
+ * @returns AsaAccountListRespDto
+ */
+func (client *ManagementClient) GetAsaAccountBatch(reqDto *dto.GetAsaAccountBatchDto) *dto.AsaAccountListRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-asa-accounts-batch", fasthttp.MethodPost, reqDto)
+	var response dto.AsaAccountListRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 删除 ASA 账号
+ * @description 通过 ASA 账号 ID 删除 ASA 账号
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) DeleteAsaAccount(reqDto *dto.DeleteAsaAccountDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/delete-asa-account", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 批量删除 ASA 账号
+ * @description 通过 ASA 账号 ID 批量删除 ASA 账号
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) DeleteAsaAccountBatch(reqDto *dto.DeleteAsaAccountBatchDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/delete-asa-accounts-batch", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 分配 ASA 账号
+ * @description 分配 ASA 账号给用户、组织、分组或角色
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) AssignAsaAccount(reqDto *dto.AssignAsaAccountsDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/assign-asa-account", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 取消分配 ASA 账号
+ * @description 取消分配给用户、组织、分组或角色的  ASA 账号
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) UnassignAsaAccount(reqDto *dto.AssignAsaAccountsDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/unassign-asa-account", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 获取 ASA 账号分配的主体列表
+ * @description 根据 ASA 账号 ID 分页获取账号被分配的主体列表
+ * @param appId 所属应用 ID
+ * @param accountId ASA 账号 ID
+ * @param page 当前页数，从 1 开始
+ * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @returns GetAsaAccountAssignedTargetRespDto
+ */
+func (client *ManagementClient) GetAsaAccountAssignedTargets(reqDto *dto.GetAsaAccountAssignedTargetsDto) *dto.GetAsaAccountAssignedTargetRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-asa-account-assigned-targets", fasthttp.MethodGet, reqDto)
+	var response dto.GetAsaAccountAssignedTargetRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 获取主体被分配的 ASA 账号
+ * @description 根据主体类型和标识获取直接分配给主体的 ASA 账号
+ * @param appId 所属应用 ID
+ * @param targetType 目标对象类型：
+ * - `USER`: 用户
+ * - `ROLE`: 角色
+ * - `GROUP`: 分组
+ * - `DEPARTMENT`: 部门
+ *
+ * @param targetIdentifier 目标对象的唯一标志符：
+ * - 如果是用户，为用户的 ID，如 `6343b98b7cfxxx9366e9b7c`
+ * - 如果是角色，为角色的 code，如 `admin`
+ * - 如果是分组，为分组的 code，如 `developer`
+ * - 如果是部门，为部门的 ID，如 `6343bafc019xxxx889206c4c`
+ *
+ * @returns AsaAccountSingleNullableRespDto
+ */
+func (client *ManagementClient) GetAssignedAccount(reqDto *dto.GetAssignedAccountDto) *dto.AsaAccountSingleNullableRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-assigned-account", fasthttp.MethodGet, reqDto)
+	var response dto.AsaAccountSingleNullableRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
  * @summary 获取安全配置
  * @description 无需传参获取安全配置
  * @returns SecuritySettingsRespDto
@@ -3553,6 +4041,1426 @@ func (client *ManagementClient) GetGlobalMfaSettings() *dto.MFASettingsRespDto {
 func (client *ManagementClient) UpdateGlobalMfaSettings(reqDto *dto.MFASettingsDto) *dto.MFASettingsRespDto {
 	b, err := client.SendHttpRequest("/api/v3/update-global-mfa-settings", fasthttp.MethodPost, reqDto)
 	var response dto.MFASettingsRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 创建权限空间
+ * @description 创建权限空间,可以设置权限空间名称、Code 和描述信息。
+ * @param requestBody
+ * @returns CreatePermissionNamespaceResponseDto
+ */
+func (client *ManagementClient) CreatePermissionNamespace(reqDto *dto.CreatePermissionNamespaceDto) *dto.CreatePermissionNamespaceResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/create-permission-namespace", fasthttp.MethodPost, reqDto)
+	var response dto.CreatePermissionNamespaceResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 批量创建权限空间
+ * @description 批量创建权限空间，可以分别设置权限空间名称、Code 和描述信息。
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) CreatePermissionNamespacesBatch(reqDto *dto.CreatePermissionNamespacesBatchDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/create-permission-namespaces-batch", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 获取权限空间详情
+ * @description 通过权限空间唯一标志符(Code)，获取权限空间详情。
+ * @param code 权限空间 Code
+ * @returns GetPermissionNamespaceResponseDto
+ */
+func (client *ManagementClient) GetPermissionNamespace(reqDto *dto.GetPermissionNamespaceDto) *dto.GetPermissionNamespaceResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/get-permission-namespace", fasthttp.MethodGet, reqDto)
+	var response dto.GetPermissionNamespaceResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 批量获取权限空间详情列表
+ * @description 分别通过权限空间唯一标志符(Code)，获取权限空间详情。
+ * @param codes 权限空间 code 列表，批量可以使用逗号分隔
+ * @returns GetPermissionNamespaceListResponseDto
+ */
+func (client *ManagementClient) GetPermissionNamespacesBatch(reqDto *dto.GetPermissionNamespacesBatchDto) *dto.GetPermissionNamespaceListResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/get-permission-namespaces-batch", fasthttp.MethodGet, reqDto)
+	var response dto.GetPermissionNamespaceListResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 分页获取权限空间列表
+ * @description 分页获取权限空间列表。
+ * @param page 当前页数，从 1 开始
+ * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @param query 权限空间 name
+ * @returns PermissionNamespaceListPaginatedRespDto
+ */
+func (client *ManagementClient) ListPermissionNamespaces(reqDto *dto.ListPermissionNamespacesDto) *dto.PermissionNamespaceListPaginatedRespDto {
+	b, err := client.SendHttpRequest("/api/v3/list-permission-namespaces", fasthttp.MethodGet, reqDto)
+	var response dto.PermissionNamespaceListPaginatedRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 修改权限空间
+ * @description 修改权限空间，可以修改权限空间名称、权限空间描述信息以及权限空间新的唯一标志符(Code)。
+ * @param requestBody
+ * @returns UpdatePermissionNamespaceResponseDto
+ */
+func (client *ManagementClient) UpdatePermissionNamespace(reqDto *dto.UpdatePermissionNamespaceDto) *dto.UpdatePermissionNamespaceResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/update-permission-namespace", fasthttp.MethodPost, reqDto)
+	var response dto.UpdatePermissionNamespaceResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 删除权限空间
+ * @description 通过权限空间唯一标志符(Code)，删除权限空间信息。
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) DeletePermissionNamespace(reqDto *dto.DeletePermissionNamespaceDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/delete-permission-namespace", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 批量删除权限空间
+ * @description 分别通过权限空间唯一标志符(Code)，批量删除权限空间信息。
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) DeletePermissionNamespacesBatch(reqDto *dto.DeletePermissionNamespacesBatchDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/delete-permission-namespaces-batch", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 校验权限空间 Code 或者名称是否可用
+ * @description 通过用户池 ID 和权限空间 Code,或者用户池 ID 和权限空间名称查询是否可用。
+ * @param requestBody
+ * @returns PermissionNamespaceCheckExistsRespDto
+ */
+func (client *ManagementClient) CheckPermissionNamespaceExists(reqDto *dto.CheckPermissionNamespaceExistsDto) *dto.PermissionNamespaceCheckExistsRespDto {
+	b, err := client.SendHttpRequest("/api/v3/check-permission-namespace-exists", fasthttp.MethodPost, reqDto)
+	var response dto.PermissionNamespaceCheckExistsRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 分页查询权限空间下所有的角色列表
+ * @description 分页查询权限空间下所有的角色列表，分页获取权限空间下所有的角色列表。
+ * @param code 权限分组唯一标志符 Code
+ * @param page 当前页数，从 1 开始
+ * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @param query 角色 Code 或者名称
+ * @returns PermissionNamespaceRolesListPaginatedRespDto
+ */
+func (client *ManagementClient) ListPermissionNamespaceRoles(reqDto *dto.ListPermissionNamespaceRolesDto) *dto.PermissionNamespaceRolesListPaginatedRespDto {
+	b, err := client.SendHttpRequest("/api/v3/list-permission-namespace-roles", fasthttp.MethodGet, reqDto)
+	var response dto.PermissionNamespaceRolesListPaginatedRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+   * @summary 创建数据资源
+   * @description 该接口用于创建数据资源，通过数据资源所属权限空间 Code、数据资源名称、数据资源 Code、数据资源类型（STRING、ARRAY、TREE）以及数据操作列表进行创建,
+   * 通过不同的数据资源类型适配不同的场景。
+   *
+   * ### 创建数据资源字符串类型示例
+   *
+   * ```json
+   * {
+       * "namespaceCode": "examplePermissionNamespace",
+       * "resourceName": "字符串资源1",
+       * "resourceCode": "str1",
+       * "type": "STRING",
+       * "description": "这是一个数据资源字符串类型创建",
+       * "struct":"str1",
+       * "actions": ["get","read","update"]
+       * }
+       * ```
+       *
+       * ### 创建数据资源数组类型示例
+       *
+       * ```json
+       * {
+           * "namespaceCode": "examplePermissionNamespace",
+           * "resourceName": "数组资源1",
+           * "resourceCode": "array1",
+           * "description": "这是一个数据资源数组类型创建",
+           * "type": "ARRAY",
+           * "struct":["array1", "array2", "array3"],
+           * "actions": ["get","read","update"]
+           * }
+           * ```
+           *
+           * ### 创建数据资源树类型示例
+           *
+           * ```json
+           * {
+               * "namespaceCode": "examplePermissionNamespace",
+               * "resourceName": "树资源1",
+               * "resourceCode": "tree1",
+               * "description": "这是一个数据资源树类型创建",
+               * "type": "TREE",
+               * "struct":[{
+                   * "code": "tree1",
+                   * "name": "tree1",
+                   * "value": "tree1",
+                   * "children": [{
+                       * "code": "tree2",
+                       * "name": "tree2",
+                       * "value": "tree2",
+                       * "children": [{
+                           * "code": "tree3",
+                           * "name": "tree3",
+                           * "value": "tree3"
+                           * }]
+                           * }]
+                           * }],
+                           * "actions": ["get","read","update"]
+                           * }
+                           * ```
+                           *
+                           * @param requestBody
+                           * @returns CreateDataResourceResponseDto
+*/
+func (client *ManagementClient) CreateDataResource(reqDto *dto.CreateDataResourceDto) *dto.CreateDataResourceResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/create-data-resource", fasthttp.MethodPost, reqDto)
+	var response dto.CreateDataResourceResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 创建字符串数据资源
+ * @description 创建字符串数据资源，通过数据资源所属权限空间 Code、数据资源名称、数据资源 Code、数据资源节点和数据资源权限操作等字段进行创建
+ * @param requestBody
+ * @returns CreateStringDataResourceResponseDto
+ */
+func (client *ManagementClient) CreateDataResourceByString(reqDto *dto.CreateStringDataResourceDto) *dto.CreateStringDataResourceResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/create-string-data-resource", fasthttp.MethodPost, reqDto)
+	var response dto.CreateStringDataResourceResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 创建数组数据资源
+ * @description 创建字符串数据资源，通过数据资源所属权限空间 Code、数据资源名称、数据资源 Code、数据资源节点和数据资源权限操作等字段进行创建
+ * @param requestBody
+ * @returns CreateArrayDataResourceResponseDto
+ */
+func (client *ManagementClient) CreateDataResourceByArray(reqDto *dto.CreateArrayDataResourceDto) *dto.CreateArrayDataResourceResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/create-array-data-resource", fasthttp.MethodPost, reqDto)
+	var response dto.CreateArrayDataResourceResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 创建树数据资源
+ * @description 创建树数据资源，通过数据资源所属权限空间 Code、数据资源名称、数据资源 Code、数据资源节点和数据资源权限操作等字段进行创建
+ * @param requestBody
+ * @returns CreateTreeDataResourceResponseDto
+ */
+func (client *ManagementClient) CreateDataResourceByTree(reqDto *dto.CreateTreeDataResourceDto) *dto.CreateTreeDataResourceResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/create-tree-data-resource", fasthttp.MethodPost, reqDto)
+	var response dto.CreateTreeDataResourceResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 获取数据资源列表
+ * @description 获取数据资源列表,可通过数据资源名称、数据资源 Code 和数据资源所属权限空间 Code 列表进行指定筛选。
+ * @param page 当前页数，从 1 开始
+ * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @param query 关键字搜索，可以是数据资源名称或者数据资源 Code
+ * @param namespaceCodes 权限数据所属权限空间 Code 列表
+ * @returns ListDataResourcesPaginatedRespDto
+ */
+func (client *ManagementClient) ListDataResources(reqDto *dto.ListDataResourcesDto) *dto.ListDataResourcesPaginatedRespDto {
+	b, err := client.SendHttpRequest("/api/v3/list-data-resources", fasthttp.MethodGet, reqDto)
+	var response dto.ListDataResourcesPaginatedRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 获取数据资源信息
+ * @description 获取数据资源,通过数据资源 ID 查询对应的数据资源信息,包含数据资源名称、数据资源 Code、数据资源类型（TREE、STRING、ARRAY）、数据资源所属权限空间 ID、数据资源所属权限空间 Code 以及数据资源操作列表等基本信息。
+ * @param namespaceCode 数据资源所属的权限空间 Code
+ * @param resourceCode 数据资源 Code,权限空间内唯一
+ * @returns GetDataResourceResponseDto
+ */
+func (client *ManagementClient) GetDataResource(reqDto *dto.GetDataResourceDto) *dto.GetDataResourceResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/get-data-resource", fasthttp.MethodGet, reqDto)
+	var response dto.GetDataResourceResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 修改数据资源
+ * @description 修改数据资源,根据权限空间 Code 和数据资源 Code 查询原始信息,只允许修改数据资源名称、描述和数据资源节点。
+ * @param requestBody
+ * @returns UpdateDataResourceResponseDto
+ */
+func (client *ManagementClient) UpdateDataResource(reqDto *dto.UpdateDataResourceDto) *dto.UpdateDataResourceResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/update-data-resource", fasthttp.MethodPost, reqDto)
+	var response dto.UpdateDataResourceResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 删除数据资源
+ * @description 删除数据资源,根据数据资源 ID 删除对应的数据资源信息。
+ * @param requestBody
+ * @returns CommonResponseDto
+ */
+func (client *ManagementClient) DeleteDataResource(reqDto *dto.DeleteDataResourceDto) *dto.CommonResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/delete-data-resource", fasthttp.MethodPost, reqDto)
+	var response dto.CommonResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+   * @summary 检查数据资源名称或者 Code 是否可用
+   * @description 检查数据资源名称或者 Code 在权限空间内是否有效,通过数据资源名称或者数据资源 Code 以及所属权限空间 Code,判断在指定的权限空间内是否可用。
+   *
+   * ### 数据资源 Code 有效示例
+   *
+   * - 入参
+   *
+   * ```json
+   * {
+       * "namespaceCode": "examplePermissionNamespace",
+       * "resourceCode": "test"
+       * }
+       * ```
+       *
+       * - 出参
+       *
+       * ```json
+       * {
+           * "statusCode": 200,
+           * "message": "操作成功",
+           * "apiCode": 0,
+           * "data": {
+               * "isValid": "true"
+               * }
+               * }
+               * ```
+               *
+               * ### 数据资源名称有效示例
+               *
+               * - 入参
+               *
+               * ```json
+               * {
+                   * "namespaceCode": "examplePermissionNamespace",
+                   * "resourceName": "test"
+                   * }
+                   * ```
+                   *
+                   * - 出参
+                   *
+                   * ```json
+                   * {
+                       * "statusCode": 200,
+                       * "message": "操作成功",
+                       * "apiCode": 0,
+                       * "data": {
+                           * "isValid": "true"
+                           * }
+                           * }
+                           * ```
+                           *
+                           * ### 数据资源 Code 无效示例
+                           *
+                           * - 入参
+                           *
+                           * ```json
+                           * {
+                               * "namespaceCode": "examplePermissionNamespace",
+                               * "resourceCode": "test"
+                               * }
+                               * ```
+                               *
+                               * - 出参
+                               *
+                               * ```json
+                               * {
+                                   * "statusCode": 200,
+                                   * "message": "操作成功",
+                                   * "apiCode": 0,
+                                   * "requestId": "934108e5-9fbf-4d24-8da1-c330328abd6c",
+                                   * "data": {
+                                       * "isValid": "false",
+                                       * "message": "data resource code already exist"
+                                       * }
+                                       * }
+                                       * ```
+                                       *
+                                       * @param namespaceCode 数据资源所属的权限空间 Code
+                                       * @param resourceName 数据资源名称,权限空间内唯一
+                                       * @param resourceCode 数据资源 Code,权限空间内唯一
+                                       * @returns CheckParamsDataResourceResponseDto
+*/
+func (client *ManagementClient) CheckDataResourceExists(reqDto *dto.CheckDataResourceExistsDto) *dto.CheckParamsDataResourceResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/check-data-resource-exists", fasthttp.MethodGet, reqDto)
+	var response dto.CheckParamsDataResourceResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+   * @summary 创建数据策略
+   * @description
+   * 创建数据策略，通过数据策略名称、数据策略描述以及资源节点列表进行创建，数据策略支持跨多个权限空间进行数据资源创建，并且支持创建时设置数据资源是否具有操作权限。
+   *
+   * ```json
+   * {
+       * "policyName": "示例数据策略",
+       * "description": "这是一个示例数据策略",
+       * "statementList": [
+           * {
+               * "effect": "ALLOW",
+               * "permissions": [
+                   * "examplePermissionNamespaceCode/strResourceCode/exampleAction",
+                   * "examplePermissionNamespaceCode/arrResourceCode/exampleAction",
+                   * "examplePermissionNamespaceCode/treeResourceCode/strutCode1/exampleAction"
+                   * ]
+                   * },
+                   * {
+                       * "effect": "DENY",
+                       * "permissions": [
+                           * "examplePermissionNamespaceCode/strResourceCode1/exampleAction",
+                           * "examplePermissionNamespaceCode/arrResourceCode1/exampleAction",
+                           * "examplePermissionNamespaceCode/treeResourceCode1/strutCode1/exampleAction"
+                           * ]
+                           * }
+                           * ]
+                           * }
+                           * ```
+                           *
+                           * @param requestBody
+                           * @returns CreateDataPolicyResponseDto
+*/
+func (client *ManagementClient) CreateDataPolicy(reqDto *dto.CreateDataPolicyDto) *dto.CreateDataPolicyResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/create-data-policy", fasthttp.MethodPost, reqDto)
+	var response dto.CreateDataPolicyResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 获取数据策略列表
+ * @description 分页查询数据策略列表，也可通过关键字搜索数据策略名称或者数据策略 Code 进行模糊查找。
+ * @param page 当前页数，从 1 开始
+ * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @param query 数据策略名称关键字搜索
+ * @returns ListDataPoliciesPaginatedRespDto
+ */
+func (client *ManagementClient) ListDataPolices(reqDto *dto.ListDataPoliciesDto) *dto.ListDataPoliciesPaginatedRespDto {
+	b, err := client.SendHttpRequest("/api/v3/list-data-policies", fasthttp.MethodGet, reqDto)
+	var response dto.ListDataPoliciesPaginatedRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 获取数据策略简略信息列表
+ * @description 分页获取数据策略简略信息列表，通过关键字搜索数据策略名称或者数据策略 Code 进行模糊查找出数据策略 ID、数据策略名称和数据策略描述信息。
+ * @param page 当前页数，从 1 开始
+ * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @param query 数据策略名称关键字搜索
+ * @returns ListSimpleDataPoliciesPaginatedRespDto
+ */
+func (client *ManagementClient) ListSimpleDataPolices(reqDto *dto.ListSimpleDataPoliciesDto) *dto.ListSimpleDataPoliciesPaginatedRespDto {
+	b, err := client.SendHttpRequest("/api/v3/list-simple-data-policies", fasthttp.MethodGet, reqDto)
+	var response dto.ListSimpleDataPoliciesPaginatedRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 获取数据策略信息
+ * @description 获取数据策略信息，通过数据策略 ID 获取对应数据策略信息,包含数据策略 ID、数据策略名称、数据策略描述、数据策略下所有的数据权限列表等信息。
+ * @param policyId 数据策略 ID
+ * @returns GetDataPolicyResponseDto
+ */
+func (client *ManagementClient) GetDataPolicy(reqDto *dto.GetDataPolicyDto) *dto.GetDataPolicyResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/get-data-policy", fasthttp.MethodGet, reqDto)
+	var response dto.GetDataPolicyResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 修改数据策略
+ * @description 修改数据策略，通过数据策略名称、数据策略描述和相关的数据资源等字段修改数据策略信息。
+ * @param requestBody
+ * @returns UpdateDataPolicyResponseDto
+ */
+func (client *ManagementClient) UpdateDataPolicy(reqDto *dto.UpdateDataPolicyDto) *dto.UpdateDataPolicyResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/update-data-policy", fasthttp.MethodPost, reqDto)
+	var response dto.UpdateDataPolicyResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 删除数据策略
+ * @description 删除数据策略，通过数据策略 ID 删除对应的策略,同时也删除数据策略和对应的数据资源等关系数据。
+ * @param requestBody
+ * @returns CommonResponseDto
+ */
+func (client *ManagementClient) DeleteDataPolicy(reqDto *dto.DeleteDataPolicyDto) *dto.CommonResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/delete-data-policy", fasthttp.MethodPost, reqDto)
+	var response dto.CommonResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 校验数据策略名称是否存在
+ * @description 通过数据策略名称查询用户池内是否存在。
+ * @param policyName 数据策略名称，用户池唯一
+ * @returns CheckParamsDataPolicyResponseDto
+ */
+func (client *ManagementClient) CheckDataPolicyExists(reqDto *dto.CheckDataPolicyExistsDto) *dto.CheckParamsDataPolicyResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/check-data-policy-exists", fasthttp.MethodGet, reqDto)
+	var response dto.CheckParamsDataPolicyResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 获取数据策略下所有的授权主体的信息
+ * @description 获取数据策略下所有的授权主体的信息，通过授权主体类型、数据策略 ID 和数据资源 ID 查找授权主体列表。
+ * @param policyId 数据策略 ID
+ * @param page 当前页数，从 1 开始
+ * @param limit 每页数目，最大不能超过 50，默认为 10
+ * @param query 主体名称
+ * @param targetType 主体类型,包括 USER、GROUP、ROLE、ORG 四种类型
+ * @returns ListDataPolicySubjectPaginatedRespDto
+ */
+func (client *ManagementClient) ListDataPolicyTargets(reqDto *dto.ListDataPolicyTargetsDto) *dto.ListDataPolicySubjectPaginatedRespDto {
+	b, err := client.SendHttpRequest("/api/v3/list-data-policy-targets", fasthttp.MethodGet, reqDto)
+	var response dto.ListDataPolicySubjectPaginatedRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 授权数据策略
+ * @description 数据策略创建主体授权，通过授权主体和数据策略进行相互授权。
+ * @param requestBody
+ * @returns CommonResponseDto
+ */
+func (client *ManagementClient) AuthorizeDataPolicies(reqDto *dto.CreateAuthorizeDataPolicyDto) *dto.CommonResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/authorize-data-policies", fasthttp.MethodPost, reqDto)
+	var response dto.CommonResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 撤销数据策略
+ * @description 删除数据策略相关的主体授权，通过授权主体 ID、授权主体类型和数据策略 ID 进行删除。
+ * @param requestBody
+ * @returns CommonResponseDto
+ */
+func (client *ManagementClient) RevokeDataPolicy(reqDto *dto.DeleteAuthorizeDataPolicyDto) *dto.CommonResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/revoke-data-policy", fasthttp.MethodPost, reqDto)
+	var response dto.CommonResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+   * @summary 获取用户权限列表
+   * @description 该接口用于用户列表权限查询，可以通过用户 ID 列表进行批量查询权限，也可以通过查询多个用户在同一个权限空间的权限。
+   *
+   * ### 查询一个用户拥有的数组资源、字符串资源和树资源权限列表示例
+   *
+   * - 入参
+   *
+   * ```json
+   * {
+       * "userIds": [
+           * "6301ceaxxxxxxxxxxx27478"
+           * ]
+           * }
+           * ```
+           *
+           * - 出参
+           *
+           * ```json
+           * {
+               * "statusCode": 200,
+               * "message": "操作成功",
+               * "apiCode": 20001,
+               * "data": {
+                   * "userPermissionList": [
+                       * {
+                           * "userId": "6301ceaxxxxxxxxxxx27478",
+                           * "namespaceCode": "examplePermissionNamespace",
+                           * "resourceList": [
+                               * {
+                                   * "resourceCode": "strCode",
+                                   * "authorize": {
+                                       * "value": "示例字符串资源",
+                                       * "actions": [
+                                           * "read",
+                                           * "post",
+                                           * "get",
+                                           * "write"
+                                           * ]
+                                           * }
+                                           * },
+                                           * {
+                                               * "resourceCode": "arrayCode",
+                                               * "authorize": {
+                                                   * "values": [
+                                                       * "示例数据资源"
+                                                       * ],
+                                                       * "actions": [
+                                                           * "read",
+                                                           * "post",
+                                                           * "get",
+                                                           * "write"
+                                                           * ]
+                                                           * }
+                                                           * },
+                                                           * {
+                                                               * "resourceCode": "treeCode",
+                                                               * "authorize": {
+                                                                   * "authList": [
+                                                                       * {
+                                                                           * "nodePath": "/treeCode/treeChildrenCode1",
+                                                                           * "nodeActions": [
+                                                                               * "read",
+                                                                               * "get"
+                                                                               * ],
+                                                                               * "nodeName": "treeChildrenName1",
+                                                                               * "nodeValue": "treeChildrenValue1"
+                                                                               * },
+                                                                               * {
+                                                                                   * "nodePath": "/treeCode/treeChildrenCode2",
+                                                                                   * "nodeActions": [
+                                                                                       * "read",
+                                                                                       * "get"
+                                                                                       * ],
+                                                                                       * "nodeName": "treeChildrenName2",
+                                                                                       * "nodeValue": "treeChildrenValue2"
+                                                                                       * },
+                                                                                       * {
+                                                                                           * "nodePath": "/treeCode/treeChildrenCode3",
+                                                                                           * "nodeActions": [
+                                                                                               * "read"
+                                                                                               * ],
+                                                                                               * "nodeName": "treeChildrenName3",
+                                                                                               * "nodeValue": "treeChildrenValue3"
+                                                                                               * }
+                                                                                               * ]
+                                                                                               * }
+                                                                                               * }
+                                                                                               * ]
+                                                                                               * }
+                                                                                               * ]
+                                                                                               * }
+                                                                                               * }
+                                                                                               * ```
+                                                                                               *
+                                                                                               * ### 查询多个用户权限列表示例
+                                                                                               *
+                                                                                               * - 入参
+                                                                                               *
+                                                                                               * ```json
+                                                                                               * {
+                                                                                                   * "userIds": [
+                                                                                                       * "6301ceaxxxxxxxxxxx27478",
+                                                                                                       * "6121ceaxxxxxxxxxxx27312"
+                                                                                                       * ]
+                                                                                                       * }
+                                                                                                       * ```
+                                                                                                       *
+                                                                                                       * - 出参
+                                                                                                       *
+                                                                                                       * ```json
+                                                                                                       * {
+                                                                                                           * "statusCode": 200,
+                                                                                                           * "message": "操作成功",
+                                                                                                           * "apiCode": 20001,
+                                                                                                           * "data": {
+                                                                                                               * "userPermissionList": [
+                                                                                                                   * {
+                                                                                                                       * "userId": "6301ceaxxxxxxxxxxx27478",
+                                                                                                                       * "namespaceCode": "examplePermissionNamespace1",
+                                                                                                                       * "resourceList": [
+                                                                                                                           * {
+                                                                                                                               * "resourceCode": "strCode1",
+                                                                                                                               * "authorize": {
+                                                                                                                                   * "value": "示例字符串资源",
+                                                                                                                                   * "actions": [
+                                                                                                                                       * "read",
+                                                                                                                                       * "post",
+                                                                                                                                       * "get",
+                                                                                                                                       * "write"
+                                                                                                                                       * ]
+                                                                                                                                       * }
+                                                                                                                                       * }
+                                                                                                                                       * ]
+                                                                                                                                       * },
+                                                                                                                                       * {
+                                                                                                                                           * "userId": "6121ceaxxxxxxxxxxx27312",
+                                                                                                                                           * "namespaceCode": "examplePermissionNamespace2",
+                                                                                                                                           * "resourceList": [
+                                                                                                                                               * {
+                                                                                                                                                   * "resourceCode": "arrayCode",
+                                                                                                                                                   * "authorize": {
+                                                                                                                                                       * "values": [
+                                                                                                                                                           * "示例数组资源1",
+                                                                                                                                                           * "示例数组资源2"
+                                                                                                                                                           * ],
+                                                                                                                                                           * "actions": [
+                                                                                                                                                               * "read",
+                                                                                                                                                               * "post",
+                                                                                                                                                               * "get",
+                                                                                                                                                               * "write"
+                                                                                                                                                               * ]
+                                                                                                                                                               * }
+                                                                                                                                                               * }
+                                                                                                                                                               * ]
+                                                                                                                                                               * }
+                                                                                                                                                               * ]
+                                                                                                                                                               * }
+                                                                                                                                                               * }
+                                                                                                                                                               * ```
+                                                                                                                                                               *
+                                                                                                                                                               * ### 查询多个用户在多个权限空间下权限列表示例
+                                                                                                                                                               *
+                                                                                                                                                               * - 入参
+                                                                                                                                                               *
+                                                                                                                                                               * ```json
+                                                                                                                                                               * {
+                                                                                                                                                                   * "userIds": [
+                                                                                                                                                                       * "6301ceaxxxxxxxxxxx27478",
+                                                                                                                                                                       * "6121ceaxxxxxxxxxxx27312"
+                                                                                                                                                                       * ],
+                                                                                                                                                                       * "namespaceCodes": [
+                                                                                                                                                                           * "examplePermissionNamespace1",
+                                                                                                                                                                           * "examplePermissionNamespace2"
+                                                                                                                                                                           * ]
+                                                                                                                                                                           * }
+                                                                                                                                                                           * ```
+                                                                                                                                                                           *
+                                                                                                                                                                           * - 出参
+                                                                                                                                                                           *
+                                                                                                                                                                           * ```json
+                                                                                                                                                                           * {
+                                                                                                                                                                               * "statusCode": 200,
+                                                                                                                                                                               * "message": "操作成功",
+                                                                                                                                                                               * "apiCode": 20001,
+                                                                                                                                                                               * "data": {
+                                                                                                                                                                                   * "userPermissionList": [
+                                                                                                                                                                                       * {
+                                                                                                                                                                                           * "userId": "6301ceaxxxxxxxxxxx27478",
+                                                                                                                                                                                           * "namespaceCode": "examplePermissionNamespace1",
+                                                                                                                                                                                           * "resourceList": [
+                                                                                                                                                                                               * {
+                                                                                                                                                                                                   * "resourceCode": "strCode1",
+                                                                                                                                                                                                   * "authorize": {
+                                                                                                                                                                                                       * "value": "示例字符串资源",
+                                                                                                                                                                                                       * "actions": [
+                                                                                                                                                                                                           * "read",
+                                                                                                                                                                                                           * "post",
+                                                                                                                                                                                                           * "get",
+                                                                                                                                                                                                           * "write"
+                                                                                                                                                                                                           * ]
+                                                                                                                                                                                                           * }
+                                                                                                                                                                                                           * }
+                                                                                                                                                                                                           * ]
+                                                                                                                                                                                                           * },
+                                                                                                                                                                                                           * {
+                                                                                                                                                                                                               * "userId": "6121ceaxxxxxxxxxxx27312",
+                                                                                                                                                                                                               * "namespaceCode": "examplePermissionNamespace2",
+                                                                                                                                                                                                               * "resourceList": [
+                                                                                                                                                                                                                   * {
+                                                                                                                                                                                                                       * "resourceCode": "arrayCode",
+                                                                                                                                                                                                                       * "authorize": {
+                                                                                                                                                                                                                           * "values": [
+                                                                                                                                                                                                                               * "示例数组资源1",
+                                                                                                                                                                                                                               * "示例数组资源2"
+                                                                                                                                                                                                                               * ],
+                                                                                                                                                                                                                               * "actions": [
+                                                                                                                                                                                                                                   * "read",
+                                                                                                                                                                                                                                   * "post",
+                                                                                                                                                                                                                                   * "get",
+                                                                                                                                                                                                                                   * "write"
+                                                                                                                                                                                                                                   * ]
+                                                                                                                                                                                                                                   * }
+                                                                                                                                                                                                                                   * }
+                                                                                                                                                                                                                                   * ]
+                                                                                                                                                                                                                                   * }
+                                                                                                                                                                                                                                   * ]
+                                                                                                                                                                                                                                   * }
+                                                                                                                                                                                                                                   * }
+                                                                                                                                                                                                                                   * ```
+                                                                                                                                                                                                                                   *
+                                                                                                                                                                                                                                   * @param requestBody
+                                                                                                                                                                                                                                   * @returns GetUserPermissionListRespDto
+*/
+func (client *ManagementClient) GetUserPermissionList(reqDto *dto.GetUserPermissionListDto) *dto.GetUserPermissionListRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-user-permission-list", fasthttp.MethodPost, reqDto)
+	var response dto.GetUserPermissionListRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+   * @summary 判断用户权限
+   * @description 该接口用于判断用户权限，通过权限空间 Code、用户 ID、资源操作以及资源列表来判断用户是否对资源拥有操作权限。
+   *
+   * ### 判断用户对字符串和数组资源权限示例
+   *
+   * - 入参
+   *
+   * ```json
+   * {
+       * "namespaceCode": "examplePermissionNamespace",
+       * "userId": "63721xxxxxxxxxxxxdde14a3",
+       * "action": "get"
+       * "resources":["strResourceCode1", "arrayResourceCode1"]
+       * }
+       * ```
+       *
+       * - 出参
+       *
+       * ```json
+       * {
+           * "statusCode": 200,
+           * "message": "操作成功",
+           * "apiCode": 20001,
+           * "data": {
+               * "checkResultList": [
+                   * {
+                       * "namespaceCode": "examplePermissionNamespace",
+                       * "resource": "strResourceCode1",
+                       * "action": "get",
+                       * "enabled": true
+                       * },
+                       * {
+                           * "namespaceCode": "examplePermissionNamespace",
+                           * "resource": "arrayResourceCode1",
+                           * "action": "get",
+                           * "enabled": false
+                           * }
+                           * ]
+                           * }
+                           * }
+                           * ```
+                           *
+                           * ### 判断用户对树资源权限示例
+                           *
+                           * - 入参
+                           *
+                           * ```json
+                           * {
+                               * "namespaceCode": "examplePermissionNamespace",
+                               * "userId": "63721xxxxxxxxxxxxdde14a3",
+                               * "action": "get"
+                               * "resources":["/treeResourceCode1/StructCode1/resourceStructChildrenCode1", "/treeResourceCode2/StructCode1/resourceStructChildrenCode1"]
+                               * }
+                               * ```
+                               *
+                               * - 出参
+                               *
+                               * ```json
+                               * {
+                                   * "statusCode": 200,
+                                   * "message": "操作成功",
+                                   * "apiCode": 20001,
+                                   * "data":{
+                                       * "checkResultList": [{
+                                           * "namespaceCode": "examplePermissionNamespace",
+                                           * "action": "get",
+                                           * "resource": "/treeResourceCode1/StructCode1/resourceStructChildrenCode1",
+                                           * "enabled": true
+                                           * },{
+                                               * "namespaceCode": "examplePermissionNamespace",
+                                               * "action": "get",
+                                               * "resource": "/treeResourceCode2/StructCode1/resourceStructChildrenCode1",
+                                               * "enabled": true
+                                               * }]
+                                               * }
+                                               * }
+                                               * ```
+                                               *
+                                               * @param requestBody
+                                               * @returns CheckPermissionRespDto
+*/
+func (client *ManagementClient) CheckPermission(reqDto *dto.CheckPermissionDto) *dto.CheckPermissionRespDto {
+	b, err := client.SendHttpRequest("/api/v3/check-permission", fasthttp.MethodPost, reqDto)
+	var response dto.CheckPermissionRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 判断外部用户权限
+ * @description 判断外部用户权限
+ * @param requestBody
+ * @returns CheckExternalUserPermissionRespDto
+ */
+func (client *ManagementClient) CheckExternalUserPermission(reqDto *dto.CheckExternalUserPermissionDto) *dto.CheckExternalUserPermissionRespDto {
+	b, err := client.SendHttpRequest("/api/v3/check-external-user-permission", fasthttp.MethodPost, reqDto)
+	var response dto.CheckExternalUserPermissionRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+   * @summary 获取用户指定资源权限列表
+   * @description 该接口主要用于获取用户指定资源的权限列表,通过权限空间 Code、用户 ID 以及资源列表查询所有权限。
+   *
+   * ### 获取用户字符串和数组资源权限示例
+   *
+   * - 入参
+   *
+   * ```json
+   * {
+       * "namespaceCode": "examplePermissionNamespace",
+       * "userId": "63721xxxxxxxxxxxxdde14a3",
+       * "resources":["strResourceCode1", "arrayResourceCode1"]
+       * }
+       * ```
+       *
+       * - 出参
+       *
+       * ```json
+       * {
+           *
+           * "statusCode": 200,
+           * "message": "操作成功",
+           * "apiCode": 20001,
+           * "data":{
+               * "permissionList": [{
+                   * "namespaceCode": "examplePermissionNamespace",
+                   * "actionList": ["read","get"],
+                   * "resource": "strResourceCode1"
+                   * },{
+                       * "namespaceCode": "examplePermissionNamespace",
+                       * "actionList": ["read","update","delete"],
+                       * "resource": "arrayResourceCode1"
+                       * }]
+                       * }
+                       * }
+                       * ```
+                       *
+                       * ### 获取用户树资源权限示例
+                       *
+                       * - 入参
+                       *
+                       * ```json
+                       * {
+                           * "namespaceCode": "examplePermissionNamespace",
+                           * "userId": "63721xxxxxxxxxxxxdde14a3",
+                           * "resources":["/treeResourceCode1/StructCode1/resourceStructChildrenCode1", "/treeResourceCode2/StructCode1/resourceStructChildrenCode1"]
+                           * }
+                           * ```
+                           *
+                           * - 出参
+                           *
+                           * ```json
+                           * {
+                               * "statusCode": 200,
+                               * "message": "操作成功",
+                               * "apiCode": 20001,
+                               * "data":{
+                                   * "permissionList": [{
+                                       * "namespaceCode": "examplePermissionNamespace",
+                                       * "actionList": ["read", "update", "delete"],
+                                       * "resource": "/treeResourceCode1/StructCode1/resourceStructChildrenCode1"
+                                       * },{
+                                           * "namespaceCode": "examplePermissionNamespace",
+                                           * "actionList": ["read", "get", "delete"],
+                                           * "resource": "/treeResourceCode2/StructCode1/resourceStructChildrenCode1"
+                                           * }]
+                                           * }
+                                           * }
+                                           * ```
+                                           *
+                                           * @param requestBody
+                                           * @returns GetUserResourcePermissionListRespDto
+*/
+func (client *ManagementClient) GetUserResourcePermissionList(reqDto *dto.GetUserResourcePermissionListDto) *dto.GetUserResourcePermissionListRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-user-resource-permission-list", fasthttp.MethodPost, reqDto)
+	var response dto.GetUserResourcePermissionListRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+   * @summary 获取资源被授权的用户列表
+   * @description 该接口主要用于获取资源被授权的用户列表，通过权限空间 Code 、资源操作列表以及资源列表查询有权限的用户列表。
+   *
+   * ### 获取字符串和数组资源被授权的用户列表示例
+   *
+   * - 入参
+   *
+   * ```json
+   * {
+       * "namespaceCode": "examplePermissionNamespace",
+       * "actions": ["get", "update", "read"]
+       * "resources":["strResourceCode1", "arrayResourceCode1"]
+       * }
+       * ```
+       *
+       * - 出参
+       *
+       * ```json
+       * {
+           * "statusCode": 200,
+           * "message": "操作成功",
+           * "apiCode": 20001,
+           * "data":{
+               * "authUserList": [{
+                   * "resource": "strResourceCode1",
+                   * "actionAuthList": [{
+                       * "userIds": ["63721xxxxxxxxxxxxdde14a3"],
+                       * "action": "get"
+                       * },{
+                           * "userIds": ["63721xxxxxxxxxxxxdde14a3"],
+                           * "action": "update"
+                           * },{
+                               * "userIds": ["63721xxxxxxxxxxxxdde14a3"],
+                               * "action": "read"
+                               * }]
+                               * },{
+                                   * "resource": "arrayResourceCode1",
+                                   * "actionAuthList": [{
+                                       * "userIds": ["63721xxxxxxxxxxxxdde14a3"],
+                                       * "action": "get"
+                                       * },{
+                                           * "userIds": ["63721xxxxxxxxxxxxdde14a3"],
+                                           * "action": "update"
+                                           * },{
+                                               * "userIds": ["63721xxxxxxxxxxxxdde14a3"],
+                                               * "action": "read"
+                                               * }]
+                                               * }]
+                                               * }
+                                               * }
+                                               * ```
+                                               *
+                                               * ### 获取树资源被授权的用户列表示例
+                                               *
+                                               * - 入参
+                                               *
+                                               * ```json
+                                               * {
+                                                   * "namespaceCode": "examplePermissionNamespace",
+                                                   * "actions": ["get", "update", "delete"]
+                                                   * "resources":["/treeResourceCode1/StructCode1/resourceStructChildrenCode1", "/treeResourceCode2/StructCode1/resourceStructChildrenCode1"]
+                                                   * }
+                                                   * ```
+                                                   *
+                                                   * - 出参
+                                                   *
+                                                   * ```json
+                                                   * {
+                                                       * "statusCode": 200,
+                                                       * "message": "操作成功",
+                                                       * "apiCode": 20001,
+                                                       * "data":{
+                                                           * "authUserList": [{
+                                                               * "resource": "/treeResourceCode1/StructCode1/resourceStructChildrenCode1",
+                                                               * "actionAuthList": [{
+                                                                   * "userIds": ["63721xxxxxxxxxxxxdde14a3"],
+                                                                   * "action": "get"
+                                                                   * },{
+                                                                       * "userIds": ["63721xxxxxxxxxxxxdde14a3"],
+                                                                       * "action": "update"
+                                                                       * },{
+                                                                           * "userIds": ["63721xxxxxxxxxxxxdde14a3"],
+                                                                           * "action": "delete"
+                                                                           * }]
+                                                                           * },{
+                                                                               * "resource": "/treeResourceCode2/StructCode1/resourceStructChildrenCode1",
+                                                                               * "actionAuthList": [{
+                                                                                   * "userIds": ["63721xxxxxxxxxxxxdde14a3"],
+                                                                                   * "action": "get"
+                                                                                   * },{
+                                                                                       * "userIds": ["63721xxxxxxxxxxxxdde14a3"],
+                                                                                       * "action": "update"
+                                                                                       * },{
+                                                                                           * "userIds": ["63721xxxxxxxxxxxxdde14a3"],
+                                                                                           * "action": "delete"
+                                                                                           * }]
+                                                                                           * }]
+                                                                                           * }
+                                                                                           * }
+                                                                                           * ```
+                                                                                           *
+                                                                                           * @param requestBody
+                                                                                           * @returns ListResourceTargetsRespDto
+*/
+func (client *ManagementClient) ListResourceTargets(reqDto *dto.ListResourceTargetsDto) *dto.ListResourceTargetsRespDto {
+	b, err := client.SendHttpRequest("/api/v3/list-resource-targets", fasthttp.MethodPost, reqDto)
+	var response dto.ListResourceTargetsRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+   * @summary 判断用户在同层级资源下的权限
+   * @description 该接口主要用于判断用户在同层级资源下的权限，通过权限空间 Code 、用户 ID、资源操作、资源或资源子节点查询用户是否有该同级资源的权限。
+   *
+   * ### 判断用户在同层级字符串资源权限示例
+   *
+   * ```json
+   * {
+       * "namespaceCode": "examplePermissionNamespace",
+       * "userId": "63721xxxxxxxxxxxxdde14a3",
+       * "action": "read"
+       * "resource":"strResourceCode1"
+       * }
+       * ```
+       *
+       * ### 判断用户在同层级数组资源权限示例
+       *
+       * ```json
+       * {
+           * "namespaceCode": "examplePermissionNamespace",
+           * "userId": "63721xxxxxxxxxxxxdde14a3",
+           * "action": "read",
+           * "resource":"arrayResourceCode1"
+           * }
+           * ```
+           *
+           * ### 判断用户在同层级树资源权限示例
+           *
+           * ```json
+           * {
+               * "namespaceCode": "examplePermissionNamespace",
+               * "userId": "63721xxxxxxxxxxxxdde14a3",
+               * "action": "read",
+               * "resource":"/treeResourceCode1/structCode1",
+               * "resourceNodeCodes": ["resourceStructChildrenCode1","resourceStructChildrenCode2","resourceStructChildrenCode3"]
+               * }
+               * ```
+               *
+               * @param requestBody
+               * @returns CheckUserSameLevelPermissionResponseDto
+*/
+func (client *ManagementClient) CheckUserSameLevelPermission(reqDto *dto.CheckUserSameLevelPermissionDto) *dto.CheckUserSameLevelPermissionResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/check-user-same-level-permission", fasthttp.MethodPost, reqDto)
+	var response dto.CheckUserSameLevelPermissionResponseDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -3891,7 +5799,7 @@ func (client *ManagementClient) GetPipelineLogs(reqDto *dto.GetPipelineLogsDto) 
 
 /*
  * @summary 创建 Webhook
- * @description 你需要指定 Webhoook 名称、Webhook 回调地址、请求数据格式、用户真实名称来创建 Webhook。还可选是否启用、请求密钥进行创建
+ * @description 你需要指定 Webhook 名称、Webhook 回调地址、请求数据格式、用户真实名称来创建 Webhook。还可选是否启用、请求密钥进行创建
  * @param requestBody
  * @returns CreateWebhookRespDto
  */
@@ -3934,7 +5842,7 @@ func (client *ManagementClient) ListWebhooks(reqDto *dto.ListWebhooksDto) *dto.G
 
 /*
  * @summary 修改 Webhook 配置
- * @description 需要指定 webhookId，可选 Webhoook 名称、Webhook 回调地址、请求数据格式、用户真实名称、是否启用、请求密钥参数进行修改 webhook
+ * @description 需要指定 webhookId，可选 Webhook 名称、Webhook 回调地址、请求数据格式、用户真实名称、是否启用、请求密钥参数进行修改 webhook
  * @param requestBody
  * @returns UpdateWebhooksRespDto
  */
@@ -4045,6 +5953,91 @@ func (client *ManagementClient) GetWebhook(reqDto *dto.GetWebhookDto) *dto.GetWe
 func (client *ManagementClient) GetWebhookEventList() *dto.WebhookEventListRespDto {
 	b, err := client.SendHttpRequest("/api/v3/get-webhook-event-list", fasthttp.MethodGet, nil)
 	var response dto.WebhookEventListRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 获取协作管理员 AK/SK 列表
+ * @description 根据协作管理员 Id 获取协作管理员下所有的 AK/SK 列表
+ * @param userId 用户 ID
+ * @returns ListAccessKeyResponseDto
+ */
+func (client *ManagementClient) GetAccessKeyList(reqDto *dto.ListAccessKeyDto) *dto.ListAccessKeyResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/list-access-key", fasthttp.MethodGet, reqDto)
+	var response dto.ListAccessKeyResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 获取协作管理员 AK/Sk 详细信息
+ * @description 获取协作管理员 AK/Sk 详细信息,根据协作管理员 ID 和 accessKeyId 获取对应 AK/SK 的详细信息。
+ * @param userId 用户 ID
+ * @param accessKeyId accessKeyId
+ * @returns GetAccessKeyResponseDto
+ */
+func (client *ManagementClient) GetAccessKey(reqDto *dto.GetAccessKeyDto) *dto.GetAccessKeyResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/get-access-key", fasthttp.MethodGet, reqDto)
+	var response dto.GetAccessKeyResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 创建协作管理员的 AK/SK
+ * @description 创建协作管理员的 AK/SK,根据协作管理员 ID 生成指定的 AK/SK。
+ * @param requestBody
+ * @returns CreateAccessKeyResponseDto
+ */
+func (client *ManagementClient) CreateAccessKey(reqDto *dto.CreateAccessKeyDto) *dto.CreateAccessKeyResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/create-access-key", fasthttp.MethodPost, reqDto)
+	var response dto.CreateAccessKeyResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 删除协作管理员的 AK/SK
+ * @description 删除协作管理员的 AK/SK,根据所选择的 AK/SK 的 accessKeyId 进行指定删除。
+ * @param requestBody
+ * @returns CommonResponseDto
+ */
+func (client *ManagementClient) DeleteAccessKey(reqDto *dto.DeleteAccessKeyDto) *dto.CommonResponseDto {
+	b, err := client.SendHttpRequest("/api/v3/delete-access-key", fasthttp.MethodPost, reqDto)
+	var response dto.CommonResponseDto
 	if err != nil {
 		fmt.Println(err)
 		return nil

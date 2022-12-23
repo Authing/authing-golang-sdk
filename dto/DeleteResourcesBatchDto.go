@@ -2,7 +2,8 @@ package dto
 
 
 type DeleteResourcesBatchDto struct{
-    CodeList  []string `json:"codeList"`
     Namespace  string `json:"namespace,omitempty"`
+    CodeList  []string `json:"codeList,omitempty"`
+    Ids  []string `json:"ids,omitempty"`
 }
 

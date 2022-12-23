@@ -15,5 +15,8 @@ type UserDepartmentRespDto struct{
     IsVirtualNode  bool `json:"isVirtualNode"`
     I18n  DepartmentI18nDto `json:"i18n,omitempty"`
     CustomData  interface{} `json:"customData,omitempty"`
+    DepartmentIdPath  []string `json:"departmentIdPath,omitempty"`
+    DepartmentCodePath  []string `json:"departmentCodePath,omitempty"`
+    DepartmentNamePath  []string `json:"departmentNamePath,omitempty"`
 }
 

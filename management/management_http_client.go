@@ -1,7 +1,6 @@
 package management
 
 import (
-	"bytes"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
@@ -10,7 +9,7 @@ import (
 	"github.com/Authing/authing-golang-sdk/v3/util/cache"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/valyala/fasthttp"
-	"strings"
+	url2 "net/url"
 	"sync"
 	"time"
 )
@@ -68,11 +67,6 @@ func QueryAccessToken(client *ManagementClient) (*dto.GetManagementTokenRespDto,
 }
 
 func (c *ManagementClient) SendHttpRequest(url string, method string, reqDto interface{}) ([]byte, error) {
-	var buf bytes.Buffer
-	err := json.NewEncoder(&buf).Encode(reqDto)
-	if err != nil {
-		return nil, err
-	}
 	req := fasthttp.AcquireRequest()
 	defer fasthttp.ReleaseRequest(req)
 
@@ -80,20 +74,14 @@ func (c *ManagementClient) SendHttpRequest(url string, method string, reqDto int
 	variables := make(map[string]interface{})
 	json.Unmarshal(data, &variables)
 
-	var queryString strings.Builder
-	if method == fasthttp.MethodGet {
-		if variables != nil && len(variables) > 0 {
-			for key, value := range variables {
-				queryString.WriteString(key)
-				queryString.WriteString("=")
-				queryString.WriteString(fmt.Sprintf("%v", value))
-				queryString.WriteString("&")
-			}
+	if method == fasthttp.MethodGet && variables != nil && len(variables) > 0 {
+		params := url2.Values{}
+		urlTemp, _ := url2.Parse(url)
+		for key, value := range variables {
+			params.Set(key, fmt.Sprintf("%v", value))
 		}
-		qs := queryString.String()
-		if qs != "" {
-			url += "?" + qs
-		}
+		urlTemp.RawQuery = params.Encode()
+		url = urlTemp.String()
 	}
 
 	req.SetRequestURI(c.options.Host + url)

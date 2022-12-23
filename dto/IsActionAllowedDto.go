@@ -2,8 +2,8 @@ package dto
 
 
 type IsActionAllowedDto struct{
-    Action  string `json:"action"`
     Resource  string `json:"resource"`
+    Action  string `json:"action"`
     UserId  string `json:"userId"`
     Namespace  string `json:"namespace,omitempty"`
 }
