@@ -2030,20 +2030,20 @@ func (client *ManagementClient) CheckParamsNamespace(reqDto *dto.CheckRoleParams
  * @param requestBody
  * @returns RoleListPageRespDto
  */
-//func (client *ManagementClient) ListRoleAssignments(reqDto *dto.ListRoleAssignmentsDto) *dto.RoleListPageRespDto {
-//	b, err := client.SendHttpRequest("/api/v3/list-role-assignments", fasthttp.MethodGet, reqDto)
-//	var response dto.RoleListPageRespDto
-//	if err != nil {
-//		fmt.Println(err)
-//		return nil
-//	}
-//	err = json.Unmarshal(b, &response)
-//	if err != nil {
-//		fmt.Println(err)
-//		return nil
-//	}
-//	return &response
-//}
+func (client *ManagementClient) ListRoleAssignments(reqDto *dto.ListRoleAssignmentsDto) *dto.RoleListPageRespDto {
+	b, err := client.SendHttpRequest("/api/v3/list-role-assignments", fasthttp.MethodGet, reqDto)
+	var response dto.RoleListPageRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
 
 /*
  * @summary 获取身份源列表
@@ -3495,11 +3495,11 @@ func (client *ManagementClient) ListApplicationSimpleInfo(reqDto *dto.ListApplic
  * @summary 创建应用
  * @description 创建应用
  * @param requestBody
- * @returns ApplicationPaginatedRespDto
+ * @returns CreateApplicationRespDto
  */
-func (client *ManagementClient) CreateApplication(reqDto *dto.CreateApplicationDto) *dto.ApplicationPaginatedRespDto {
+func (client *ManagementClient) CreateApplication(reqDto *dto.CreateApplicationDto) *dto.CreateApplicationRespDto {
 	b, err := client.SendHttpRequest("/api/v3/create-application", fasthttp.MethodPost, reqDto)
-	var response dto.ApplicationPaginatedRespDto
+	var response dto.CreateApplicationRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -5092,9 +5092,9 @@ func (client *ManagementClient) GetUserPermissionList(reqDto *dto.GetUserPermiss
 
 /*
    * @summary 判断用户权限
-   * @description 该接口用于判断用户权限，通过权限空间 Code、用户 ID、资源操作以及资源列表来判断用户是否对资源拥有操作权限。
+   * @description 该接口用于判断用户权限，通过权限空间 Code、用户 ID、资源操作以及资源列表来判断用户是否对资源拥有操作权限。可选传条件属性参数，默认不开启条件判断。
    *
-   * ### 判断用户对字符串和数组资源权限示例
+   * ### 判断用户对字符串和数组资源权限示例（无条件判断）
    *
    * - 入参
    *
@@ -5102,7 +5102,7 @@ func (client *ManagementClient) GetUserPermissionList(reqDto *dto.GetUserPermiss
    * {
        * "namespaceCode": "examplePermissionNamespace",
        * "userId": "63721xxxxxxxxxxxxdde14a3",
-       * "action": "get"
+       * "action": "get",
        * "resources":["strResourceCode1", "arrayResourceCode1"]
        * }
        * ```
@@ -5126,14 +5126,14 @@ func (client *ManagementClient) GetUserPermissionList(reqDto *dto.GetUserPermiss
                            * "namespaceCode": "examplePermissionNamespace",
                            * "resource": "arrayResourceCode1",
                            * "action": "get",
-                           * "enabled": false
+                           * "enabled": true
                            * }
                            * ]
                            * }
                            * }
                            * ```
                            *
-                           * ### 判断用户对树资源权限示例
+                           * ### 判断用户对字符串和数组资源权限示例（开启条件判断）
                            *
                            * - 入参
                            *
@@ -5141,36 +5141,86 @@ func (client *ManagementClient) GetUserPermissionList(reqDto *dto.GetUserPermiss
                            * {
                                * "namespaceCode": "examplePermissionNamespace",
                                * "userId": "63721xxxxxxxxxxxxdde14a3",
-                               * "action": "get"
-                               * "resources":["/treeResourceCode1/StructCode1/resourceStructChildrenCode1", "/treeResourceCode2/StructCode1/resourceStructChildrenCode1"]
-                               * }
-                               * ```
-                               *
-                               * - 出参
-                               *
-                               * ```json
-                               * {
-                                   * "statusCode": 200,
-                                   * "message": "操作成功",
-                                   * "apiCode": 20001,
-                                   * "data":{
-                                       * "checkResultList": [{
-                                           * "namespaceCode": "examplePermissionNamespace",
-                                           * "action": "get",
-                                           * "resource": "/treeResourceCode1/StructCode1/resourceStructChildrenCode1",
-                                           * "enabled": true
-                                           * },{
-                                               * "namespaceCode": "examplePermissionNamespace",
-                                               * "action": "get",
-                                               * "resource": "/treeResourceCode2/StructCode1/resourceStructChildrenCode1",
-                                               * "enabled": true
-                                               * }]
-                                               * }
-                                               * }
-                                               * ```
-                                               *
-                                               * @param requestBody
-                                               * @returns CheckPermissionRespDto
+                               * "action": "get",
+                               * "resources": ["strResourceCode1", "arrayResourceCode1"],
+                               * "judgeConditionEnabled": true,
+                               * "authEnvParams":{
+                                   * "ip":"110.96.0.0",
+                                   * "city":"北京",
+                                   * "province":"北京",
+                                   * "country":"中国",
+                                   * "deviceType":"PC",
+                                   * "systemType":"ios",
+                                   * "browserType":"IE",
+                                   * "requestDate":"2022-12-26 17:40:00"
+                                   * }
+                                   * }
+                                   * ```
+                                   *
+                                   * - 出参
+                                   *
+                                   * ```json
+                                   * {
+                                       * "statusCode": 200,
+                                       * "message": "操作成功",
+                                       * "apiCode": 20001,
+                                       * "data": {
+                                           * "checkResultList": [
+                                               * {
+                                                   * "namespaceCode": "examplePermissionNamespace",
+                                                   * "resource": "strResourceCode1",
+                                                   * "action": "get",
+                                                   * "enabled": false
+                                                   * },
+                                                   * {
+                                                       * "namespaceCode": "examplePermissionNamespace",
+                                                       * "resource": "arrayResourceCode1",
+                                                       * "action": "get",
+                                                       * "enabled": false
+                                                       * }
+                                                       * ]
+                                                       * }
+                                                       * }
+                                                       * ```
+                                                       *
+                                                       * ### 判断用户对树资源权限示例
+                                                       *
+                                                       * - 入参
+                                                       *
+                                                       * ```json
+                                                       * {
+                                                           * "namespaceCode": "examplePermissionNamespace",
+                                                           * "userId": "63721xxxxxxxxxxxxdde14a3",
+                                                           * "action": "get"
+                                                           * "resources":["/treeResourceCode1/StructCode1/resourceStructChildrenCode1", "/treeResourceCode2/StructCode1/resourceStructChildrenCode1"]
+                                                           * }
+                                                           * ```
+                                                           *
+                                                           * - 出参
+                                                           *
+                                                           * ```json
+                                                           * {
+                                                               * "statusCode": 200,
+                                                               * "message": "操作成功",
+                                                               * "apiCode": 20001,
+                                                               * "data":{
+                                                                   * "checkResultList": [{
+                                                                       * "namespaceCode": "examplePermissionNamespace",
+                                                                       * "action": "get",
+                                                                       * "resource": "/treeResourceCode1/StructCode1/resourceStructChildrenCode1",
+                                                                       * "enabled": true
+                                                                       * },{
+                                                                           * "namespaceCode": "examplePermissionNamespace",
+                                                                           * "action": "get",
+                                                                           * "resource": "/treeResourceCode2/StructCode1/resourceStructChildrenCode1",
+                                                                           * "enabled": true
+                                                                           * }]
+                                                                           * }
+                                                                           * }
+                                                                           * ```
+                                                                           *
+                                                                           * @param requestBody
+                                                                           * @returns CheckPermissionRespDto
 */
 func (client *ManagementClient) CheckPermission(reqDto *dto.CheckPermissionDto) *dto.CheckPermissionRespDto {
 	b, err := client.SendHttpRequest("/api/v3/check-permission", fasthttp.MethodPost, reqDto)
@@ -5418,45 +5468,243 @@ func (client *ManagementClient) ListResourceTargets(reqDto *dto.ListResourceTarg
 }
 
 /*
-   * @summary 判断用户在同层级资源下的权限
-   * @description 该接口主要用于判断用户在同层级资源下的权限，通过权限空间 Code 、用户 ID、资源操作、资源或资源子节点查询用户是否有该同级资源的权限。
+   * @summary 获取用户授权资源的结构列表
+   * @description 该接口主要用于获取用户授权的资源列表，通过权限空间 Code、用户 id、资源 Code 获取用户资源的授权列表。
    *
-   * ### 判断用户在同层级字符串资源权限示例
+   * ### 示例
+   *
+   * - 入参
    *
    * ```json
    * {
        * "namespaceCode": "examplePermissionNamespace",
        * "userId": "63721xxxxxxxxxxxxdde14a3",
-       * "action": "read"
-       * "resource":"strResourceCode1"
+       * "resourceCode": "exampleResourceCode"
        * }
        * ```
        *
-       * ### 判断用户在同层级数组资源权限示例
+       * - 出参
+       *
+       * ```json
+       * {
+           * "statusCode": 200,
+           * "message": "操作成功",
+           * "apiCode": 20001,
+           * "data":{
+               * "namespaceCode": "exampleNamespaceCode",
+               * "resourceCode": "exampleResourceCode",
+               * "permissionBo": {
+                   * "resourceId": "63xxxxxxxxxxxxx999",
+                   * "resourceType": "TREE",
+                   * "nodeAuthActionList": [
+                       * {
+                           * "name": "1",
+                           * "code": "1",
+                           * "children": [
+                               * {
+                                   * "name": "1-1",
+                                   * "code": "1-1",
+                                   * "children": [],
+                                   * "actions": [
+                                       * "read",
+                                       * "get"
+                                       * ]
+                                       * }
+                                       * ],
+                                       * "actions": [
+                                           * "read"
+                                           * ]
+                                           * },
+                                           * {
+                                               * "name": "2",
+                                               * "code": "2",
+                                               * "children": [
+                                                   * {
+                                                       * "name": "2-1",
+                                                       * "code": "2-1",
+                                                       * "actions": [
+                                                           * "read"
+                                                           * ]
+                                                           * }
+                                                           * ],
+                                                           * "actions": [
+                                                               * "get"
+                                                               * ]
+                                                               * }
+                                                               * ]
+                                                               * }
+                                                               * }
+                                                               * }
+                                                               * ```
+                                                               *
+                                                               * @param requestBody
+                                                               * @returns GetUserResourceStructRespDto
+*/
+func (client *ManagementClient) GetUserResourceStruct(reqDto *dto.GetUserResourceStructDto) *dto.GetUserResourceStructRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-user-resource-struct", fasthttp.MethodPost, reqDto)
+	var response dto.GetUserResourceStructRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+   * @summary 获取外部用户授权资源的结构列表
+   * @description 该接口主要用于获取外部用户授权的资源列表，通过权限空间 Code、外部用户 id、资源 Code 获取外部用户资源的授权列表。
+   *
+   * ### 示例
+   *
+   * - 入参
+   *
+   * ```json
+   * {
+       * "namespaceCode": "examplePermissionNamespace",
+       * "externalId": "63721xxxxxxxxxxxxdde14a3",
+       * "resourceCode": "exampleResourceCode"
+       * }
+       * ```
+       *
+       * - 出参
+       *
+       * ```json
+       * {
+           * "statusCode": 200,
+           * "message": "操作成功",
+           * "apiCode": 20001,
+           * "data":{
+               * "namespaceCode": "exampleNamespaceCode",
+               * "resourceCode": "exampleResourceCode",
+               * "permissionBo": {
+                   * "resourceId": "63xxxxxxxxxxxxx999",
+                   * "resourceType": "TREE",
+                   * "nodeAuthActionList": [
+                       * {
+                           * "name": "1",
+                           * "code": "1",
+                           * "children": [
+                               * {
+                                   * "name": "1-1",
+                                   * "code": "1-1",
+                                   * "children": [],
+                                   * "actions": [
+                                       * "read",
+                                       * "get"
+                                       * ]
+                                       * }
+                                       * ],
+                                       * "actions": [
+                                           * "read"
+                                           * ]
+                                           * },
+                                           * {
+                                               * "name": "2",
+                                               * "code": "2",
+                                               * "children": [
+                                                   * {
+                                                       * "name": "2-1",
+                                                       * "code": "2-1",
+                                                       * "actions": [
+                                                           * "read"
+                                                           * ]
+                                                           * }
+                                                           * ],
+                                                           * "actions": [
+                                                               * "get"
+                                                               * ]
+                                                               * }
+                                                               * ]
+                                                               * }
+                                                               * }
+                                                               * }
+                                                               * ```
+                                                               *
+                                                               * @param requestBody
+                                                               * @returns GetExternalUserResourceStructRespDto
+*/
+func (client *ManagementClient) GetExternalUserResourceStruct(reqDto *dto.GetExternalUserResourceStructDto) *dto.GetExternalUserResourceStructRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-external-user-resource-struct", fasthttp.MethodPost, reqDto)
+	var response dto.GetExternalUserResourceStructRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+   * @summary 判断用户在同层级资源下的权限
+   * @description 该接口主要用于判断用户在同层级资源下的权限，通过权限空间 Code 、用户 ID、资源操作、资源或资源子节点查询用户是否有该同级资源的权限。可选传条件属性参数，默认不开启条件判断。
+   *
+   * ### 判断用户在同层级字符串资源权限示例（无条件判断）
+   *
+   * ```json
+   * {
+       * "namespaceCode": "examplePermissionNamespace",
+       * "userId": "63721xxxxxxxxxxxxdde14a3",
+       * "action": "read",
+       * "resource": "strResourceCode1"
+       * }
+       * ```
+       *
+       * ### 判断用户在同层级字符串资源权限示例（开启条件判断）
        *
        * ```json
        * {
            * "namespaceCode": "examplePermissionNamespace",
            * "userId": "63721xxxxxxxxxxxxdde14a3",
            * "action": "read",
-           * "resource":"arrayResourceCode1"
-           * }
-           * ```
-           *
-           * ### 判断用户在同层级树资源权限示例
-           *
-           * ```json
-           * {
-               * "namespaceCode": "examplePermissionNamespace",
-               * "userId": "63721xxxxxxxxxxxxdde14a3",
-               * "action": "read",
-               * "resource":"/treeResourceCode1/structCode1",
-               * "resourceNodeCodes": ["resourceStructChildrenCode1","resourceStructChildrenCode2","resourceStructChildrenCode3"]
+           * "resource": "strResourceCode1",
+           * "judgeConditionEnabled": true,
+           * "authEnvParams":{
+               * "ip":"110.96.0.0",
+               * "city":"北京",
+               * "province":"北京",
+               * "country":"中国",
+               * "deviceType":"PC",
+               * "systemType":"ios",
+               * "browserType":"IE",
+               * "requestDate":"2022-12-26 17:40:00"
+               * }
                * }
                * ```
                *
-               * @param requestBody
-               * @returns CheckUserSameLevelPermissionResponseDto
+               * ### 判断用户在同层级数组资源权限示例
+               *
+               * ```json
+               * {
+                   * "namespaceCode": "examplePermissionNamespace",
+                   * "userId": "63721xxxxxxxxxxxxdde14a3",
+                   * "action": "read",
+                   * "resource": "arrayResourceCode1"
+                   * }
+                   * ```
+                   *
+                   * ### 判断用户在同层级树资源权限示例
+                   *
+                   * ```json
+                   * {
+                       * "namespaceCode": "examplePermissionNamespace",
+                       * "userId": "63721xxxxxxxxxxxxdde14a3",
+                       * "action": "read",
+                       * "resource": "/treeResourceCode1/structCode1",
+                       * "resourceNodeCodes": ["resourceStructChildrenCode1","resourceStructChildrenCode2","resourceStructChildrenCode3"]
+                       * }
+                       * ```
+                       *
+                       * @param requestBody
+                       * @returns CheckUserSameLevelPermissionResponseDto
 */
 func (client *ManagementClient) CheckUserSameLevelPermission(reqDto *dto.CheckUserSameLevelPermissionDto) *dto.CheckUserSameLevelPermissionResponseDto {
 	b, err := client.SendHttpRequest("/api/v3/check-user-same-level-permission", fasthttp.MethodPost, reqDto)
