@@ -332,41 +332,42 @@ func (client *AuthenticationClient) GetNewAccessTokenByRefreshToken(refreshToken
 	return string(resp.Body), err
 }
 
-func (client *AuthenticationClient) IntrospectToken(token string) (*dto.IntrospectTokenResult, error) {
-	url := client.options.AppHost + fmt.Sprintf("/%s/token/introspection", client.options.Protocol)
-	header := map[string]string{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
-	body := map[string]string{
-		"token": token,
-	}
-	switch client.options.TokenEndPointAuthMethod {
-	case ClientSecretPost:
-		body["client_id"] = client.options.AppId
-		body["client_secret"] = client.options.AppSecret
-	case ClientSecretBasic:
-		base64String := "Basic " + base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", client.options.AppId, client.options.AppSecret)))
-		header["Authorization"] = base64String
-	default:
-		body["client_id"] = client.options.AppId
-	}
-	resp, err := client.SendProtocolHttpRequest(&ProtocolRequestOption{
-		Url:     url,
-		Method:  fasthttp.MethodPost,
-		Headers: client.getReqHeaders(header),
-		ReqDto:  body,
-	})
-	println(string(resp.Body))
-	var response dto.IntrospectTokenResult
-	if err != nil {
-		return nil, err
-	}
-	err = json.Unmarshal(resp.Body, &response)
-	if err != nil {
-		return nil, err
-	}
-	return &response, err
-}
+//
+//func (client *AuthenticationClient) IntrospectToken(token string) (*dto.IntrospectTokenResult, error) {
+//	url := client.options.AppHost + fmt.Sprintf("/%s/token/introspection", client.options.Protocol)
+//	header := map[string]string{
+//		"Content-Type": "application/x-www-form-urlencoded",
+//	}
+//	body := map[string]string{
+//		"token": token,
+//	}
+//	switch client.options.TokenEndPointAuthMethod {
+//	case ClientSecretPost:
+//		body["client_id"] = client.options.AppId
+//		body["client_secret"] = client.options.AppSecret
+//	case ClientSecretBasic:
+//		base64String := "Basic " + base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", client.options.AppId, client.options.AppSecret)))
+//		header["Authorization"] = base64String
+//	default:
+//		body["client_id"] = client.options.AppId
+//	}
+//	resp, err := client.SendProtocolHttpRequest(&ProtocolRequestOption{
+//		Url:     url,
+//		Method:  fasthttp.MethodPost,
+//		Headers: client.getReqHeaders(header),
+//		ReqDto:  body,
+//	})
+//	println(string(resp.Body))
+//	var response dto.IntrospectTokenResult
+//	if err != nil {
+//		return nil, err
+//	}
+//	err = json.Unmarshal(resp.Body, &response)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &response, err
+//}
 
 // RevokeToken
 // 撤回 Access token 或 Refresh token
