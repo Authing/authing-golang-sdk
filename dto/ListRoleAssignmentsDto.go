@@ -1,5 +1,5 @@
 package dto
 
-//type ListRoleAssignmentsDto struct{
-//    RequestBody ListRoleAssignmentsDto `json:"requestBody,omitempty"`
-//}
+type ListRoleAssignmentsDto struct {
+	RequestBody interface{} `json:"requestBody,omitempty"`
+}
