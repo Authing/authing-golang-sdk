@@ -17,4 +17,5 @@ func GetQueryString(queryMap map[string]string) string {
 		queryValue.Add(key, value)
 	}
 	return queryValue.Encode()
+
 }
