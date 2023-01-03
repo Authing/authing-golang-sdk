@@ -14,10 +14,10 @@ import (
 
 var authenticationClient *AuthenticationClient
 var options = AuthenticationClientOptions{
-	AppId:              "63b3ea5bc9664c9d08d190c8",
-	AppSecret:          "51011faa57235d4e6bc6a78a72bd2be8",
-	AppHost:            "https://go-user-permission-auth.authing.cn",
-	RedirectUri:        "https://console.authing.cn/console/get-started/63b3ea5bc9664c9d08d190c8",
+	AppId:              "",
+	AppSecret:          "",
+	AppHost:            "",
+	RedirectUri:        "http://localhost:8989",
 	InsecureSkipVerify: true,
 }
 
