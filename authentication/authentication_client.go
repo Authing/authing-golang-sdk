@@ -1722,6 +1722,26 @@ func (client *AuthenticationClient) ListFactorsToEnroll() *dto.ListFactorsToEnro
 }
 
 /*
+* @summary 校验用户 MFA 绑定的 OTP
+* @description 校验用户 MFA 绑定的 OTP。
+* @returns MfaOtpVerityRespDto
+ */
+func (client *AuthenticationClient) MfaOtpVerify(reqDto *dto.MfaOtpVerityDto) *dto.MfaOtpVerityRespDto {
+	b, err := client.SendHttpRequest("/api/v3/mfa-totp-verify", fasthttp.MethodPost, reqDto)
+	var response dto.MfaOtpVerityRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
 	* @summary 生成绑定外部身份源的链接
 	* @description
  * 此接口用于生成绑定外部身份源的链接，生成之后可以引导用户进行跳转。
