@@ -1,13 +1,12 @@
 package dto
 
-
-type CreateExtIdpConnDto struct{
-    Fields  interface{} `json:"fields"`
-    DisplayName  string `json:"displayName"`
-    Identifier  string `json:"identifier"`
-    Type  string  `json:"type"`
-    ExtIdpId  string `json:"extIdpId"`
-    LoginOnly  bool `json:"loginOnly,omitempty"`
-    Logo  string `json:"logo,omitempty"`
+type CreateExtIdpConnDto struct {
+	ExtIdpId    string      `json:"extIdpId"`
+	Type        string      `json:"type"`
+	Identifier  string      `json:"identifier"`
+	DisplayName string      `json:"displayName"`
+	Fields      interface{} `json:"fields"`
+	LoginOnly   bool        `json:"loginOnly,omitempty"`
+	Logo        string      `json:"logo,omitempty"`
+	TenantId    string      `json:"tenantId,omitempty"`
 }
-

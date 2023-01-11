@@ -1,8 +1,6 @@
 package dto
 
-
-type RevokeApplicationAccessDto struct{
-    List  []DeleteApplicationPermissionRecordItem `json:"list"`
-    AppId  string `json:"appId"`
+type RevokeApplicationAccessDto struct {
+	AppId string                                  `json:"appId"`
+	List  []DeleteApplicationPermissionRecordItem `json:"list"`
 }
-
