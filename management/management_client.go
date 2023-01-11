@@ -1023,6 +1023,7 @@ func (client *ManagementClient) GetOtpSecretByUser(reqDto *dto.GetOtpSecretByUse
  * @description 获取组织机构详情
  * @param organizationCode 组织 Code（organizationCode）
  * @param withCustomData 是否获取自定义数据
+ * @param tenantId 租户 ID
  * @returns OrganizationSingleRespDto
  */
 func (client *ManagementClient) GetOrganization(reqDto *dto.GetOrganizationDto) *dto.OrganizationSingleRespDto {
@@ -1045,6 +1046,7 @@ func (client *ManagementClient) GetOrganization(reqDto *dto.GetOrganizationDto) 
  * @description 批量获取组织机构详情
  * @param organizationCodeList 组织 Code（organizationCode）列表
  * @param withCustomData 是否获取自定义数据
+ * @param tenantId 租户 ID
  * @returns OrganizationListRespDto
  */
 func (client *ManagementClient) GetOrganizationsBatch(reqDto *dto.GetOrganizationBatchDto) *dto.OrganizationListRespDto {
@@ -1069,6 +1071,7 @@ func (client *ManagementClient) GetOrganizationsBatch(reqDto *dto.GetOrganizatio
  * @param limit 每页数目，最大不能超过 50，默认为 10
  * @param fetchAll 拉取所有
  * @param withCustomData 是否获取自定义数据
+ * @param tenantId 租户 ID
  * @returns OrganizationPaginatedRespDto
  */
 func (client *ManagementClient) ListOrganizations(reqDto *dto.ListOrganizationsDto) *dto.OrganizationPaginatedRespDto {
@@ -1156,6 +1159,7 @@ func (client *ManagementClient) DeleteOrganization(reqDto *dto.DeleteOrganizatio
  * @param page 当前页数，从 1 开始
  * @param limit 每页数目，最大不能超过 50，默认为 10
  * @param withCustomData 是否获取自定义数据
+ * @param tenantId 租户 ID
  * @returns OrganizationPaginatedRespDto
  */
 func (client *ManagementClient) SearchOrganizations(reqDto *dto.SearchOrganizationsDto) *dto.OrganizationPaginatedRespDto {
@@ -1181,6 +1185,7 @@ func (client *ManagementClient) SearchOrganizations(reqDto *dto.SearchOrganizati
  * @param departmentCode 部门 code。departmentId 和 departmentCode 必传其一。
  * @param departmentIdType 此次调用中使用的部门 ID 的类型
  * @param withCustomData 是否获取自定义数据
+ * @param tenantId 租户 ID
  * @returns DepartmentSingleRespDto
  */
 func (client *ManagementClient) GetDepartment(reqDto *dto.GetDepartmentDto) *dto.DepartmentSingleRespDto {
@@ -1313,6 +1318,7 @@ func (client *ManagementClient) SearchDepartmentsList(reqDto *dto.SearchDepartme
  * @param excludeVirtualNode 是否要排除虚拟组织
  * @param onlyVirtualNode 是否只包含虚拟组织
  * @param withCustomData 是否获取自定义数据
+ * @param tenantId 租户 ID
  * @returns DepartmentPaginatedRespDto
  */
 func (client *ManagementClient) ListChildrenDepartments(reqDto *dto.ListChildrenDepartmentsDto) *dto.DepartmentPaginatedRespDto {
@@ -1344,6 +1350,7 @@ func (client *ManagementClient) ListChildrenDepartments(reqDto *dto.ListChildren
  * @param withCustomData 是否获取自定义数据
  * @param withIdentities 是否获取 identities
  * @param withDepartmentIds 是否获取部门 ID 列表
+ * @param tenantId 租户 ID
  * @returns UserPaginatedRespDto
  */
 func (client *ManagementClient) ListDepartmentMembers(reqDto *dto.ListDepartmentMembersDto) *dto.UserPaginatedRespDto {
@@ -1367,6 +1374,7 @@ func (client *ManagementClient) ListDepartmentMembers(reqDto *dto.ListDepartment
  * @param organizationCode 组织 code
  * @param departmentId 部门 ID，根部门传 `root`
  * @param departmentIdType 此次调用中使用的部门 ID 的类型
+ * @param tenantId 租户 ID
  * @returns UserIdListRespDto
  */
 func (client *ManagementClient) ListDepartmentMemberIds(reqDto *dto.ListDepartmentMemberIdsDto) *dto.UserIdListRespDto {
@@ -1397,6 +1405,7 @@ func (client *ManagementClient) ListDepartmentMemberIds(reqDto *dto.ListDepartme
  * @param withCustomData 是否获取自定义数据
  * @param withIdentities 是否获取 identities
  * @param withDepartmentIds 是否获取部门 ID 列表
+ * @param tenantId 租户 ID
  * @returns UserPaginatedRespDto
  */
 func (client *ManagementClient) SearchDepartmentMembers(reqDto *dto.SearchDepartmentMembersDto) *dto.UserPaginatedRespDto {
@@ -1463,6 +1472,7 @@ func (client *ManagementClient) RemoveDepartmentMembers(reqDto *dto.RemoveDepart
  * @param departmentId 部门 ID
  * @param departmentIdType 此次调用中使用的部门 ID 的类型
  * @param withCustomData 是否获取自定义数据
+ * @param tenantId 租户 ID
  * @returns DepartmentSingleRespDto
  */
 func (client *ManagementClient) GetParentDepartment(reqDto *dto.GetParentDepartmentDto) *dto.DepartmentSingleRespDto {
@@ -1488,6 +1498,7 @@ func (client *ManagementClient) GetParentDepartment(reqDto *dto.GetParentDepartm
  * @param departmentId 部门 ID，根部门传 `root`。departmentId 和 departmentCode 必传其一。
  * @param departmentIdType 此次调用中使用的部门 ID 的类型
  * @param includeChildrenDepartments 是否包含子部门
+ * @param tenantId 租户 ID
  * @returns IsUserInDepartmentRespDto
  */
 func (client *ManagementClient) IsUserInDepartment(reqDto *dto.IsUserInDepartmentDto) *dto.IsUserInDepartmentRespDto {
@@ -1509,6 +1520,7 @@ func (client *ManagementClient) IsUserInDepartment(reqDto *dto.IsUserInDepartmen
  * @summary 根据部门id查询部门
  * @description 根据部门id查询部门
  * @param departmentId 部门 ID
+ * @param tenantId 租户 ID
  * @returns DepartmentSingleRespDto
  */
 func (client *ManagementClient) GetDepartmentById(reqDto *dto.GetDepartmentByIdDto) *dto.DepartmentSingleRespDto {
@@ -3732,6 +3744,113 @@ func (client *ManagementClient) CheckDomainAvailable(reqDto *dto.CheckDomainAvai
 }
 
 /*
+ * @summary 获取租户应用列表
+ * @description 获取应用列表，可以指定 租户 ID 筛选。
+ * @param page 获取应用列表的页码
+ * @param limit 每页获取的应用数量
+ * @param keywords 搜索关键字
+ * @param ssoEnabled 应用是否加入单点登录
+ * @returns TenantApplicationListPaginatedRespDto
+ */
+func (client *ManagementClient) ListTenantApplications(reqDto *dto.ListTenantApplicationsDto) *dto.TenantApplicationListPaginatedRespDto {
+	b, err := client.SendHttpRequest("/api/v3/list-tenant-applications", fasthttp.MethodGet, reqDto)
+	var response dto.TenantApplicationListPaginatedRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 更新应用登录页配置
+ * @description 通过应用 ID 更新登录页配置。
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) UpdateLoginPageConfig(reqDto *dto.UpdateLoginConfigDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/update-login-page-config", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 获取用户池租户配置信息
+ * @description 根据用户池 ID 获取用户池多租户配置信息
+ * @returns UserPoolTenantConfigDtoRespDto
+ */
+func (client *ManagementClient) UserpollTenantConfig() *dto.UserPoolTenantConfigDtoRespDto {
+	b, err := client.SendHttpRequest("/api/v3/userpool-tenant-config", fasthttp.MethodGet, nil)
+	var response dto.UserPoolTenantConfigDtoRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 更新用户池租户配置信息
+ * @description 更新用户池多租户配置内登录信息
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) UpdateUserPoolTenantConfig(reqDto *dto.UpdateUserPoolTenantLoginConfigDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/update-userpool-tenant-config", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 设置用户池多租户身份源连接
+ * @description 设置用户池多租户身份源连接，支持同时设置多个身份源连接，支持设置连接和取消连接
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) ChangeUserpoolTenanExtIdpConnState(reqDto *dto.ChangeUserPoolTenantExtIdpConnDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/change-userpool-tenant-ext-idp-conn-state", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
  * @summary 创建 ASA 账号
  * @description 在某一应用下创建 ASA 账号
  * @param requestBody
@@ -4873,7 +4992,7 @@ func (client *ManagementClient) RevokeDataPolicy(reqDto *dto.DeleteAuthorizeData
 
 /*
    * @summary 获取用户权限列表
-   * @description 该接口用于用户列表权限查询，可以通过用户 ID 列表进行批量查询权限，也可以通过查询多个用户在同一个权限空间的权限。
+   * @description 该接口用于用户列表权限查询，可以通过用户 ID 列表进行批量查询权限，也可以通过查询多个用户在同一个权限空间的权限,不同数据资源类型返回相应的资源结果。
    *
    * ### 查询一个用户拥有的数组资源、字符串资源和树资源权限列表示例
    *
@@ -4902,7 +5021,8 @@ func (client *ManagementClient) RevokeDataPolicy(reqDto *dto.DeleteAuthorizeData
                            * "resourceList": [
                                * {
                                    * "resourceCode": "strCode",
-                                   * "authorize": {
+                                   * "resourceType": "STRING",
+                                   * "strAuthorize": {
                                        * "value": "示例字符串资源",
                                        * "actions": [
                                            * "read",
@@ -4914,9 +5034,11 @@ func (client *ManagementClient) RevokeDataPolicy(reqDto *dto.DeleteAuthorizeData
                                            * },
                                            * {
                                                * "resourceCode": "arrayCode",
-                                               * "authorize": {
+                                               * "resourceType": "ARRAY",
+                                               * "arrAuthorize": {
                                                    * "values": [
-                                                       * "示例数据资源"
+                                                       * "示例数据资源1",
+                                                       * "示例数据资源2"
                                                        * ],
                                                        * "actions": [
                                                            * "read",
@@ -4928,10 +5050,11 @@ func (client *ManagementClient) RevokeDataPolicy(reqDto *dto.DeleteAuthorizeData
                                                            * },
                                                            * {
                                                                * "resourceCode": "treeCode",
-                                                               * "authorize": {
+                                                               * "resourceType": "TREE",
+                                                               * "treeAuthorize": {
                                                                    * "authList": [
                                                                        * {
-                                                                           * "nodePath": "treeCode/treeChildrenCode1",
+                                                                           * "nodePath": "/treeChildrenCode/treeChildrenCode1",
                                                                            * "nodeActions": [
                                                                                * "read",
                                                                                * "get"
@@ -4940,7 +5063,7 @@ func (client *ManagementClient) RevokeDataPolicy(reqDto *dto.DeleteAuthorizeData
                                                                                * "nodeValue": "treeChildrenValue1"
                                                                                * },
                                                                                * {
-                                                                                   * "nodePath": "treeCode/treeChildrenCode2",
+                                                                                   * "nodePath": "/treeChildrenCode/treeChildrenCode2",
                                                                                    * "nodeActions": [
                                                                                        * "read",
                                                                                        * "get"
@@ -4949,7 +5072,7 @@ func (client *ManagementClient) RevokeDataPolicy(reqDto *dto.DeleteAuthorizeData
                                                                                        * "nodeValue": "treeChildrenValue2"
                                                                                        * },
                                                                                        * {
-                                                                                           * "nodePath": "treeCode/treeChildrenCode3",
+                                                                                           * "nodePath": "/treeChildrenCode/treeChildrenCode3",
                                                                                            * "nodeActions": [
                                                                                                * "read"
                                                                                                * ],
@@ -4993,8 +5116,9 @@ func (client *ManagementClient) RevokeDataPolicy(reqDto *dto.DeleteAuthorizeData
                                                                                                                        * "namespaceCode": "examplePermissionNamespace1",
                                                                                                                        * "resourceList": [
                                                                                                                            * {
-                                                                                                                               * "resourceCode": "strCode1",
-                                                                                                                               * "authorize": {
+                                                                                                                               * "resourceCode": "strCode",
+                                                                                                                               * "resourceType": "STRING",
+                                                                                                                               * "strAuthorize": {
                                                                                                                                    * "value": "示例字符串资源",
                                                                                                                                    * "actions": [
                                                                                                                                        * "read",
@@ -5012,7 +5136,8 @@ func (client *ManagementClient) RevokeDataPolicy(reqDto *dto.DeleteAuthorizeData
                                                                                                                                            * "resourceList": [
                                                                                                                                                * {
                                                                                                                                                    * "resourceCode": "arrayCode",
-                                                                                                                                                   * "authorize": {
+                                                                                                                                                   * "resourceType": "ARRAY",
+                                                                                                                                                   * "arrAuthorize": {
                                                                                                                                                        * "values": [
                                                                                                                                                            * "示例数组资源1",
                                                                                                                                                            * "示例数组资源2"
@@ -5064,7 +5189,8 @@ func (client *ManagementClient) RevokeDataPolicy(reqDto *dto.DeleteAuthorizeData
                                                                                                                                                                                            * "resourceList": [
                                                                                                                                                                                                * {
                                                                                                                                                                                                    * "resourceCode": "strCode1",
-                                                                                                                                                                                                   * "authorize": {
+                                                                                                                                                                                                   * "resourceType": "STRING",
+                                                                                                                                                                                                   * "strAuthorize": {
                                                                                                                                                                                                        * "value": "示例字符串资源",
                                                                                                                                                                                                        * "actions": [
                                                                                                                                                                                                            * "read",
@@ -5082,7 +5208,8 @@ func (client *ManagementClient) RevokeDataPolicy(reqDto *dto.DeleteAuthorizeData
                                                                                                                                                                                                                * "resourceList": [
                                                                                                                                                                                                                    * {
                                                                                                                                                                                                                        * "resourceCode": "arrayCode",
-                                                                                                                                                                                                                       * "authorize": {
+                                                                                                                                                                                                                       * "resourceType": "ARRAY",
+                                                                                                                                                                                                                       * "arrAuthorize": {
                                                                                                                                                                                                                            * "values": [
                                                                                                                                                                                                                                * "示例数组资源1",
                                                                                                                                                                                                                                * "示例数组资源2"
@@ -5388,7 +5515,7 @@ func (client *ManagementClient) GetUserResourcePermissionList(reqDto *dto.GetUse
    * ```json
    * {
        * "namespaceCode": "examplePermissionNamespace",
-       * "actions": ["get", "update", "read"]
+       * "actions": ["get", "update", "read"],
        * "resources":["strResourceCode1", "arrayResourceCode1"]
        * }
        * ```
@@ -5437,7 +5564,7 @@ func (client *ManagementClient) GetUserResourcePermissionList(reqDto *dto.GetUse
                                                * ```json
                                                * {
                                                    * "namespaceCode": "examplePermissionNamespace",
-                                                   * "actions": ["get", "update", "delete"]
+                                                   * "actions": ["get", "update", "delete"],
                                                    * "resources":["treeResourceCode1/StructCode1/resourceStructChildrenCode1", "treeResourceCode2/StructCode1/resourceStructChildrenCode1"]
                                                    * }
                                                    * ```
@@ -5499,9 +5626,9 @@ func (client *ManagementClient) ListResourceTargets(reqDto *dto.ListResourceTarg
 
 /*
    * @summary 获取用户授权资源的结构列表
-   * @description 该接口主要用于获取用户授权的资源列表，通过权限空间 Code、用户 id、资源 Code 获取用户资源的授权列表。
+   * @description 该接口主要用于获取用户授权的资源列表，通过权限空间 Code、用户 Id、资源 Code 获取用户资源的授权列表，通过不同的资源类型返回对应资源的授权。
    *
-   * ### 示例
+   * ### 获取用户授权字符串数据资源示例
    *
    * - 入参
    *
@@ -5509,7 +5636,7 @@ func (client *ManagementClient) ListResourceTargets(reqDto *dto.ListResourceTarg
    * {
        * "namespaceCode": "examplePermissionNamespace",
        * "userId": "63721xxxxxxxxxxxxdde14a3",
-       * "resourceCode": "exampleResourceCode"
+       * "resourceCode": "exampleStrResourceCode"
        * }
        * ```
        *
@@ -5522,46 +5649,90 @@ func (client *ManagementClient) ListResourceTargets(reqDto *dto.ListResourceTarg
            * "apiCode": 20001,
            * "data":{
                * "namespaceCode": "exampleNamespaceCode",
-               * "resourceCode": "exampleResourceCode",
-               * "permissionBo": {
-                   * "resourceId": "63xxxxxxxxxxxxx999",
-                   * "resourceType": "TREE",
-                   * "nodeAuthActionList": [
+               * "resourceCode": "exampleStrResourceCode",
+               * "resourceType": "STRING",
+               * "strResourceAuthAction":{
+                   * "value": "strTestValue",
+                   * "actions": ["get","delete"]
+                   * }
+                   * }
+                   * }
+                   * ```
+                   *
+                   *
+                   * ### 获取用户授权数据数组资源示例
+                   *
+                   * - 入参
+                   *
+                   * ```json
+                   * {
+                       * "namespaceCode": "examplePermissionNamespace",
+                       * "userId": "63721xxxxxxxxxxxxdde14a3",
+                       * "resourceCode": "exampleArrResourceCode"
+                       * }
+                       * ```
+                       *
+                       * - 出参
+                       *
+                       * ```json
                        * {
-                           * "name": "1",
-                           * "code": "1",
-                           * "children": [
-                               * {
-                                   * "name": "1-1",
-                                   * "code": "1-1",
-                                   * "children": [],
-                                   * "actions": [
-                                       * "read",
-                                       * "get"
-                                       * ]
+                           * "statusCode": 200,
+                           * "message": "操作成功",
+                           * "apiCode": 20001,
+                           * "data":{
+                               * "namespaceCode": "exampleNamespaceCode",
+                               * "resourceCode": "exampleArrResourceCode",
+                               * "resourceType": "ARRAY",
+                               * "arrResourceAuthAction":{
+                                   * "values": ["arrTestValue1","arrTestValue2","arrTestValue3"],
+                                   * "actions": ["get","delete"]
+                                   * }
+                                   * }
+                                   * }
+                                   * ```
+                                   *
+                                   *
+                                   * ### 获取用户授权树数据资源示例
+                                   *
+                                   * - 入参
+                                   *
+                                   * ```json
+                                   * {
+                                       * "namespaceCode": "examplePermissionNamespace",
+                                       * "userId": "63721xxxxxxxxxxxxdde14a3",
+                                       * "resourceCode": "exampleArrResourceCode"
                                        * }
-                                       * ],
-                                       * "actions": [
-                                           * "read"
-                                           * ]
-                                           * },
-                                           * {
-                                               * "name": "2",
-                                               * "code": "2",
-                                               * "children": [
-                                                   * {
-                                                       * "name": "2-1",
-                                                       * "code": "2-1",
-                                                       * "actions": [
-                                                           * "read"
-                                                           * ]
-                                                           * }
-                                                           * ],
-                                                           * "actions": [
-                                                               * "get"
-                                                               * ]
-                                                               * }
-                                                               * ]
+                                       * ```
+                                       *
+                                       * - 出参
+                                       *
+                                       * ```json
+                                       * {
+                                           * "statusCode": 200,
+                                           * "message": "操作成功",
+                                           * "apiCode": 20001,
+                                           * "data":{
+                                               * "namespaceCode": "exampleNamespaceCode",
+                                               * "resourceCode": "exampleArrResourceCode",
+                                               * "resourceType": "TREE",
+                                               * "treeResourceAuthAction":{
+                                                   * "nodeAuthActionList":[{
+                                                       * "code": "tree11",
+                                                       * "name": "tree11",
+                                                       * "value": "test11Value",
+                                                       * "actions": ["get","delete"],
+                                                       * "children": [{
+                                                           * "code": "tree111",
+                                                           * "name": "tree111",
+                                                           * "value": "test111Value",
+                                                           * "actions": ["update","read"],
+                                                           * }]
+                                                           * },{
+                                                               * "code": "tree22",
+                                                               * "name": "tree22",
+                                                               * "value": "test22Value",
+                                                               * "actions": ["get","delete"],
+                                                               * }]
                                                                * }
                                                                * }
                                                                * }
@@ -5587,9 +5758,10 @@ func (client *ManagementClient) GetUserResourceStruct(reqDto *dto.GetUserResourc
 
 /*
    * @summary 获取外部用户授权资源的结构列表
-   * @description 该接口主要用于获取外部用户授权的资源列表，通过权限空间 Code、外部用户 id、资源 Code 获取外部用户资源的授权列表。
+   * @description 该接口主要用于获取外部用户授权的资源列表，通过权限空间 Code、外部用户 Id、资源 Code 获取外部用户资源的授权列表,通过不同的资源类型返回对应资源的授权。
    *
-   * ### 示例
+   *
+   * ### 获取用户授权字符串数据资源示例
    *
    * - 入参
    *
@@ -5597,7 +5769,7 @@ func (client *ManagementClient) GetUserResourceStruct(reqDto *dto.GetUserResourc
    * {
        * "namespaceCode": "examplePermissionNamespace",
        * "externalId": "63721xxxxxxxxxxxxdde14a3",
-       * "resourceCode": "exampleResourceCode"
+       * "resourceCode": "exampleStrResourceCode"
        * }
        * ```
        *
@@ -5610,46 +5782,90 @@ func (client *ManagementClient) GetUserResourceStruct(reqDto *dto.GetUserResourc
            * "apiCode": 20001,
            * "data":{
                * "namespaceCode": "exampleNamespaceCode",
-               * "resourceCode": "exampleResourceCode",
-               * "permissionBo": {
-                   * "resourceId": "63xxxxxxxxxxxxx999",
-                   * "resourceType": "TREE",
-                   * "nodeAuthActionList": [
+               * "resourceCode": "exampleStrResourceCode",
+               * "resourceType": "STRING",
+               * "strResourceAuthAction":{
+                   * "value": "strTestValue",
+                   * "actions": ["get","delete"]
+                   * }
+                   * }
+                   * }
+                   * ```
+                   *
+                   *
+                   * ### 获取用户授权数据数组资源示例
+                   *
+                   * - 入参
+                   *
+                   * ```json
+                   * {
+                       * "namespaceCode": "examplePermissionNamespace",
+                       * "externalId": "63721xxxxxxxxxxxxdde14a3",
+                       * "resourceCode": "exampleArrResourceCode"
+                       * }
+                       * ```
+                       *
+                       * - 出参
+                       *
+                       * ```json
                        * {
-                           * "name": "1",
-                           * "code": "1",
-                           * "children": [
-                               * {
-                                   * "name": "1-1",
-                                   * "code": "1-1",
-                                   * "children": [],
-                                   * "actions": [
-                                       * "read",
-                                       * "get"
-                                       * ]
+                           * "statusCode": 200,
+                           * "message": "操作成功",
+                           * "apiCode": 20001,
+                           * "data":{
+                               * "namespaceCode": "exampleNamespaceCode",
+                               * "resourceCode": "exampleArrResourceCode",
+                               * "resourceType": "ARRAY",
+                               * "arrResourceAuthAction":{
+                                   * "values": ["arrTestValue1","arrTestValue2","arrTestValue3"],
+                                   * "actions": ["get","delete"]
+                                   * }
+                                   * }
+                                   * }
+                                   * ```
+                                   *
+                                   *
+                                   * ### 获取用户授权树数据资源示例
+                                   *
+                                   * - 入参
+                                   *
+                                   * ```json
+                                   * {
+                                       * "namespaceCode": "examplePermissionNamespace",
+                                       * "externalId": "63721xxxxxxxxxxxxdde14a3",
+                                       * "resourceCode": "exampleArrResourceCode"
                                        * }
-                                       * ],
-                                       * "actions": [
-                                           * "read"
-                                           * ]
-                                           * },
-                                           * {
-                                               * "name": "2",
-                                               * "code": "2",
-                                               * "children": [
-                                                   * {
-                                                       * "name": "2-1",
-                                                       * "code": "2-1",
-                                                       * "actions": [
-                                                           * "read"
-                                                           * ]
-                                                           * }
-                                                           * ],
-                                                           * "actions": [
-                                                               * "get"
-                                                               * ]
-                                                               * }
-                                                               * ]
+                                       * ```
+                                       *
+                                       * - 出参
+                                       *
+                                       * ```json
+                                       * {
+                                           * "statusCode": 200,
+                                           * "message": "操作成功",
+                                           * "apiCode": 20001,
+                                           * "data":{
+                                               * "namespaceCode": "exampleNamespaceCode",
+                                               * "resourceCode": "exampleArrResourceCode",
+                                               * "resourceType": "TREE",
+                                               * "treeResourceAuthAction":{
+                                                   * "nodeAuthActionList":[{
+                                                       * "code": "tree11",
+                                                       * "name": "tree11",
+                                                       * "value": "test11Value",
+                                                       * "actions": ["get","delete"],
+                                                       * "children": [{
+                                                           * "code": "tree111",
+                                                           * "name": "tree111",
+                                                           * "value": "test111Value",
+                                                           * "actions": ["update","read"],
+                                                           * }]
+                                                           * },{
+                                                               * "code": "tree22",
+                                                               * "name": "tree22",
+                                                               * "value": "test22Value",
+                                                               * "actions": ["get","delete"],
+                                                               * }]
                                                                * }
                                                                * }
                                                                * }
@@ -5674,28 +5890,31 @@ func (client *ManagementClient) GetExternalUserResourceStruct(reqDto *dto.GetExt
 }
 
 /*
-   * @summary 判断用户在同层级资源下的权限
-   * @description 该接口主要用于判断用户在同层级资源下的权限，通过权限空间 Code 、用户 ID、资源操作、资源或资源子节点查询用户是否有该同级资源的权限。可选传条件属性参数，默认不开启条件判断。
+   * @summary 判断用户在树资源同层级下的权限
+   * @description 该接口主要用于判断用户在树资源同层级下的权限，通过权限空间 Code 、用户 ID、资源操作、资源或资源子节点查询用户是否有该树资源同级路径的权限。可选传条件属性参数，默认不开启条件判断。
    *
-   * ### 判断用户在同层级字符串资源权限示例（无条件判断）
+   *
+   * ### 判断用户在树资源同层级权限示例（无条件判断）
    *
    * ```json
    * {
        * "namespaceCode": "examplePermissionNamespace",
        * "userId": "63721xxxxxxxxxxxxdde14a3",
        * "action": "read",
-       * "resource": "strResourceCode1"
+       * "resource": "treeResourceCode/structCode",
+       * "resourceNodeCodes": ["resourceStructChildrenCode1","resourceStructChildrenCode2","resourceStructChildrenCode3"]
        * }
        * ```
        *
-       * ### 判断用户在同层级字符串资源权限示例（开启条件判断）
+       * ### 判断用户在树资源同层级权限示例（开启条件判断）
        *
        * ```json
        * {
            * "namespaceCode": "examplePermissionNamespace",
            * "userId": "63721xxxxxxxxxxxxdde14a3",
            * "action": "read",
-           * "resource": "strResourceCode1",
+           * "resource": "treeResourceCode/structCode",
+           * "resourceNodeCodes": ["resourceStructChildrenCode1","resourceStructChildrenCode2","resourceStructChildrenCode3"],
            * "judgeConditionEnabled": true,
            * "authEnvParams":{
                * "ip":"110.96.0.0",
@@ -5710,31 +5929,8 @@ func (client *ManagementClient) GetExternalUserResourceStruct(reqDto *dto.GetExt
                * }
                * ```
                *
-               * ### 判断用户在同层级数组资源权限示例
-               *
-               * ```json
-               * {
-                   * "namespaceCode": "examplePermissionNamespace",
-                   * "userId": "63721xxxxxxxxxxxxdde14a3",
-                   * "action": "read",
-                   * "resource": "arrayResourceCode1"
-                   * }
-                   * ```
-                   *
-                   * ### 判断用户在同层级树资源权限示例
-                   *
-                   * ```json
-                   * {
-                       * "namespaceCode": "examplePermissionNamespace",
-                       * "userId": "63721xxxxxxxxxxxxdde14a3",
-                       * "action": "read",
-                       * "resource": "treeResourceCode1/structCode1",
-                       * "resourceNodeCodes": ["resourceStructChildrenCode1","resourceStructChildrenCode2","resourceStructChildrenCode3"]
-                       * }
-                       * ```
-                       *
-                       * @param requestBody
-                       * @returns CheckUserSameLevelPermissionResponseDto
+               * @param requestBody
+               * @returns CheckUserSameLevelPermissionResponseDto
 */
 func (client *ManagementClient) CheckUserSameLevelPermission(reqDto *dto.CheckUserSameLevelPermissionDto) *dto.CheckUserSameLevelPermissionResponseDto {
 	b, err := client.SendHttpRequest("/api/v3/check-user-same-level-permission", fasthttp.MethodPost, reqDto)
@@ -6246,7 +6442,10 @@ func (client *ManagementClient) GetWebhookEventList() *dto.WebhookEventListRespD
 /*
  * @summary 获取协作管理员 AK/SK 列表
  * @description 根据协作管理员 Id 获取协作管理员下所有的 AK/SK 列表
- * @param userId 用户 ID
+ * @param userId 密钥所属用户 ID
+ * @param tenantId 密钥所属租户 ID
+ * @param type 密钥类型
+ * @param status AccessKey 状态，activated：已激活，staging：分级（可轮换），revoked：已撤销
  * @returns ListAccessKeyResponseDto
  */
 func (client *ManagementClient) GetAccessKeyList(reqDto *dto.ListAccessKeyDto) *dto.ListAccessKeyResponseDto {
@@ -6265,8 +6464,8 @@ func (client *ManagementClient) GetAccessKeyList(reqDto *dto.ListAccessKeyDto) *
 }
 
 /*
- * @summary 获取协作管理员 AK/Sk 详细信息
- * @description 获取协作管理员 AK/Sk 详细信息,根据协作管理员 ID 和 accessKeyId 获取对应 AK/SK 的详细信息。
+ * @summary 获取协作管理员 AK/SK 详细信息
+ * @description 获取协作管理员 AK/SK 详细信息,根据协作管理员 ID 和 accessKeyId 获取对应 AK/SK 的详细信息。
  * @param userId 用户 ID
  * @param accessKeyId accessKeyId
  * @returns GetAccessKeyResponseDto
@@ -6316,6 +6515,27 @@ func (client *ManagementClient) CreateAccessKey(reqDto *dto.CreateAccessKeyDto) 
 func (client *ManagementClient) DeleteAccessKey(reqDto *dto.DeleteAccessKeyDto) *dto.CommonResponseDto {
 	b, err := client.SendHttpRequest("/api/v3/delete-access-key", fasthttp.MethodPost, reqDto)
 	var response dto.CommonResponseDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 更新一个管理员 AccessKey
+ * @description 根据 AccessKeyId 更新一个管理员 AccessKey，目前只支持更新 status，status 支持 activated / revoked
+ * @param requestBody
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) UpdateAccessKey(reqDto *dto.UpdateAccessKeyDto) *dto.IsSuccessRespDto {
+	b, err := client.SendHttpRequest("/api/v3/update-access-key", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
 	if err != nil {
 		fmt.Println(err)
 		return nil

@@ -1,6 +1,6 @@
 package dto
 
-type GetUserResourceStructDataDto struct {
+type GetExternalUserResourceStructDataDto struct {
 	NamespaceCode          string                 `json:"namespaceCode"`
 	ResourceCode           string                 `json:"resourceCode"`
 	ResourceType           string                 `json:"resourceType"`

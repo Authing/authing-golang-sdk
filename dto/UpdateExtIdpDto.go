@@ -1,8 +1,7 @@
 package dto
 
-
-type UpdateExtIdpDto struct{
-    Id  string `json:"id"`
-    Name  string `json:"name"`
+type UpdateExtIdpDto struct {
+	Name     string `json:"name"`
+	Id       string `json:"id"`
+	TenantId string `json:"tenantId,omitempty"`
 }
-

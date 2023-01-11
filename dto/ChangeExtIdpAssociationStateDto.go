@@ -1,9 +1,7 @@
 package dto
 
-
-type ChangeExtIdpAssociationStateDto struct{
-    Association  bool `json:"association"`
-    Id  string `json:"id"`
-    TenantId  string `json:"tenantId,omitempty"`
+type ChangeExtIdpAssociationStateDto struct {
+	Id          string `json:"id"`
+	Association bool   `json:"association"`
+	TenantId    string `json:"tenantId,omitempty"`
 }
-

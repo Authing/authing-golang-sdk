@@ -1,10 +1,8 @@
 package dto
 
-
-type AssociateTenantResourceDto struct{
-    AppId  string `json:"appId"`
-    Association  bool `json:"association"`
-    Code  string `json:"code"`
-    TenantId  string `json:"tenantId,omitempty"`
+type AssociateTenantResourceDto struct {
+	Code        string `json:"code"`
+	Association bool   `json:"association"`
+	AppId       string `json:"appId"`
+	TenantId    string `json:"tenantId,omitempty"`
 }
-

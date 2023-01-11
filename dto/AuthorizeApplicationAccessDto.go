@@ -1,8 +1,6 @@
 package dto
 
-
-type AuthorizeApplicationAccessDto struct{
-    List  []ApplicationPermissionRecordItem `json:"list"`
-    AppId  string `json:"appId"`
+type AuthorizeApplicationAccessDto struct {
+	AppId string                            `json:"appId"`
+	List  []ApplicationPermissionRecordItem `json:"list"`
 }
-
