@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
+
 	"github.com/Authing/authing-golang-sdk/v3/constant"
 	"github.com/Authing/authing-golang-sdk/v3/dto"
 	"github.com/Authing/authing-golang-sdk/v3/util"
-	"strings"
 
 	keyfunc "github.com/MicahParks/compatibility-keyfunc"
 	"github.com/dgrijalva/jwt-go"
@@ -332,7 +333,7 @@ func (client *AuthenticationClient) GetNewAccessTokenByRefreshToken(refreshToken
 	return string(resp.Body), err
 }
 
-func (client *AuthenticationClient) IntrospectToken(token string) (*dto.IntrospectTokenResult, error) {
+func (client *AuthenticationClient) IntrospectToken(token string) (*dto.TokenIntrospectResponse, error) {
 	url := client.options.AppHost + fmt.Sprintf("/%s/token/introspection", client.options.Protocol)
 	header := map[string]string{
 		"Content-Type": "application/x-www-form-urlencoded",
@@ -357,7 +358,7 @@ func (client *AuthenticationClient) IntrospectToken(token string) (*dto.Introspe
 		ReqDto:  body,
 	})
 	println(string(resp.Body))
-	var response dto.IntrospectTokenResult
+	var response dto.TokenIntrospectResponse
 	if err != nil {
 		return nil, err
 	}
