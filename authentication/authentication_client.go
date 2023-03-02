@@ -2164,6 +2164,7 @@ func (client *AuthenticationClient) GetUserAuthorizedResourcesList() *dto.GetUse
 	return &response
 }
 
+// ==== AUTO GENERATED AUTHENTICATION METHODS END ====
 /*
 * @summary 获取用户指定资源权限列表
 * @description 获取用户指定资源的权限列表,用户获取某个应用下指定资源的权限列表。
@@ -2203,5 +2204,3 @@ func (client *AuthenticationClient) getUserAuthResourceStruct(reqDto *dto.GetUse
 	}
 	return &response
 }
-
-// ==== AUTO GENERATED AUTHENTICATION METHODS END ====
