@@ -229,3 +229,36 @@ func TestAuthenticationClient_GetUserAuthorizedResourcesList(t *testing.T) {
 	fmt.Println(response)
 
 }
+
+func TestAuthenticationClient_GetUserAuthResourcePermissionList(t *testing.T) {
+
+	resp := authenticationClient.SignInByUsernamePassword(
+		"4", "4", dto.SignInOptionsDto{})
+	fmt.Println(resp.StatusCode, resp.RequestId, resp.Message)
+	fmt.Println(resp.Data.AccessToken)
+	authenticationClient.SetAccessToken(resp.Data.AccessToken)
+
+	request := dto.GetUserAuthResourcePermissionListDto{
+		Resources: []string{"r1", "r2", "r3/1", "r3/1/11", "r3/1/11/111", "r3/2"},
+	}
+	response := authenticationClient.getUserAuthResourcePermissionList(&request)
+	fmt.Println(response)
+
+}
+
+func TestAuthenticationClient_GetUserAuthResourceStruct(t *testing.T) {
+
+	resp := authenticationClient.SignInByUsernamePassword(
+		"4", "4", dto.SignInOptionsDto{})
+	fmt.Println(resp.StatusCode, resp.RequestId, resp.Message)
+	fmt.Println(resp.Data.AccessToken)
+	authenticationClient.SetAccessToken(resp.Data.AccessToken)
+
+	request := dto.GetUserAuthResourceStructDto{
+		Resource: "r3",
+	}
+
+	response := authenticationClient.getUserAuthResourceStruct(&request)
+	fmt.Println(response)
+
+}

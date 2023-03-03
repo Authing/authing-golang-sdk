@@ -332,7 +332,7 @@ func (client *AuthenticationClient) GetNewAccessTokenByRefreshToken(refreshToken
 	return string(resp.Body), err
 }
 
-func (client *AuthenticationClient) IntrospectToken(token string) (*dto.IntrospectTokenResult, error) {
+func (client *AuthenticationClient) IntrospectToken(token string) (*dto.TokenIntrospectResponse, error) {
 	url := client.options.AppHost + fmt.Sprintf("/%s/token/introspection", client.options.Protocol)
 	header := map[string]string{
 		"Content-Type": "application/x-www-form-urlencoded",
@@ -357,7 +357,7 @@ func (client *AuthenticationClient) IntrospectToken(token string) (*dto.Introspe
 		ReqDto:  body,
 	})
 	println(string(resp.Body))
-	var response dto.IntrospectTokenResult
+	var response dto.TokenIntrospectResponse
 	if err != nil {
 		return nil, err
 	}
@@ -2165,3 +2165,42 @@ func (client *AuthenticationClient) GetUserAuthorizedResourcesList() *dto.GetUse
 }
 
 // ==== AUTO GENERATED AUTHENTICATION METHODS END ====
+/*
+* @summary 获取用户指定资源权限列表
+* @description 获取用户指定资源的权限列表,用户获取某个应用下指定资源的权限列表。
+* @returns GetUserAuthResourcePermissionListRespDto
+ */
+func (client *AuthenticationClient) getUserAuthResourcePermissionList(reqDto *dto.GetUserAuthResourcePermissionListDto) *dto.GetUserAuthResourcePermissionListRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-user-auth-resource-permission-list", fasthttp.MethodPost, reqDto)
+	var response dto.GetUserAuthResourcePermissionListRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+* @summary 获取用户授权资源的结构列表
+* @description 获取用户授权的资源列表，用户获取某个应用下的某个资源所授权的结构列表，通过不同的资源类型返回对应资源的授权列表。
+* @returns GetUserAuthResourceStructRespDto
+ */
+func (client *AuthenticationClient) getUserAuthResourceStruct(reqDto *dto.GetUserAuthResourceStructDto) *dto.GetUserAuthResourceStructRespDto {
+	b, err := client.SendHttpRequest("/api/v3/get-user-auth-resource-struct", fasthttp.MethodPost, reqDto)
+	var response dto.GetUserAuthResourceStructRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
