@@ -13,4 +13,6 @@ const (
 	StringEmpty = ""
 
 	None = "none"
+
+	WebSocketHost = "wss://events.authing.com"
 )

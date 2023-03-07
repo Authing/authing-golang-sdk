@@ -77,6 +77,10 @@ type AuthenticationClientOptions struct {
 	是否跳过 HTTPS 证书检测，默认为 false；如果是私有化部署的场景且证书不被信任，可以设置为 true
 	*/
 	InsecureSkipVerify bool
+	/**
+	 * 订阅事件 WebSocket 地址
+	 */
+	WssHost string
 }
 
 type AuthUrlResult struct {
