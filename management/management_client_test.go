@@ -2,8 +2,9 @@ package management
 
 import (
 	"fmt"
-	"github.com/Authing/authing-golang-sdk/v3/dto"
 	"testing"
+
+	"github.com/Authing/authing-golang-sdk/v3/dto"
 )
 
 var client *ManagementClient
@@ -16,6 +17,7 @@ func init() {
 		AccessKeyId:     "63a517e42e4a0aa457cd0b2d",
 		AccessKeySecret: "1b4ee0b200838618d30d4f385c8c3836",
 		Host:            "http://127.0.0.1:3000",
+		WssHost:         "ws://127.0.0.1:88",
 	}
 	var err error
 	client, err = NewManagementClient(&options)
@@ -1620,4 +1622,54 @@ func TestClient_CheckUserSameLevelPermission(t *testing.T) {
 	}
 	response := client.CheckUserSameLevelPermission(&request)
 	fmt.Println(response)
+}
+
+type UserEvent struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
+
+func TestClient_PubEvent(t *testing.T) {
+	var data = &UserEvent{
+		Id:   "563434342323",
+		Name: "golang-test",
+	}
+	var resp = client.PubEvent("custom_xrgu.user_create", data)
+	fmt.Println(resp)
+}
+
+type Receiver1 struct{}
+
+func (receiver *Receiver1) OnSuccess(msg []byte) {
+	fmt.Println(string(msg))
+}
+func (receiver *Receiver1) OnError(err error) {
+	fmt.Println(err)
+}
+
+func TestClient_SubEvent(t *testing.T) {
+	ErrChan := make(chan error, 1)
+
+	client.SubEventByReceiver("custom_xrgu.user_create", &Receiver1{})
+	client.SubEvent("custom_xrgu.user_create", func(msg []byte) {
+		fmt.Println(string(msg))
+	}, func(err error) {
+		fmt.Println(err)
+		ErrChan <- err
+	})
+
+	client.SubEvent("custom_xrgu.user_create", func(msg []byte) {
+		fmt.Println(string(msg) + "222")
+	}, func(err error) {
+		fmt.Println(err)
+		ErrChan <- err
+	})
+
+	client.SubEvent("custom_xrgu.user_create", func(msg []byte) {
+		fmt.Println(string(msg) + "333")
+	}, func(err error) {
+		fmt.Println(err)
+		ErrChan <- err
+	})
+	<-ErrChan
 }

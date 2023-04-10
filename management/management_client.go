@@ -3,7 +3,9 @@ package management
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/Authing/authing-golang-sdk/v3/dto"
+	"github.com/Authing/authing-golang-sdk/v3/util"
 	"github.com/valyala/fasthttp"
 )
 
@@ -6546,4 +6548,58 @@ func (client *ManagementClient) UpdateAccessKey(reqDto *dto.UpdateAccessKeyDto) 
 		return nil
 	}
 	return &response
+}
+
+/*
+ * @summary 事件发布
+ * @description 根据事件编码发布一个自定义事件
+ * @param eventCode 事件编码
+ * @param body 事件消息
+ * @returns IsSuccessRespDto
+ */
+func (client *ManagementClient) PubEvent(eventCode string, data interface{}) *dto.IsSuccessRespDto {
+	var reqDto = dto.NewEventReqDto(eventCode, data)
+	b, err := client.SendHttpRequest("/api/v3/pub-event", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 事件订阅
+ * @description 根据事件编码订阅一个自定义事件
+ * @param eventCode 事件编码
+ * @param onSuccess 成功的消息
+ * @param onError 失败处理
+ */
+func (client *ManagementClient) SubEvent(eventCode string, onSuccess func(msg []byte), onError func(err error)) {
+	var options = client.options
+	defMap := make(map[string]string, 0)
+	stringToSign := util.ComposeStringToSign("websocket", "", defMap, defMap)
+	token := util.GetAuthorization(client.options.AccessKeyId, client.options.AccessKeySecret, stringToSign)
+	// fmt.Println(token)
+	if !client.eventHub.CreateManagement(eventCode, options.WssHost, token) {
+		return
+	}
+	client.eventHub.AddReceiver(eventCode, onSuccess, onError)
+	// recv message exec corresponding callback function
+	go client.eventHub.StartReceive(eventCode)
+}
+
+/*
+ * @summary 事件订阅
+ * @description 根据事件编码订阅一个自定义事件
+ * @param eventCode 事件编码
+ * @param receiver 消息处理器
+ */
+func (client *ManagementClient) SubEventByReceiver(eventCode string, receiver util.EventReceiver) {
+	client.SubEvent(eventCode, receiver.OnSuccess, receiver.OnError)
 }

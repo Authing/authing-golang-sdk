@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
+
 	"github.com/Authing/authing-golang-sdk/v3/constant"
 	"github.com/Authing/authing-golang-sdk/v3/dto"
 	"github.com/Authing/authing-golang-sdk/v3/util"
-	"strings"
 
 	keyfunc "github.com/MicahParks/compatibility-keyfunc"
 	"github.com/dgrijalva/jwt-go"
@@ -25,8 +26,9 @@ var commonHeaders = map[string]string{
 }
 
 type AuthenticationClient struct {
-	options *AuthenticationClientOptions
-	jwks    *keyfunc.JWKS
+	options  *AuthenticationClientOptions
+	jwks     *keyfunc.JWKS
+	eventHub *util.WebSocketEventHub
 }
 
 func NewAuthenticationClient(options *AuthenticationClientOptions) (*AuthenticationClient, error) {
@@ -38,6 +40,9 @@ func NewAuthenticationClient(options *AuthenticationClientOptions) (*Authenticat
 	}
 	if options.AppHost == "" {
 		return nil, errors.New("AppHost 不能为空")
+	}
+	if options.WssHost == "" {
+		options.WssHost = constant.WebSocketHost
 	}
 	if options.RedirectUri == "" {
 		return nil, errors.New("RedirectUri 不能为空")
@@ -56,7 +61,8 @@ func NewAuthenticationClient(options *AuthenticationClientOptions) (*Authenticat
 	}
 
 	client := &AuthenticationClient{
-		options: options,
+		options:  options,
+		eventHub: util.NewWebSocketEvent(),
 	}
 
 	return client, nil
@@ -2203,4 +2209,56 @@ func (client *AuthenticationClient) getUserAuthResourceStruct(reqDto *dto.GetUse
 		return nil
 	}
 	return &response
+}
+
+/*
+ * @summary 事件发布
+ * @description 根据事件编码发布一个自定义事件
+ * @param eventCode 事件编码
+ * @param body 事件消息
+ * @returns IsSuccessRespDto
+ */
+func (client *AuthenticationClient) PubEvent(eventCode string, data interface{}) *dto.IsSuccessRespDto {
+	var reqDto = dto.NewEventReqDto(eventCode, data)
+	b, err := client.SendHttpRequest("/api/v3/pub-userEvent", fasthttp.MethodPost, reqDto)
+	var response dto.IsSuccessRespDto
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	err = json.Unmarshal(b, &response)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &response
+}
+
+/*
+ * @summary 事件订阅
+ * @description 根据事件编码订阅一个自定义事件
+ * @param eventCode 事件编码
+ * @param onSuccess 成功的消息
+ * @param onError 异常处理
+ */
+func (client *AuthenticationClient) SubEvent(eventCode string, onSuccess func(msg []byte), onError func(err error)) {
+	var options = client.options
+	token := options.AccessToken
+	// fmt.Println(token)
+	if !client.eventHub.CreateAuthentication(eventCode, options.WssHost, token) {
+		return
+	}
+	client.eventHub.AddReceiver(eventCode, onSuccess, onError)
+	// recv message exec corresponding callback function
+	go client.eventHub.StartReceive(eventCode)
+}
+
+/*
+ * @summary 事件订阅
+ * @description 根据事件编码订阅一个自定义事件
+ * @param eventCode 事件编码
+ * @param receiver 消息处理器
+ */
+func (client *AuthenticationClient) SubEventByReceiver(eventCode string, receiver util.EventReceiver) {
+	client.SubEvent(eventCode, receiver.OnSuccess, receiver.OnError)
 }
