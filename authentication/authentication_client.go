@@ -362,8 +362,14 @@ func (client *AuthenticationClient) IntrospectToken(token string) (*dto.TokenInt
 		Headers: client.getReqHeaders(header),
 		ReqDto:  body,
 	})
-	println(string(resp.Body))
+
 	var response dto.TokenIntrospectResponse
+
+	if resp == nil || resp.Body == nil {
+		return &response, err
+	}
+	println(string(resp.Body))
+
 	if err != nil {
 		return nil, err
 	}
