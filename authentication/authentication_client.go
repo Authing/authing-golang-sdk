@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/Authing/authing-golang-sdk/v3/constant"
 	"github.com/Authing/authing-golang-sdk/v3/dto"
@@ -55,6 +56,9 @@ func NewAuthenticationClient(options *AuthenticationClientOptions) (*Authenticat
 	}
 	if options.Timeout == 0 {
 		options.Timeout = 10000
+	}
+	if options.ReadTimeout == 0 {
+		options.ReadTimeout = 10 * time.Second
 	}
 	if options.TokenEndPointAuthMethod == "" {
 		options.TokenEndPointAuthMethod = ClientSecretPost

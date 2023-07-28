@@ -114,7 +114,20 @@ func (c *ManagementClient) SendHttpRequest(url string, method string, reqDto int
 		TLSConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 
-	client.Do(req, resp)
+	err = client.DoTimeout(req, resp, c.options.ReadTimeout)
+	if err != nil {
+		if err == fasthttp.ErrTimeout {
+			resultMap := make(map[string]interface{})
+			resultMap["statusCode"] = 504
+			resultMap["message"] = "请求超时"
+			b, err := json.Marshal(resultMap)
+			if err != nil {
+				return nil, err
+			}
+			return b, err
+		}
+		return nil, err
+	}
 	body := resp.Body()
 	return body, err
 }

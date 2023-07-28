@@ -94,7 +94,7 @@ func (client AuthenticationClient) SendProtocolHttpRequest(option *ProtocolReque
 	httpClient := &fasthttp.Client{
 		TLSConfig: &tls.Config{InsecureSkipVerify: client.options.InsecureSkipVerify},
 	}
-	err := httpClient.Do(req, resp)
+	err := httpClient.DoTimeout(req, resp, client.options.ReadTimeout)
 	if err != nil {
 		return nil, err
 	}

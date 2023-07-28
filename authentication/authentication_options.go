@@ -2,6 +2,7 @@ package authentication
 
 import (
 	"github.com/dgrijalva/jwt-go"
+	"time"
 )
 
 type AuthenticationClientOptions struct {
@@ -71,7 +72,10 @@ type AuthenticationClientOptions struct {
 	/**
 	请求超时时间
 	*/
+	//Deprecated: Use ReadTimeout instead
 	Timeout int
+
+	ReadTimeout time.Duration
 
 	/**
 	是否跳过 HTTPS 证书检测，默认为 false；如果是私有化部署的场景且证书不被信任，可以设置为 true

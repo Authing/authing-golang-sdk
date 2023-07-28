@@ -86,7 +86,10 @@ func (client *AuthenticationClient) SendHttpRequest(url string, method string, r
 		TLSConfig: &tls.Config{InsecureSkipVerify: client.options.InsecureSkipVerify},
 	}
 
-	httpClient.Do(req, resp)
+	err = httpClient.DoTimeout(req, resp, client.options.ReadTimeout)
+	if err != nil {
+		return nil, err
+	}
 	body := resp.Body()
 	return body, err
 }
