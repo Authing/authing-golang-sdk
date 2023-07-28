@@ -13,9 +13,9 @@ func init() {
 		//AccessKeyId:     "YOUR_ACCESS_KEY_ID",
 		//AccessKeySecret: "YOUR_ACCESS_KEY_SECRET",
 		//Host:            "YOUR_HOST",
-		AccessKeyId:     "60e043f8cd91b87d712b6365",
-		AccessKeySecret: "158c7679333bc196b524d78d745813e5",
-		Host:            "https://console.authing.cn/",
+		AccessKeyId:     "",
+		AccessKeySecret: "",
+		Host:            "https://.authing.cn/",
 		//WssHost:         "ws://127.0.0.1:88",
 		//ReadTimeout: 5 * time.Second,
 	}
