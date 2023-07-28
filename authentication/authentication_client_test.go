@@ -2,6 +2,7 @@ package authentication
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/Authing/authing-golang-sdk/v3/constant"
 	"github.com/Authing/authing-golang-sdk/v3/dto"
@@ -15,12 +16,13 @@ import (
 
 var authenticationClient *AuthenticationClient
 var options = AuthenticationClientOptions{
-	AppId:       "",
-	AppSecret:   "",
-	AppHost:     "",
+	AppId:       "sfd",
+	AppSecret:   "sad",
+	AppHost:     "http://localhost:8989",
 	WssHost:     "ws://localhost:88",
 	RedirectUri: "http://localhost:8989",
 	AccessToken: "",
+	ReadTimeout: 1 * time.Millisecond,
 }
 
 const idToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2M2IzZWE3Mzk0MDc0YWE1ZTE5YmIzMGMiLCJhdWQiOiI2M2IzZWE1YmM5NjY0YzlkMDhkMTkwYzgiLCJpYXQiOjE2NzI3MzY2NjcsImV4cCI6MTY3Mzk0NjI2NywiaXNzIjoiaHR0cHM6Ly9nby11c2VyLXBlcm1pc3Npb24tYXV0aC5hdXRoaW5nLmNuL29pZGMiLCJub25jZSI6InJtZ0pab3RxNGkiLCJuYW1lIjpudWxsLCJnaXZlbl9uYW1lIjpudWxsLCJtaWRkbGVfbmFtZSI6bnVsbCwiZmFtaWx5X25hbWUiOm51bGwsIm5pY2tuYW1lIjpudWxsLCJwcmVmZXJyZWRfdXNlcm5hbWUiOm51bGwsInByb2ZpbGUiOm51bGwsInBpY3R1cmUiOiJodHRwczovL2ZpbGVzLmF1dGhpbmcuY28vYXV0aGluZy1jb25zb2xlL2RlZmF1bHQtdXNlci1hdmF0YXIucG5nIiwid2Vic2l0ZSI6bnVsbCwiYmlydGhkYXRlIjpudWxsLCJnZW5kZXIiOiJVIiwiem9uZWluZm8iOm51bGwsImxvY2FsZSI6bnVsbCwidXBkYXRlZF9hdCI6IjIwMjMtMDEtMDNUMDg6NTQ6NDUuMzMwWiIsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicGhvbmVfbnVtYmVyIjpudWxsLCJwaG9uZV9udW1iZXJfdmVyaWZpZWQiOmZhbHNlfQ.3awp567aJ3wBXR0mh0l1oBTugTNsDqYpJVIaDTeHXbI\n"

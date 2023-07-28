@@ -2,9 +2,8 @@ package management
 
 import (
 	"fmt"
-	"testing"
-
 	"github.com/Authing/authing-golang-sdk/v3/dto"
+	"testing"
 )
 
 var client *ManagementClient
@@ -14,10 +13,11 @@ func init() {
 		//AccessKeyId:     "YOUR_ACCESS_KEY_ID",
 		//AccessKeySecret: "YOUR_ACCESS_KEY_SECRET",
 		//Host:            "YOUR_HOST",
-		AccessKeyId:     "63a517e42e4a0aa457cd0b2d",
-		AccessKeySecret: "1b4ee0b200838618d30d4f385c8c3836",
-		Host:            "http://127.0.0.1:3000",
-		WssHost:         "ws://127.0.0.1:88",
+		AccessKeyId:     "60e043f8cd91b87d712b6365",
+		AccessKeySecret: "158c7679333bc196b524d78d745813e5",
+		Host:            "https://console.authing.cn/",
+		//WssHost:         "ws://127.0.0.1:88",
+		//ReadTimeout: 5 * time.Second,
 	}
 	var err error
 	client, err = NewManagementClient(&options)
