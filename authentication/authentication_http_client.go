@@ -88,7 +88,19 @@ func (client *AuthenticationClient) SendHttpRequest(url string, method string, r
 
 	err = httpClient.DoTimeout(req, resp, client.options.ReadTimeout)
 	if err != nil {
-		return nil, err
+		resultMap := make(map[string]interface{})
+		if err == fasthttp.ErrTimeout {
+			resultMap["statusCode"] = 504
+			resultMap["message"] = "请求超时"
+		} else {
+			resultMap["statusCode"] = 500
+			resultMap["message"] = err.Error()
+		}
+		b, err := json.Marshal(resultMap)
+		if err != nil {
+			return nil, err
+		}
+		return b, err
 	}
 	body := resp.Body()
 	return body, err

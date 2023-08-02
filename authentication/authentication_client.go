@@ -262,6 +262,9 @@ func (client *AuthenticationClient) GetAccessTokenByCode(code string) (OIDCToken
 		Headers: client.getReqHeaders(header),
 		ReqDto:  body,
 	})
+	if err != nil {
+		return OIDCTokenResponse{}, err
+	}
 	var tokenResponse OIDCTokenResponse
 	err = json.Unmarshal(resp.Body, &tokenResponse)
 	return tokenResponse, err
@@ -296,6 +299,9 @@ func (client *AuthenticationClient) GetAccessTokenByClientCredentials(req GetAcc
 		Headers: client.getReqHeaders(header),
 		ReqDto:  body,
 	})
+	if err != nil {
+		return "", err
+	}
 	return string(resp.Body), err
 }
 
@@ -339,6 +345,9 @@ func (client *AuthenticationClient) GetNewAccessTokenByRefreshToken(refreshToken
 		Headers: client.getReqHeaders(header),
 		ReqDto:  body,
 	})
+	if err != nil {
+		return "", err
+	}
 	return string(resp.Body), err
 }
 
@@ -367,6 +376,9 @@ func (client *AuthenticationClient) IntrospectToken(token string) (*dto.TokenInt
 		ReqDto:  body,
 	})
 
+	if err != nil {
+		return nil, err
+	}
 	var response dto.TokenIntrospectResponse
 
 	if resp == nil || resp.Body == nil {
@@ -374,9 +386,6 @@ func (client *AuthenticationClient) IntrospectToken(token string) (*dto.TokenInt
 	}
 	println(string(resp.Body))
 
-	if err != nil {
-		return nil, err
-	}
 	err = json.Unmarshal(resp.Body, &response)
 	if err != nil {
 		return nil, err

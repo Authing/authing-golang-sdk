@@ -74,7 +74,9 @@ func (client AuthenticationClient) SendProtocolHttpRequest(option *ProtocolReque
 		bytes, err := json.Marshal(reqDto) //序列化json
 
 		if err != nil {
-			return nil, err
+			return &ResponseData{
+				StatusCode: 500,
+			}, err
 		}
 		req.SetBody(bytes)
 
@@ -88,7 +90,9 @@ func (client AuthenticationClient) SendProtocolHttpRequest(option *ProtocolReque
 	} else if method == fasthttp.MethodGet {
 
 	} else {
-		return nil, fmt.Errorf("不支持的请求类型")
+		return &ResponseData{
+			StatusCode: 500,
+		}, fmt.Errorf("不支持的请求类型")
 	}
 
 	httpClient := &fasthttp.Client{
@@ -96,7 +100,9 @@ func (client AuthenticationClient) SendProtocolHttpRequest(option *ProtocolReque
 	}
 	err := httpClient.DoTimeout(req, resp, client.options.ReadTimeout)
 	if err != nil {
-		return nil, err
+		return &ResponseData{
+			StatusCode: 500,
+		}, err
 	}
 	statusCode := resp.StatusCode()
 	body := resp.Body()
