@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/Authing/authing-golang-sdk/v3/constant"
 	"github.com/Authing/authing-golang-sdk/v3/util"
@@ -16,33 +15,27 @@ func (client *AuthenticationClient) SendHttpRequest(url string, method string, r
 	req := fasthttp.AcquireRequest()
 	defer fasthttp.ReleaseRequest(req)
 
-	data, _ := json.Marshal(&reqDto)
-	variables := make(map[string]interface{})
-	json.Unmarshal(data, &variables)
-
-	var queryString strings.Builder
+	reqJsonBytes, err := json.Marshal(&reqDto)
+	if err != nil {
+		return nil, err
+	}
 	if method == fasthttp.MethodGet {
-		if variables != nil && len(variables) > 0 {
-			for key, value := range variables {
-				queryString.WriteString(key)
-				queryString.WriteString("=")
-				queryString.WriteString(fmt.Sprintf("%v", value))
-				queryString.WriteString("&")
-			}
+		variables := make(map[string]interface{})
+		err = json.Unmarshal(reqJsonBytes, &variables)
+		if err != nil {
+			return nil, err
 		}
-		qs := queryString.String()
-		if qs != "" {
-			url += "?" + qs
+		queryString := util.GetQueryString2(variables)
+		if queryString != "" {
+			url += "?" + queryString
 		}
 	}
 
+	// 设置请求方法
+	req.Header.SetMethod(method)
 	// 设置请求地址
 	req.SetRequestURI(client.options.AppHost + url)
 
-	// 设置请求头
-	if method != fasthttp.MethodGet {
-		req.Header.Add("Content-Type", "application/json;charset=UTF-8")
-	}
 	//req.Header.Add("x-authing-request-from", c.options.RequestFrom)
 	req.Header.Add("x-authing-sdk-version", constant.SdkVersion)
 	//req.Header.Add("x-authing-lang", c.Lang)
@@ -64,16 +57,12 @@ func (client *AuthenticationClient) SendHttpRequest(url string, method string, r
 	} else if client.options.AccessToken != "" {
 		req.Header.Add("authorization", client.options.AccessToken)
 	}
+	req.Header.Add("Content-Type", "application/json;charset=UTF-8")
 
-	// 设置请求方法
-	req.Header.SetMethod(method)
-
-	bytes, err := json.Marshal(reqDto) //data是请求数据
-
-	if err != nil {
-		return nil, err
+	if method != fasthttp.MethodGet {
+		req.SetBody(reqJsonBytes)
 	}
-	req.SetBody(bytes)
+
 	resp := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(resp)
 

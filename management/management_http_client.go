@@ -3,13 +3,12 @@ package management
 import (
 	"crypto/tls"
 	"encoding/json"
-	"fmt"
-	url2 "net/url"
 	"sync"
 	"time"
 
 	"github.com/Authing/authing-golang-sdk/v3/constant"
 	"github.com/Authing/authing-golang-sdk/v3/dto"
+	"github.com/Authing/authing-golang-sdk/v3/util"
 	"github.com/Authing/authing-golang-sdk/v3/util/cache"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/valyala/fasthttp"
@@ -71,26 +70,26 @@ func (client *ManagementClient) SendHttpRequest(url string, method string, reqDt
 	req := fasthttp.AcquireRequest()
 	defer fasthttp.ReleaseRequest(req)
 
-	data, _ := json.Marshal(&reqDto)
-	variables := make(map[string]interface{})
-	json.Unmarshal(data, &variables)
-
-	if method == fasthttp.MethodGet && variables != nil && len(variables) > 0 {
-		params := url2.Values{}
-		urlTemp, _ := url2.Parse(url)
-		for key, value := range variables {
-			params.Set(key, fmt.Sprintf("%v", value))
+	reqJsonBytes, err := json.Marshal(&reqDto)
+	if err != nil {
+		return nil, err
+	}
+	if method == fasthttp.MethodGet {
+		variables := make(map[string]interface{})
+		err = json.Unmarshal(reqJsonBytes, &variables)
+		if err != nil {
+			return nil, err
 		}
-		urlTemp.RawQuery = params.Encode()
-		url = urlTemp.String()
+		queryString := util.GetQueryString2(variables)
+		if queryString != "" {
+			url += "?" + queryString
+		}
 	}
 
+	req.Header.SetMethod(method)
 	req.SetRequestURI(client.options.Host + url)
 
-	if method != fasthttp.MethodGet {
-		req.Header.Add("Content-Type", "application/json;charset=UTF-8")
-	}
-	req.Header.Add("x-authing-app-tenant-id", ""+client.options.TenantId)
+	req.Header.Add("x-authing-app-tenant-id", client.options.TenantId)
 	//req.Header.Add("x-authing-request-from", client.options.RequestFrom)
 	req.Header.Add("x-authing-sdk-version", constant.SdkVersion)
 	req.Header.Add("x-authing-lang", client.options.Lang)
@@ -99,14 +98,12 @@ func (client *ManagementClient) SendHttpRequest(url string, method string, reqDt
 		req.Header.Add("Authorization", "Bearer "+token)
 		req.Header.Add("x-authing-userpool-id", client.userPoolId)
 	}
-	req.Header.SetMethod(method)
+	req.Header.Add("Content-Type", "application/json;charset=UTF-8")
 
-	bytes, err := json.Marshal(reqDto) //data是请求数据
-
-	if err != nil {
-		return nil, err
+	if method != fasthttp.MethodGet {
+		req.SetBody(reqJsonBytes)
 	}
-	req.SetBody(bytes)
+
 	resp := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(resp)
 
