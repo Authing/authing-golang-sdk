@@ -47,10 +47,6 @@ func NewManagementClient(options *ManagementClientOptions) (*ManagementClient, e
 
 	if c.HttpClient == nil {
 		c.HttpClient = &http.Client{}
-		_, err := GetAccessToken(c)
-		if err != nil {
-			return nil, err
-		}
 		/*src := oauth2.StaticTokenSource(
 			&oauth2.Token{AccessToken: accessToken},
 		)
