@@ -1,8 +1,9 @@
 package authentication
 
 import (
-	"github.com/dgrijalva/jwt-go"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type AuthenticationClientOptions struct {
@@ -156,14 +157,14 @@ type IDTokenExtended struct {
 type IDTokenClaims struct {
 	UserInfoCommon
 	IDTokenExtended
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 type AccessTokenExtended struct {
 	Scope string `json:"scope,omitempty"`
 }
 
 type AccessTokenClaims struct {
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 	AccessTokenExtended
 }
 

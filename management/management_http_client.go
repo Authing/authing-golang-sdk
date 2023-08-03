@@ -11,12 +11,12 @@ import (
 	"github.com/Authing/authing-golang-sdk/v3/constant"
 	"github.com/Authing/authing-golang-sdk/v3/dto"
 	"github.com/Authing/authing-golang-sdk/v3/util/cache"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/valyala/fasthttp"
 )
 
 type JwtClaims struct {
-	*jwt.StandardClaims
+	*jwt.RegisteredClaims
 	//用户编号
 	UID      string
 	Username string
