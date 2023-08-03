@@ -67,7 +67,7 @@ func QueryAccessToken(client *ManagementClient) (*dto.GetManagementTokenRespDto,
 	return &r, nil
 }
 
-func (c *ManagementClient) SendHttpRequest(url string, method string, reqDto interface{}) ([]byte, error) {
+func (client *ManagementClient) SendHttpRequest(url string, method string, reqDto interface{}) ([]byte, error) {
 	req := fasthttp.AcquireRequest()
 	defer fasthttp.ReleaseRequest(req)
 
@@ -85,19 +85,19 @@ func (c *ManagementClient) SendHttpRequest(url string, method string, reqDto int
 		url = urlTemp.String()
 	}
 
-	req.SetRequestURI(c.options.Host + url)
+	req.SetRequestURI(client.options.Host + url)
 
 	if method != fasthttp.MethodGet {
 		req.Header.Add("Content-Type", "application/json;charset=UTF-8")
 	}
-	req.Header.Add("x-authing-app-tenant-id", ""+c.options.TenantId)
-	//req.Header.Add("x-authing-request-from", c.options.RequestFrom)
+	req.Header.Add("x-authing-app-tenant-id", ""+client.options.TenantId)
+	//req.Header.Add("x-authing-request-from", client.options.RequestFrom)
 	req.Header.Add("x-authing-sdk-version", constant.SdkVersion)
-	req.Header.Add("x-authing-lang", c.options.Lang)
+	req.Header.Add("x-authing-lang", client.options.Lang)
 	if url != "/api/v3/get-management-token" {
-		token, _ := GetAccessToken(c)
+		token, _ := GetAccessToken(client)
 		req.Header.Add("Authorization", "Bearer "+token)
-		req.Header.Add("x-authing-userpool-id", c.userPoolId)
+		req.Header.Add("x-authing-userpool-id", client.userPoolId)
 	}
 	req.Header.SetMethod(method)
 
@@ -110,11 +110,7 @@ func (c *ManagementClient) SendHttpRequest(url string, method string, reqDto int
 	resp := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(resp)
 
-	client := &fasthttp.Client{
-		TLSConfig: &tls.Config{InsecureSkipVerify: true},
-	}
-
-	err = client.DoTimeout(req, resp, c.options.ReadTimeout)
+	err = client.httpClient.DoTimeout(req, resp, client.options.ReadTimeout)
 	if err != nil {
 		resultMap := make(map[string]interface{})
 		if err == fasthttp.ErrTimeout {
@@ -132,4 +128,15 @@ func (c *ManagementClient) SendHttpRequest(url string, method string, reqDto int
 	}
 	body := resp.Body()
 	return body, err
+}
+
+func (client *ManagementClient) createHttpClient() *fasthttp.Client {
+	options := client.options
+	createClientFunc := options.CreateClientFunc
+	if createClientFunc != nil {
+		return createClientFunc(options)
+	}
+	return &fasthttp.Client{
+		TLSConfig: &tls.Config{InsecureSkipVerify: options.InsecureSkipVerify},
+	}
 }

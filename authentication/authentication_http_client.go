@@ -77,11 +77,7 @@ func (client *AuthenticationClient) SendHttpRequest(url string, method string, r
 	resp := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(resp)
 
-	httpClient := &fasthttp.Client{
-		TLSConfig: &tls.Config{InsecureSkipVerify: client.options.InsecureSkipVerify},
-	}
-
-	err = httpClient.DoTimeout(req, resp, client.options.ReadTimeout)
+	err = client.httpClient.DoTimeout(req, resp, client.options.ReadTimeout)
 	if err != nil {
 		resultMap := make(map[string]interface{})
 		if err == fasthttp.ErrTimeout {
@@ -99,4 +95,15 @@ func (client *AuthenticationClient) SendHttpRequest(url string, method string, r
 	}
 	body := resp.Body()
 	return body, err
+}
+
+func (client *AuthenticationClient) createHttpClient() *fasthttp.Client {
+	options := client.options
+	createClientFunc := options.CreateClientFunc
+	if createClientFunc != nil {
+		return createClientFunc(options)
+	}
+	return &fasthttp.Client{
+		TLSConfig: &tls.Config{InsecureSkipVerify: options.InsecureSkipVerify},
+	}
 }

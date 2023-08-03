@@ -1,15 +1,15 @@
 package management
 
 import (
-	"net/http"
 	"time"
 
 	"github.com/Authing/authing-golang-sdk/v3/constant"
 	"github.com/Authing/authing-golang-sdk/v3/util"
+	"github.com/valyala/fasthttp"
 )
 
 type ManagementClient struct {
-	HttpClient *http.Client
+	httpClient *fasthttp.Client
 	options    *ManagementClientOptions
 	userPoolId string
 	eventHub   *util.WebSocketEventHub
@@ -29,6 +29,10 @@ type ManagementClientOptions struct {
 	*/
 	InsecureSkipVerify bool
 	WssHost            string
+	/**
+	 * 自定义 Client 创建函数
+	 */
+	CreateClientFunc func(options *ManagementClientOptions) *fasthttp.Client
 }
 
 func NewManagementClient(options *ManagementClientOptions) (*ManagementClient, error) {
@@ -45,13 +49,7 @@ func NewManagementClient(options *ManagementClientOptions) (*ManagementClient, e
 		options: options,
 	}
 
-	if c.HttpClient == nil {
-		c.HttpClient = &http.Client{}
-		/*src := oauth2.StaticTokenSource(
-			&oauth2.Token{AccessToken: accessToken},
-		)
-		c.HttpClient = oauth2.NewManagementClient(context.Background(), src)*/
-	}
+	c.httpClient = c.createHttpClient()
 	c.eventHub = util.NewWebSocketEvent()
 	return c, nil
 }

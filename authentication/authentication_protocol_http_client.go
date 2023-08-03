@@ -1,11 +1,11 @@
 package authentication
 
 import (
-	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"github.com/valyala/fasthttp"
 	"net/url"
+
+	"github.com/valyala/fasthttp"
 )
 
 type ContentType int
@@ -95,10 +95,7 @@ func (client AuthenticationClient) SendProtocolHttpRequest(option *ProtocolReque
 		}, fmt.Errorf("不支持的请求类型")
 	}
 
-	httpClient := &fasthttp.Client{
-		TLSConfig: &tls.Config{InsecureSkipVerify: client.options.InsecureSkipVerify},
-	}
-	err := httpClient.DoTimeout(req, resp, client.options.ReadTimeout)
+	err := client.httpClient.DoTimeout(req, resp, client.options.ReadTimeout)
 	if err != nil {
 		return &ResponseData{
 			StatusCode: 500,

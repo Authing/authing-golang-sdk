@@ -26,9 +26,10 @@ var commonHeaders = map[string]string{
 }
 
 type AuthenticationClient struct {
-	options  *AuthenticationClientOptions
-	jwks     *keyfunc.JWKS
-	eventHub *util.WebSocketEventHub
+	httpClient *fasthttp.Client
+	options    *AuthenticationClientOptions
+	jwks       *keyfunc.JWKS
+	eventHub   *util.WebSocketEventHub
 }
 
 func NewAuthenticationClient(options *AuthenticationClientOptions) (*AuthenticationClient, error) {
@@ -67,6 +68,7 @@ func NewAuthenticationClient(options *AuthenticationClientOptions) (*Authenticat
 		options:  options,
 		eventHub: util.NewWebSocketEvent(),
 	}
+	client.httpClient = client.createHttpClient()
 
 	return client, nil
 }
