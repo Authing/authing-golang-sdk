@@ -13,9 +13,9 @@ func init() {
 		//AccessKeyId:     "YOUR_ACCESS_KEY_ID",
 		//AccessKeySecret: "YOUR_ACCESS_KEY_SECRET",
 		//Host:            "YOUR_HOST",
-		AccessKeyId:     "",
-		AccessKeySecret: "",
-		Host:            "https://.authing.cn/",
+		AccessKeyId:     "6536110be436e5c4254b7621",
+		AccessKeySecret: "f0b6bc038c53fcb6b362ed1087eb36d0",
+		Host:            "http://localhost:3888",
 		//WssHost:         "ws://127.0.0.1:88",
 		//ReadTimeout: 5 * time.Second,
 	}
@@ -32,7 +32,7 @@ func TestClient_ListUsers(t *testing.T) {
 	request := dto.ListUsersRequestDto{
 		Options: dto.ListUsersOptionsDto{
 			Pagination: dto.PaginationDto{
-				Page:  2,
+				Page:  1,
 				Limit: 10,
 			},
 		},
@@ -130,11 +130,14 @@ func TestClient_GetUser(t *testing.T) {
 }
 
 func TestClient_GetUserBatch(t *testing.T) {
+	userIds := []string{"6536110de75e505de7effd76", "6536110de75e505de7effd71"}
 	request := dto.GetUserBatchDto{
-		UserIds:           "611a149db64310ca4764ab15,61bc4e94fc5809256b7c0333",
+		//UserIds: "6536110de75e505de7effd76",
+		UserIds:           userIds,
 		WithCustomData:    false,
 		WithIdentities:    false,
 		WithDepartmentIds: false,
+		UserIdType:        "user_id",
 	}
 	response := client.GetUserBatch(&request)
 	fmt.Println(response)
@@ -323,15 +326,15 @@ func TestClient_DeleteDepartment(t *testing.T) {
 
 }
 
-func TestClient_GetResourcesBatch(t *testing.T) {
-	request := dto.GetResourcesBatchDto{
-		CodeList:  "codeList_1627",
-		Namespace: "namespace_2983",
-	}
-	response := client.GetResourcesBatch(&request)
-	fmt.Println(response)
-
-}
+//func TestClient_GetResourcesBatch(t *testing.T) {
+//	request := dto.GetResourcesBatchDto{
+//		CodeList:  "codeList_1627",
+//		Namespace: "namespace_2983",
+//	}
+//	response := client.GetResourcesBatch(&request)
+//	fmt.Println(response)
+//
+//}
 
 func TestClient_CreateRole(t *testing.T) {
 	request := dto.CreateRoleDto{
@@ -344,14 +347,14 @@ func TestClient_CreateRole(t *testing.T) {
 
 }
 
-func TestClient_GetNamespacesBatch(t *testing.T) {
-	request := dto.GetNamespacesBatchDto{
-		CodeList: "codeList_1740",
-	}
-	response := client.GetNamespacesBatch(&request)
-	fmt.Println(response)
-
-}
+//func TestClient_GetNamespacesBatch(t *testing.T) {
+//	request := dto.GetNamespacesBatchDto{
+//		CodeList: "codeList_1740",
+//	}
+//	response := client.GetNamespacesBatch(&request)
+//	fmt.Println(response)
+//
+//}
 
 func TestClient_ListResources(t *testing.T) {
 	request := dto.ListResourcesDto{
@@ -1166,13 +1169,13 @@ func TestClient_GetPermissionNamespace(t *testing.T) {
 }
 
 // 批量获取权限空间详情
-func TestClient_GetPermissionNamespacesBatch(t *testing.T) {
-	request := dto.GetPermissionNamespacesBatchDto{
-		Codes: "examplePermissionNamespace1,examplePermissionNamespace2",
-	}
-	response := client.GetPermissionNamespacesBatch(&request)
-	fmt.Println(response)
-}
+//func TestClient_GetPermissionNamespacesBatch(t *testing.T) {
+//	request := dto.GetPermissionNamespacesBatchDto{
+//		Codes: "examplePermissionNamespace1,examplePermissionNamespace2",
+//	}
+//	response := client.GetPermissionNamespacesBatch(&request)
+//	fmt.Println(response)
+//}
 
 // 更新权限空间
 func TestClient_UpdatePermissionNamespace(t *testing.T) {
@@ -1231,34 +1234,34 @@ func TestClient_ListPermissionNamespaceRoles(t *testing.T) {
 }
 
 // 创建字符串数据资源
-func TestClient_CreateStringDataResource(t *testing.T) {
-	request := dto.CreateDataResourceDto{
-		Actions:       []string{"read", "get"},
-		Struct:        "test",
-		Type:          "STRING",
-		ResourceCode:  "stringResourceCode",
-		ResourceName:  "示例字符串数据资源",
-		NamespaceCode: "exampleNewPermissionNamespace",
-		Description:   "示例字符串数据资源描述",
-	}
-	response := client.CreateDataResource(&request)
-	fmt.Println(response)
-}
+//func TestClient_CreateStringDataResource(t *testing.T) {
+//	request := dto.CreateDataResourceDto{
+//		Actions:       []string{"read", "get"},
+//		Struct:        "test",
+//		Type:          "STRING",
+//		ResourceCode:  "stringResourceCode",
+//		ResourceName:  "示例字符串数据资源",
+//		NamespaceCode: "exampleNewPermissionNamespace",
+//		Description:   "示例字符串数据资源描述",
+//	}
+//	response := client.CreateDataResource(&request)
+//	fmt.Println(response)
+//}
 
 // 创建数组数据资源
-func TestClient_CreateArrayDataResource(t *testing.T) {
-	request := dto.CreateDataResourceDto{
-		Actions:       []string{"read", "get"},
-		Struct:        []string{"exampleArrayStruct1", "exampleArrayStruct2"},
-		Type:          "ARRAY",
-		ResourceCode:  "arrayResourceCode1",
-		ResourceName:  "示例数组数据资源1",
-		NamespaceCode: "examplePermissionNamespace",
-		Description:   "示例数组数据资源描述",
-	}
-	response := client.CreateDataResource(&request)
-	fmt.Println(response)
-}
+//func TestClient_CreateArrayDataResource(t *testing.T) {
+//	request := dto.CreateDataResourceDto{
+//		Actions:       []string{"read", "get"},
+//		Struct:        []string{"exampleArrayStruct1", "exampleArrayStruct2"},
+//		Type:          "ARRAY",
+//		ResourceCode:  "arrayResourceCode1",
+//		ResourceName:  "示例数组数据资源1",
+//		NamespaceCode: "examplePermissionNamespace",
+//		Description:   "示例数组数据资源描述",
+//	}
+//	response := client.CreateDataResource(&request)
+//	fmt.Println(response)
+//}
 
 // 创建数数据资源
 func TestClient_CreateTreeDataResource(t *testing.T) {
@@ -1380,18 +1383,18 @@ func TestClient_DeleteDataResource(t *testing.T) {
 }
 
 // 更新数据资源
-func TestClient_UpdateDataResource(t *testing.T) {
-	request := dto.UpdateDataResourceDto{
-		ResourceCode:  "stringResourceCode",
-		ResourceName:  "示例新字符串数据资源",
-		NamespaceCode: "examplePermissionNamespace",
-		Description:   "示例数据资源新描述",
-		Actions:       []string{"read", "get", "update"},
-		Struct:        "test",
-	}
-	response := client.UpdateDataResource(&request)
-	fmt.Println(response)
-}
+//func TestClient_UpdateDataResource(t *testing.T) {
+//	request := dto.UpdateDataResourceDto{
+//		ResourceCode:  "stringResourceCode",
+//		ResourceName:  "示例新字符串数据资源",
+//		NamespaceCode: "examplePermissionNamespace",
+//		Description:   "示例数据资源新描述",
+//		Actions:       []string{"read", "get", "update"},
+//		Struct:        "test",
+//	}
+//	response := client.UpdateDataResource(&request)
+//	fmt.Println(response)
+//}
 
 // 获取数据资源详情
 func TestClient_GetDataResource(t *testing.T) {
@@ -1404,16 +1407,16 @@ func TestClient_GetDataResource(t *testing.T) {
 }
 
 // 数据资源列表
-func TestClient_ListDataResources(t *testing.T) {
-	request := dto.ListDataResourcesDto{
-		Page:           1,
-		Limit:          10,
-		Query:          "stringResourceCode",
-		NamespaceCodes: "examplePermissionNamespace,exampleNewPermissionNamespace",
-	}
-	response := client.ListDataResources(&request)
-	fmt.Println(response)
-}
+//func TestClient_ListDataResources(t *testing.T) {
+//	request := dto.ListDataResourcesDto{
+//		Page:           1,
+//		Limit:          10,
+//		Query:          "stringResourceCode",
+//		NamespaceCodes: "examplePermissionNamespace,exampleNewPermissionNamespace",
+//	}
+//	response := client.ListDataResources(&request)
+//	fmt.Println(response)
+//}
 
 // 校验数据资源名称或者 code 是否有效
 func TestClient_CheckDataResourceExists(t *testing.T) {

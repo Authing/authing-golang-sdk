@@ -1,4 +1,6 @@
 package dto
 
-type LanguageCoinfigGlobalDto struct {
+
+type LanguageCoinfigGlobalDto struct{
 }
+

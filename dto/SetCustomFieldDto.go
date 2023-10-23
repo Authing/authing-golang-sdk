@@ -12,6 +12,9 @@ type SetCustomFieldDto struct{
     UserEditable  bool `json:"userEditable,omitempty"`
     VisibleInAdminConsole  bool `json:"visibleInAdminConsole,omitempty"`
     VisibleInUserCenter  bool `json:"visibleInUserCenter,omitempty"`
+    ValidateRules  interface{} `json:"validateRules,omitempty"`
+    AppIds  []string `json:"appIds,omitempty"`
+    Desensitization  bool `json:"desensitization,omitempty"`
     Options  []CustomFieldSelectOption `json:"options,omitempty"`
     I18n  CustomFieldI18n `json:"i18n,omitempty"`
 }

@@ -1,5 +1,7 @@
 package dto
 
-type OtpVerityRespDto struct {
-	Verified bool `json:"verified"`
+
+type OtpVerityRespDto struct{
+    Verified  bool `json:"verified"`
 }
+

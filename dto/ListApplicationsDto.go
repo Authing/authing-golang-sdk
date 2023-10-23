@@ -8,5 +8,6 @@ type ListApplicationsDto struct{
     IsSelfBuiltApp bool `json:"isSelfBuiltApp,omitempty"`
     SsoEnabled bool `json:"ssoEnabled,omitempty"`
     Keywords string `json:"keywords,omitempty"`
+    All bool `json:"all,omitempty"`
 }
 

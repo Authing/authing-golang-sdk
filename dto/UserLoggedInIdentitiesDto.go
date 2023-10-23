@@ -6,5 +6,6 @@ type UserLoggedInIdentitiesDto struct{
     IdpName  string `json:"idpName"`
     IdpNameEn  string `json:"idpNameEn"`
     IdpLogo  string `json:"idpLogo"`
+    IdpId  string `json:"idpId"`
 }
 

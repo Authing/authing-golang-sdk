@@ -40,6 +40,8 @@ type CreateUserInfoDto struct{
     Otp  CreateUserOtpDto `json:"otp,omitempty"`
     DepartmentIds  []string `json:"departmentIds,omitempty"`
     CustomData  interface{} `json:"customData,omitempty"`
+    MetadataSource  interface{} `json:"metadataSource,omitempty"`
     Identities  []CreateIdentityDto `json:"identities,omitempty"`
+    IdentityNumber  string `json:"identityNumber,omitempty"`
 }
 

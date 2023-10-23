@@ -1,4 +1,6 @@
 package dto
 
-type User struct {
+
+type User struct{
 }
+

@@ -1,5 +1,7 @@
 package dto
 
-type CheckExternalUserPermissionDataDto struct {
-	CheckResultList []CheckExternalUserPermissionsRespDto `json:"checkResultList"`
+
+type CheckExternalUserPermissionDataDto struct{
+    CheckResultList  []CheckExternalUserPermissionsRespDto `json:"checkResultList"`
 }
+

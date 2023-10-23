@@ -1,5 +1,7 @@
 package dto
 
-type LanguageCoinfigDto struct {
-	Global LanguageCoinfigGlobalDto `json:"global"`
+
+type LanguageCoinfigDto struct{
+    Global  LanguageCoinfigGlobalDto `json:"global"`
 }
+

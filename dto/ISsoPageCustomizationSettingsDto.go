@@ -1,4 +1,6 @@
 package dto
 
-type ISsoPageCustomizationSettingsDto struct {
+
+type ISsoPageCustomizationSettingsDto struct{
 }
+

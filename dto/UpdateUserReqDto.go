@@ -36,6 +36,7 @@ type UpdateUserReqDto struct{
     Locale  string `json:"locale,omitempty"`
     Formatted  string `json:"formatted,omitempty"`
     Region  string `json:"region,omitempty"`
+    IdentityNumber  string `json:"identityNumber,omitempty"`
     CustomData  interface{} `json:"customData,omitempty"`
     Options  UpdateUserOptionsDto `json:"options,omitempty"`
 }

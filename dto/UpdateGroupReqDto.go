@@ -6,5 +6,6 @@ type UpdateGroupReqDto struct{
     Code  string `json:"code"`
     Name  string `json:"name,omitempty"`
     NewCode  string `json:"newCode,omitempty"`
+    CustomData  interface{} `json:"customData,omitempty"`
 }
 

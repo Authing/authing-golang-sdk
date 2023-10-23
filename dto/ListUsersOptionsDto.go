@@ -6,7 +6,9 @@ type ListUsersOptionsDto struct{
     Sort  []SortingDto `json:"sort,omitempty"`
     FuzzySearchOn  []string `json:"fuzzySearchOn,omitempty"`
     WithCustomData  bool `json:"withCustomData,omitempty"`
+    WithPost  bool `json:"withPost,omitempty"`
     WithIdentities  bool `json:"withIdentities,omitempty"`
     WithDepartmentIds  bool `json:"withDepartmentIds,omitempty"`
+    FlatCustomData  bool `json:"flatCustomData,omitempty"`
 }
 
