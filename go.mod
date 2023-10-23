@@ -4,7 +4,6 @@ go 1.8
 
 require (
 	github.com/MicahParks/compatibility-keyfunc v0.14.0
-	github.com/andybalholm/brotli v1.0.6 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/klauspost/compress v1.15.2 // indirect
