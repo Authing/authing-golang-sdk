@@ -1,5 +1,7 @@
 package dto
 
-type UpdateLoginConfigDto struct {
-	Update UpdateLoginConfig `json:"update"`
+
+type UpdateLoginConfigDto struct{
+    Update  UpdateLoginConfig `json:"update"`
 }
+

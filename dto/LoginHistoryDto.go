@@ -15,5 +15,6 @@ type LoginHistoryDto struct{
     ParsedUserAgent  ParsedUserAgent `json:"parsedUserAgent"`
     LoginMethod  string `json:"loginMethod"`
     Geoip  GeoIp `json:"geoip"`
+    TenantId  string `json:"tenantId,omitempty"`
 }
 

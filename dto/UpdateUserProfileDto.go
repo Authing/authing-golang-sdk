@@ -17,5 +17,6 @@ type UpdateUserProfileDto struct{
     Username  string `json:"username,omitempty"`
     Company  string `json:"company,omitempty"`
     CustomData  interface{} `json:"customData,omitempty"`
+    IdentityNumber  string `json:"identityNumber,omitempty"`
 }
 

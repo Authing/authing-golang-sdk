@@ -12,10 +12,15 @@ type DepartmentDto struct{
     Description  string `json:"description,omitempty"`
     ParentDepartmentId  string `json:"parentDepartmentId"`
     Code  string `json:"code,omitempty"`
+    ParentDepartmentCode  string `json:"parentDepartmentCode"`
     MembersCount  int `json:"membersCount"`
     HasChildren  bool `json:"hasChildren"`
     IsVirtualNode  bool `json:"isVirtualNode,omitempty"`
     I18n  DepartmentI18nDto `json:"i18n,omitempty"`
     CustomData  interface{} `json:"customData,omitempty"`
+    Posts  []string `json:"posts,omitempty"`
+    PostIdList  []string `json:"postIdList,omitempty"`
+    Status  bool `json:"status,omitempty"`
+    Allow  string `json:"allow,omitempty"`
 }
 

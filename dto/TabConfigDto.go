@@ -1,4 +1,6 @@
 package dto
 
-type TabConfigDto struct {
+
+type TabConfigDto struct{
 }
+

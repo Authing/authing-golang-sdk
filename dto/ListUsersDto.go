@@ -8,6 +8,7 @@ type ListUsersDto struct{
     UpdatedAtStart int `json:"updatedAtStart,omitempty"`
     UpdatedAtEnd int `json:"updatedAtEnd,omitempty"`
     WithCustomData bool `json:"withCustomData,omitempty"`
+    WithPost bool `json:"withPost,omitempty"`
     WithIdentities bool `json:"withIdentities,omitempty"`
     WithDepartmentIds bool `json:"withDepartmentIds,omitempty"`
 }

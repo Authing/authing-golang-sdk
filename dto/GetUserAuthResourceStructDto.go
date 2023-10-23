@@ -1,5 +1,7 @@
 package dto
 
-type GetUserAuthResourceStructDto struct {
-	Resource string `json:"resource"`
+
+type GetUserAuthResourceStructDto struct{
+    Resource  string `json:"resource"`
 }
+

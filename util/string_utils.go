@@ -3,6 +3,7 @@ package util
 import (
 	"github.com/Authing/authing-golang-sdk/v3/constant"
 	"math/rand"
+	"reflect"
 	"sort"
 )
 
@@ -55,4 +56,14 @@ func GetValueOrDefault(value ...string) string {
 func StringContains(s []string, searchTerm string) bool {
 	i := sort.SearchStrings(s, searchTerm)
 	return i < len(s) && s[i] == searchTerm
+}
+
+func IsString(value interface{}) bool {
+	_, isString := value.(string)
+	return isString
+}
+
+func IsArray(value interface{}) bool {
+	valueType := reflect.TypeOf(value)
+	return valueType.Kind() == reflect.Array || valueType.Kind() == reflect.Slice
 }
