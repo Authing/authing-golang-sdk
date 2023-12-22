@@ -11,9 +11,8 @@ import (
 	"github.com/Authing/authing-golang-sdk/v3/constant"
 	"github.com/Authing/authing-golang-sdk/v3/dto"
 	"github.com/Authing/authing-golang-sdk/v3/util"
-
-	keyfunc "github.com/MicahParks/compatibility-keyfunc"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/MicahParks/keyfunc/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/valyala/fasthttp"
 )
 
@@ -27,9 +26,10 @@ var commonHeaders = map[string]string{
 }
 
 type AuthenticationClient struct {
-	options  *AuthenticationClientOptions
-	jwks     *keyfunc.JWKS
-	eventHub *util.WebSocketEventHub
+	httpClient *fasthttp.Client
+	options    *AuthenticationClientOptions
+	jwks       *keyfunc.JWKS
+	eventHub   *util.WebSocketEventHub
 }
 
 func NewAuthenticationClient(options *AuthenticationClientOptions) (*AuthenticationClient, error) {
@@ -68,6 +68,7 @@ func NewAuthenticationClient(options *AuthenticationClientOptions) (*Authenticat
 		options:  options,
 		eventHub: util.NewWebSocketEvent(),
 	}
+	client.httpClient = client.createHttpClient()
 
 	return client, nil
 }
@@ -481,19 +482,19 @@ func (client *AuthenticationClient) getKeyCommon(token *jwt.Token) (interface{},
 	if err != nil {
 		return nil, fmt.Errorf("获取 JWKS 失败 %v", err)
 	}
-	return jwks.KeyfuncLegacy(token)
+	return jwks.Keyfunc(token)
 }
 
 func (client *AuthenticationClient) getKey4IdToken(token *jwt.Token) (interface{}, error) {
 	claims := token.Claims.(*IDTokenClaims)
-	claims.IssuedAt = 0
+	claims.IssuedAt = jwt.NewNumericDate(time.Now())
 
 	return client.getKeyCommon(token)
 }
 
 func (client *AuthenticationClient) getKey4AccessToken(token *jwt.Token) (interface{}, error) {
 	claims := token.Claims.(*AccessTokenClaims)
-	claims.IssuedAt = 0
+	claims.IssuedAt = jwt.NewNumericDate(time.Now())
 
 	return client.getKeyCommon(token)
 }

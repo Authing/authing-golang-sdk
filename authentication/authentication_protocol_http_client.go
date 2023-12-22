@@ -1,11 +1,11 @@
 package authentication
 
 import (
-	"crypto/tls"
 	"encoding/json"
 	"fmt"
+
+	"github.com/Authing/authing-golang-sdk/v3/util"
 	"github.com/valyala/fasthttp"
-	"net/url"
 )
 
 type ContentType int
@@ -29,23 +29,6 @@ type ResponseData struct {
 	StatusCode int
 }
 
-func GenQueryString(variables map[string]string) string {
-	params := url.Values{}
-	for key, value := range variables {
-		params.Add(key, fmt.Sprintf("%v", value))
-	}
-	qs := params.Encode()
-	return qs
-}
-
-func GenFormArgs(variables map[string]string) *fasthttp.Args {
-	args := &fasthttp.Args{}
-	for key, value := range variables {
-		args.Add(key, fmt.Sprintf("%v", value))
-	}
-	return args
-}
-
 func (client AuthenticationClient) SendProtocolHttpRequest(option *ProtocolRequestOption) (*ResponseData, error) {
 	req := fasthttp.AcquireRequest()
 	defer fasthttp.ReleaseRequest(req)
@@ -53,52 +36,46 @@ func (client AuthenticationClient) SendProtocolHttpRequest(option *ProtocolReque
 	method := option.Method
 	reqDto := option.ReqDto
 	url := option.Url
-	if method == fasthttp.MethodGet && reqDto != nil {
-		variables := reqDto
-		qs := GenQueryString(variables)
-		if qs != "" {
-			url += "?" + qs
-		}
+	queryString := util.GetQueryString(reqDto)
+	if method == fasthttp.MethodGet && queryString != "" {
+		url += "?" + queryString
 	}
 
+	req.Header.SetMethod(method)
 	req.SetRequestURI(url)
+
 	for key, value := range option.Headers {
 		req.Header.Add(key, value)
 	}
-	req.Header.SetMethod(method)
 
 	resp := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(resp)
-	if option.ContentType == Json {
-		req.Header.SetContentType("application/json; charset=UTF-8")
-		bytes, err := json.Marshal(reqDto) //序列化json
 
-		if err != nil {
-			return &ResponseData{
-				StatusCode: 500,
-			}, err
-		}
-		req.SetBody(bytes)
-
-	} else if method == fasthttp.MethodPost {
-		req.Header.SetContentType("application/x-www-form-urlencoded; charset=UTF-8")
-		if reqDto != nil {
-			variables := reqDto
-			bytes := GenFormArgs(variables).QueryString()
+	switch method {
+	case fasthttp.MethodPost:
+		if option.ContentType == Json {
+			req.Header.SetContentType("application/json; charset=UTF-8")
+			bytes, err := json.Marshal(reqDto) //序列化json
+			if err != nil {
+				return &ResponseData{
+					StatusCode: 500,
+				}, err
+			}
 			req.SetBody(bytes)
+		} else {
+			req.Header.SetContentType("application/x-www-form-urlencoded; charset=UTF-8")
+			if queryString != "" {
+				req.SetBodyString(queryString)
+			}
 		}
-	} else if method == fasthttp.MethodGet {
-
-	} else {
+	case fasthttp.MethodGet:
+	default:
 		return &ResponseData{
 			StatusCode: 500,
 		}, fmt.Errorf("不支持的请求类型")
 	}
 
-	httpClient := &fasthttp.Client{
-		TLSConfig: &tls.Config{InsecureSkipVerify: client.options.InsecureSkipVerify},
-	}
-	err := httpClient.DoTimeout(req, resp, client.options.ReadTimeout)
+	err := client.httpClient.DoTimeout(req, resp, client.options.ReadTimeout)
 	if err != nil {
 		return &ResponseData{
 			StatusCode: 500,

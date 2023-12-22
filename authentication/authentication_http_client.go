@@ -1,53 +1,41 @@
 package authentication
 
 import (
-	"bytes"
 	"crypto/tls"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+
 	"github.com/Authing/authing-golang-sdk/v3/constant"
 	"github.com/Authing/authing-golang-sdk/v3/util"
 	"github.com/valyala/fasthttp"
-	"strings"
 )
 
 func (client *AuthenticationClient) SendHttpRequest(url string, method string, reqDto interface{}) ([]byte, error) {
-	var buf bytes.Buffer
-	err := json.NewEncoder(&buf).Encode(reqDto)
-	if err != nil {
-		return nil, err
-	}
 	req := fasthttp.AcquireRequest()
 	defer fasthttp.ReleaseRequest(req)
 
-	data, _ := json.Marshal(&reqDto)
-	variables := make(map[string]interface{})
-	json.Unmarshal(data, &variables)
-
-	var queryString strings.Builder
+	reqJsonBytes, err := json.Marshal(&reqDto)
+	if err != nil {
+		return nil, err
+	}
 	if method == fasthttp.MethodGet {
-		if variables != nil && len(variables) > 0 {
-			for key, value := range variables {
-				queryString.WriteString(key)
-				queryString.WriteString("=")
-				queryString.WriteString(fmt.Sprintf("%v", value))
-				queryString.WriteString("&")
-			}
+		variables := make(map[string]interface{})
+		err = json.Unmarshal(reqJsonBytes, &variables)
+		if err != nil {
+			return nil, err
 		}
-		qs := queryString.String()
-		if qs != "" {
-			url += "?" + qs
+		queryString := util.GetQueryString2(variables)
+		if queryString != "" {
+			url += "?" + queryString
 		}
 	}
 
+	// 设置请求方法
+	req.Header.SetMethod(method)
 	// 设置请求地址
 	req.SetRequestURI(client.options.AppHost + url)
 
-	// 设置请求头
-	if method != fasthttp.MethodGet {
-		req.Header.Add("Content-Type", "application/json;charset=UTF-8")
-	}
 	//req.Header.Add("x-authing-request-from", c.options.RequestFrom)
 	req.Header.Add("x-authing-sdk-version", constant.SdkVersion)
 	//req.Header.Add("x-authing-lang", c.Lang)
@@ -69,24 +57,16 @@ func (client *AuthenticationClient) SendHttpRequest(url string, method string, r
 	} else if client.options.AccessToken != "" {
 		req.Header.Add("authorization", client.options.AccessToken)
 	}
+	req.Header.Add("Content-Type", "application/json;charset=UTF-8")
 
-	// 设置请求方法
-	req.Header.SetMethod(method)
-
-	bytes, err := json.Marshal(reqDto) //data是请求数据
-
-	if err != nil {
-		return nil, err
+	if method != fasthttp.MethodGet {
+		req.SetBody(reqJsonBytes)
 	}
-	req.SetBody(bytes)
+
 	resp := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(resp)
 
-	httpClient := &fasthttp.Client{
-		TLSConfig: &tls.Config{InsecureSkipVerify: client.options.InsecureSkipVerify},
-	}
-
-	err = httpClient.DoTimeout(req, resp, client.options.ReadTimeout)
+	err = client.httpClient.DoTimeout(req, resp, client.options.ReadTimeout)
 	if err != nil {
 		resultMap := make(map[string]interface{})
 		if err == fasthttp.ErrTimeout {
@@ -104,4 +84,15 @@ func (client *AuthenticationClient) SendHttpRequest(url string, method string, r
 	}
 	body := resp.Body()
 	return body, err
+}
+
+func (client *AuthenticationClient) createHttpClient() *fasthttp.Client {
+	options := client.options
+	createClientFunc := options.CreateClientFunc
+	if createClientFunc != nil {
+		return createClientFunc(options)
+	}
+	return &fasthttp.Client{
+		TLSConfig: &tls.Config{InsecureSkipVerify: options.InsecureSkipVerify},
+	}
 }

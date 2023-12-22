@@ -3,20 +3,19 @@ package management
 import (
 	"crypto/tls"
 	"encoding/json"
-	"fmt"
-	url2 "net/url"
 	"sync"
 	"time"
 
 	"github.com/Authing/authing-golang-sdk/v3/constant"
 	"github.com/Authing/authing-golang-sdk/v3/dto"
+	"github.com/Authing/authing-golang-sdk/v3/util"
 	"github.com/Authing/authing-golang-sdk/v3/util/cache"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/valyala/fasthttp"
 )
 
 type JwtClaims struct {
-	*jwt.StandardClaims
+	*jwt.RegisteredClaims
 	//用户编号
 	UID      string
 	Username string
@@ -67,54 +66,48 @@ func QueryAccessToken(client *ManagementClient) (*dto.GetManagementTokenRespDto,
 	return &r, nil
 }
 
-func (c *ManagementClient) SendHttpRequest(url string, method string, reqDto interface{}) ([]byte, error) {
+func (client *ManagementClient) SendHttpRequest(url string, method string, reqDto interface{}) ([]byte, error) {
 	req := fasthttp.AcquireRequest()
 	defer fasthttp.ReleaseRequest(req)
 
-	data, _ := json.Marshal(&reqDto)
-	variables := make(map[string]interface{})
-	json.Unmarshal(data, &variables)
-
-	if method == fasthttp.MethodGet && variables != nil && len(variables) > 0 {
-		params := url2.Values{}
-		urlTemp, _ := url2.Parse(url)
-		for key, value := range variables {
-			params.Set(key, fmt.Sprintf("%v", value))
-		}
-		urlTemp.RawQuery = params.Encode()
-		url = urlTemp.String()
-	}
-
-	req.SetRequestURI(c.options.Host + url)
-
-	if method != fasthttp.MethodGet {
-		req.Header.Add("Content-Type", "application/json;charset=UTF-8")
-	}
-	req.Header.Add("x-authing-app-tenant-id", ""+c.options.TenantId)
-	//req.Header.Add("x-authing-request-from", c.options.RequestFrom)
-	req.Header.Add("x-authing-sdk-version", constant.SdkVersion)
-	req.Header.Add("x-authing-lang", c.options.Lang)
-	if url != "/api/v3/get-management-token" {
-		token, _ := GetAccessToken(c)
-		req.Header.Add("Authorization", "Bearer "+token)
-		req.Header.Add("x-authing-userpool-id", c.userPoolId)
-	}
-	req.Header.SetMethod(method)
-
-	bytes, err := json.Marshal(reqDto) //data是请求数据
-
+	reqJsonBytes, err := json.Marshal(&reqDto)
 	if err != nil {
 		return nil, err
 	}
-	req.SetBody(bytes)
+	if method == fasthttp.MethodGet {
+		variables := make(map[string]interface{})
+		err = json.Unmarshal(reqJsonBytes, &variables)
+		if err != nil {
+			return nil, err
+		}
+		queryString := util.GetQueryString2(variables)
+		if queryString != "" {
+			url += "?" + queryString
+		}
+	}
+
+	req.Header.SetMethod(method)
+	req.SetRequestURI(client.options.Host + url)
+
+	req.Header.Add("x-authing-app-tenant-id", client.options.TenantId)
+	//req.Header.Add("x-authing-request-from", client.options.RequestFrom)
+	req.Header.Add("x-authing-sdk-version", constant.SdkVersion)
+	req.Header.Add("x-authing-lang", client.options.Lang)
+	if url != "/api/v3/get-management-token" {
+		token, _ := GetAccessToken(client)
+		req.Header.Add("Authorization", "Bearer "+token)
+		req.Header.Add("x-authing-userpool-id", client.userPoolId)
+	}
+	req.Header.Add("Content-Type", "application/json;charset=UTF-8")
+
+	if method != fasthttp.MethodGet {
+		req.SetBody(reqJsonBytes)
+	}
+
 	resp := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(resp)
 
-	client := &fasthttp.Client{
-		TLSConfig: &tls.Config{InsecureSkipVerify: true},
-	}
-
-	err = client.DoTimeout(req, resp, c.options.ReadTimeout)
+	err = client.httpClient.DoTimeout(req, resp, client.options.ReadTimeout)
 	if err != nil {
 		resultMap := make(map[string]interface{})
 		if err == fasthttp.ErrTimeout {
@@ -132,4 +125,15 @@ func (c *ManagementClient) SendHttpRequest(url string, method string, reqDto int
 	}
 	body := resp.Body()
 	return body, err
+}
+
+func (client *ManagementClient) createHttpClient() *fasthttp.Client {
+	options := client.options
+	createClientFunc := options.CreateClientFunc
+	if createClientFunc != nil {
+		return createClientFunc(options)
+	}
+	return &fasthttp.Client{
+		TLSConfig: &tls.Config{InsecureSkipVerify: options.InsecureSkipVerify},
+	}
 }

@@ -1,8 +1,10 @@
 package authentication
 
 import (
-	"github.com/dgrijalva/jwt-go"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/valyala/fasthttp"
 )
 
 type AuthenticationClientOptions struct {
@@ -85,6 +87,10 @@ type AuthenticationClientOptions struct {
 	 * 订阅事件 WebSocket 地址
 	 */
 	WssHost string
+	/**
+	 * 自定义 Client 创建函数
+	 */
+	CreateClientFunc func(options *AuthenticationClientOptions) *fasthttp.Client
 }
 
 type AuthUrlResult struct {
@@ -156,14 +162,14 @@ type IDTokenExtended struct {
 type IDTokenClaims struct {
 	UserInfoCommon
 	IDTokenExtended
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 type AccessTokenExtended struct {
 	Scope string `json:"scope,omitempty"`
 }
 
 type AccessTokenClaims struct {
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 	AccessTokenExtended
 }
 
