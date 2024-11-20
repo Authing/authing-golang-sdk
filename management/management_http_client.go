@@ -102,11 +102,12 @@ func (c *ManagementClient) SendHttpRequest(url string, method string, reqDto int
 	req.Header.SetMethod(method)
 
 	bytes, err := json.Marshal(reqDto) //data是请求数据
-
-	if err != nil {
-		return nil, err
+	if method == fasthttp.MethodPost || method == fasthttp.MethodPut || method == fasthttp.MethodPatch {
+		if err != nil {
+			return nil, err
+		}
+		req.SetBody(bytes)
 	}
-	req.SetBody(bytes)
 	resp := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(resp)
 

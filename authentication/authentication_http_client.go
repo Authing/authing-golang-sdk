@@ -6,10 +6,11 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"strings"
+
 	"github.com/Authing/authing-golang-sdk/v3/constant"
 	"github.com/Authing/authing-golang-sdk/v3/util"
 	"github.com/valyala/fasthttp"
-	"strings"
 )
 
 func (client *AuthenticationClient) SendHttpRequest(url string, method string, reqDto interface{}) ([]byte, error) {
@@ -75,10 +76,13 @@ func (client *AuthenticationClient) SendHttpRequest(url string, method string, r
 
 	bytes, err := json.Marshal(reqDto) //data是请求数据
 
-	if err != nil {
-		return nil, err
+	if method == fasthttp.MethodPost || method == fasthttp.MethodPut || method == fasthttp.MethodPatch {
+		if err != nil {
+			return nil, err
+		}
+		req.SetBody(bytes)
 	}
-	req.SetBody(bytes)
+
 	resp := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(resp)
 
